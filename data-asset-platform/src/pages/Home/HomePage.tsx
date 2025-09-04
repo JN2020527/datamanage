@@ -20,6 +20,11 @@ import AssetDistributionChart from '@components/Charts/AssetDistributionChart';
 import AccessTrendChart from '@components/Charts/AccessTrendChart';
 import QualityTrendChart from '@components/Charts/QualityTrendChart';
 import type { Statistics } from '@types/index';
+import TextEffect from '@components/Animations/TextEffect';
+import EnhancedStatCard from '@components/UI/EnhancedStatCard';
+import InteractiveCard from '@components/Animations/InteractiveCard';
+import PageTransition from '@components/Animations/PageTransition';
+import { motion } from 'framer-motion';
 
 const { Title, Text } = Typography;
 
@@ -66,35 +71,54 @@ const HomePage: React.FC = () => {
   }
 
   return (
-    <div className="page-container">
-      {/* 页面标题 */}
-      <div className="page-header">
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <div>
-            <Title level={2} className="page-title">
-              数据资产概览
-            </Title>
-            <Text className="page-description">
-              全面了解您的数据资产状况，快速访问常用功能
-            </Text>
+    <PageTransition>
+      <div className="page-container">
+        {/* 页面标题 */}
+        <motion.div 
+          className="page-header"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+        >
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div>
+              <TextEffect 
+                preset="fade-in-blur"
+                className="text-2xl font-bold text-gray-900 mb-2"
+              >
+                数据资产概览
+              </TextEffect>
+              <TextEffect 
+                preset="slide"
+                delay={0.3}
+                className="text-gray-600"
+              >
+                全面了解您的数据资产状况，快速访问常用功能
+              </TextEffect>
+            </div>
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.5, duration: 0.4 }}
+            >
+              <Space>
+                <Button
+                  icon={<ReloadOutlined />}
+                  loading={refreshing}
+                  onClick={handleRefresh}
+                >
+                  刷新
+                </Button>
+                <Button
+                  icon={<SettingOutlined />}
+                  onClick={() => navigate('/system/settings')}
+                >
+                  设置
+                </Button>
+              </Space>
+            </motion.div>
           </div>
-          <Space>
-            <Button
-              icon={<ReloadOutlined />}
-              loading={refreshing}
-              onClick={handleRefresh}
-            >
-              刷新
-            </Button>
-            <Button
-              icon={<SettingOutlined />}
-              onClick={() => navigate('/system/settings')}
-            >
-              设置
-            </Button>
-          </Space>
-        </div>
-      </div>
+        </motion.div>
 
       {/* 统计卡片 */}
       <Row gutter={[24, 24]} style={{ marginBottom: '32px' }}>
@@ -204,6 +228,7 @@ const HomePage: React.FC = () => {
         </Col>
       </Row>
     </div>
+    </PageTransition>
   );
 };
 
