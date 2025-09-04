@@ -17,7 +17,7 @@ import {
   SearchOutlined,
   ClockCircleOutlined,
   FireOutlined,
-  TrendingUpOutlined,
+  RiseOutlined,
   FilterOutlined,
   ClearOutlined,
   HistoryOutlined,
@@ -26,7 +26,24 @@ import {
   DownOutlined
 } from '@ant-design/icons';
 import { motion, AnimatePresence } from 'framer-motion';
-import { searchHistory, SearchHistoryItem, PopularSearchItem } from '@utils/searchHistory';
+import { searchHistory } from '@utils/searchHistory';
+
+// 定义类型
+interface SearchHistoryItem {
+  id: string;
+  query: string;
+  timestamp: number;
+  type: 'search' | 'suggestion' | 'recent';
+  resultCount?: number;
+  category?: string;
+}
+
+interface PopularSearchItem {
+  query: string;
+  count: number;
+  category?: string;
+  trending?: boolean;
+}
 import { debounce } from '@utils/index';
 
 const { Text, Title } = Typography;
@@ -139,7 +156,7 @@ const AdvancedSearch: React.FC<AdvancedSearchProps> = ({
             label: (
               <div className="flex items-center justify-between w-full">
                 <div className="flex items-center gap-2">
-                  <TrendingUpOutlined className="text-green-500" />
+                  <RiseOutlined className="text-green-500" />
                   <Text>{item.query}</Text>
                   <Tag size="small" color="green">热门</Tag>
                   {item.category && (
@@ -471,7 +488,7 @@ const AdvancedSearch: React.FC<AdvancedSearchProps> = ({
                     {!query && showTrending && suggestions.some(s => s.type === 'trending') && (
                       <>
                         <div className="px-3 py-1 text-xs font-medium text-gray-500 bg-gray-50">
-                          <TrendingUpOutlined className="mr-1" />
+                          <RiseOutlined className="mr-1" />
                           热门趋势
                         </div>
                         {suggestions.filter(s => s.type === 'trending').map((suggestion, index) =>

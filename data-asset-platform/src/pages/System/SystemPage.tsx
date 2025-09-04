@@ -5,7 +5,6 @@ import {
   Tabs,
   Button,
   Space,
-  Breadcrumb,
   Row,
   Col,
   Statistic,
@@ -312,12 +311,7 @@ const SystemPage: React.FC = () => {
   return (
     <div className="page-container">
       {/* 面包屑导航 */}
-      <Breadcrumb style={{ marginBottom: '16px' }}>
-        <Breadcrumb.Item>
-          <a onClick={() => navigate('/')}>首页</a>
-        </Breadcrumb.Item>
-        <Breadcrumb.Item>系统管理</Breadcrumb.Item>
-      </Breadcrumb>
+      
 
       {/* 页面标题 */}
       <div style={{ marginBottom: '24px' }}>

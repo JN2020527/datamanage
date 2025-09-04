@@ -18,7 +18,6 @@ import {
   Form,
   message,
   Spin,
-  Breadcrumb,
 } from 'antd';
 import {
   StarOutlined,
@@ -141,15 +140,7 @@ const AssetDetailPage: React.FC = () => {
   return (
     <div className="page-container">
       {/* 面包屑导航 */}
-      <Breadcrumb style={{ marginBottom: '16px' }}>
-        <Breadcrumb.Item>
-          <a onClick={() => navigate('/')}>首页</a>
-        </Breadcrumb.Item>
-        <Breadcrumb.Item>
-          <a onClick={() => navigate('/discovery')}>资产发现</a>
-        </Breadcrumb.Item>
-        <Breadcrumb.Item>{asset.name}</Breadcrumb.Item>
-      </Breadcrumb>
+      
 
       {/* 资产基本信息 */}
       <Card style={{ marginBottom: '24px' }}>

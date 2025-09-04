@@ -6,7 +6,6 @@ import {
   Button,
   Space,
   Select,
-  Breadcrumb,
   Row,
   Col,
   Statistic,
@@ -211,12 +210,7 @@ const AnalysisPage: React.FC = () => {
   return (
     <div className="page-container">
       {/* 面包屑导航 */}
-      <Breadcrumb style={{ marginBottom: '16px' }}>
-        <Breadcrumb.Item>
-          <a onClick={() => navigate('/')}>首页</a>
-        </Breadcrumb.Item>
-        <Breadcrumb.Item>敏捷分析</Breadcrumb.Item>
-      </Breadcrumb>
+      
 
       {/* 页面标题和操作 */}
       <div style={{ marginBottom: '24px' }}>

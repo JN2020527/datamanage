@@ -2,14 +2,22 @@ import React, { useState, useEffect } from 'react';
 import { Tag, Space, Button, Tooltip, Badge } from 'antd';
 import { 
   FireOutlined, 
-  TrendingUpOutlined, 
+  RiseOutlined, 
   ClockCircleOutlined,
   ReloadOutlined,
   StarOutlined,
   SearchOutlined
 } from '@ant-design/icons';
 import { motion, AnimatePresence } from 'framer-motion';
-import { searchHistory, PopularSearchItem } from '@utils/searchHistory';
+import { searchHistory } from '@utils/searchHistory';
+
+// 定义 PopularSearchItem 类型
+interface PopularSearchItem {
+  query: string;
+  count: number;
+  category?: string;
+  trending?: boolean;
+}
 
 interface QuickSearchTagsProps {
   onTagClick?: (tag: string) => void;
@@ -145,7 +153,7 @@ const QuickSearchTags: React.FC<QuickSearchTagsProps> = ({
   const getTagIcon = (tag: TagItem) => {
     switch (tag.type) {
       case 'trending':
-        return <TrendingUpOutlined className="mr-1" />;
+        return <RiseOutlined className="mr-1" />;
       case 'popular':
         return <FireOutlined className="mr-1" />;
       case 'recent':
