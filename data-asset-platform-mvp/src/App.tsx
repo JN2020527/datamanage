@@ -3,12 +3,10 @@ import AppLayout from '@/components/Layout'
 import HomePage from '@/pages/Home'
 import DiscoveryPage from '@/pages/Discovery'
 import AssetDetailPage from '@/pages/AssetDetail'
+import SystemUsersPage from '@/pages/SystemUsers'
 import './App.css'
 
 
-function SystemUsers() {
-  return <div>系统-用户（占位）</div>
-}
 
 export default function App() {
   return (
@@ -17,7 +15,7 @@ export default function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/discovery" element={<DiscoveryPage />} />
         <Route path="/assets/:id" element={<AssetDetailPage />} />
-        <Route path="/system/users" element={<SystemUsers />} />
+        <Route path="/system/users" element={<SystemUsersPage />} />
       </Route>
     </Routes>
   )

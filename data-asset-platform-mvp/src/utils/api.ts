@@ -68,3 +68,4 @@ export const getChartData = (chartType: string) => api.get(endpoints.charts(char
 export const getUserProfile = (id: string) => api.get(endpoints.userProfile(id));
 export const getUserActivities = (id: string, params?: { page?: number; pageSize?: number; action?: string; dateRange?: { start?: string; end?: string } }) =>
   api.get(endpoints.userActivities(id), { params });
+export const getUsers = () => api.get(endpoints.users);
