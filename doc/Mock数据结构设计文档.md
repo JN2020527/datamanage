@@ -14,6 +14,8 @@
 | **统计数据** | 首页概览统计数据       | statistics.json  | 1组   |
 | **活动日志** | 用户操作活动记录       | activities.json  | 50条  |
 
+> 统一Mock方案：为便于前端使用 JSON Server，推荐将多文件在构建或启动阶段合并为单一 `public/data/db.json`，并通过 `public/data/routes.json` 提供路由映射；仍可保留分文件源数据用于维护与生成。
+
 ## 2. 资产信息数据结构
 
 ### 📋 **assets.json**
@@ -996,25 +998,29 @@ interface APIResponse<T> {
 
 ## 10. 数据文件组织结构
 
-### 📁 **public/data/ 目录结构**
+### 📁 **public/data/ 目录结构（推荐）**
 ```
 public/
 ├── data/
-│   ├── assets.json          # 资产基础信息
-│   ├── fields.json          # 字段详情信息  
-│   ├── lineage.json         # 血缘关系数据
-│   ├── quality.json         # 质量检查数据
-│   ├── users.json           # 用户信息数据
-│   ├── statistics.json      # 统计概览数据
-│   ├── activities.json      # 活动日志数据
-│   └── index.json          # 数据索引文件
+│   ├── db.json              # 聚合后的Mock数据库（供 json-server 直接使用）
+│   ├── routes.json          # 自定义路由映射
+│   ├── source/              # 分文件源数据（维护用）
+│   │   ├── assets.json      # 资产基础信息（源）
+│   │   ├── fields.json      # 字段详情信息（源）
+│   │   ├── lineage.json     # 血缘关系数据（源）
+│   │   ├── quality.json     # 质量检查数据（源）
+│   │   ├── users.json       # 用户信息数据（源）
+│   │   ├── statistics.json  # 统计概览数据（源）
+│   │   ├── activities.json  # 活动日志数据（源）
+│   │   └── index.json       # 数据索引文件（源）
+│   └── README.md            # Mock说明
 └── images/
     ├── avatars/            # 用户头像
     ├── icons/              # 图标资源
     └── charts/             # 图表相关图片
 ```
 
-### 📋 **index.json (数据索引)**
+### 📋 **index.json (数据索引，源数据)**
 ```json
 {
   "dataVersion": "1.0.0",
@@ -1063,6 +1069,80 @@ public/
       "checksum": "g7h8i9j0k1l2"
     }
   }
+}
+```
+
+### 🗃️ **db.json（聚合数据库）**
+```json
+{
+  "assets": [],
+  "fields": [],
+  "lineage": [],
+  "quality": [],
+  "impactAnalysis": [],
+  "users": [],
+  "activities": [],
+  "statistics": {},
+  "charts": [],
+  "search_suggestions": []
+}
+```
+
+### 🔀 **routes.json（路由映射）**
+```json
+{
+  "/api/v1/assets": "/assets",
+  "/api/v1/assets/:id": "/assets/:id",
+  "/api/v1/assets/:id/fields": "/fields?assetId=:id",
+  "/api/v1/assets/:id/lineage": "/lineage?assetId=:id",
+  "/api/v1/assets/:id/quality": "/quality?assetId=:id",
+  "/api/v1/assets/:id/impact-analysis": "/impactAnalysis?assetId=:id",
+  "/api/v1/assets/search": "/assets",
+  "/api/v1/assets/search/suggestions": "/search_suggestions",
+  "/api/v1/users": "/users",
+  "/api/v1/users/:id": "/users/:id",
+  "/api/v1/users/:id/activities": "/activities?userId=:id",
+  "/api/v1/dashboard/statistics": "/statistics",
+  "/api/v1/charts/:chartType": "/charts?type=:chartType"
+}
+```
+
+> 说明：`/api/v1/assets/search` 在 json-server 环境下可通过 `GET /api/v1/assets?q=keyword` 与其他筛选参数模拟；正式接口仍保留 `POST` 语义。
+
+### ⚙️ **启动脚本**
+```json
+{
+  "scripts": {
+    "mock": "json-server --watch public/data/db.json --routes public/data/routes.json --port 3001 --host 0.0.0.0"
+  }
+}
+```
+
+### 📈 **charts 与 impactAnalysis 集合建议结构**
+
+#### charts
+```json
+{
+  "charts": [
+    { "type": "asset-distribution", "data": [] },
+    { "type": "quality-trends", "data": [] },
+    { "type": "access-trends", "data": [] },
+    { "type": "department-stats", "data": [] }
+  ]
+}
+```
+
+#### impactAnalysis
+```json
+{
+  "impactAnalysis": [
+    {
+      "assetId": "asset_001",
+      "impactSummary": { "totalAffectedAssets": 15, "criticalAssets": 3, "reports": 5, "dashboards": 2 },
+      "affectedAssets": [],
+      "riskAssessment": { "level": "medium", "description": "...", "recommendations": [] }
+    }
+  ]
 }
 ```
 

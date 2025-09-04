@@ -315,5 +315,69 @@ npm run build
 #### 4.6.3 Mock数据启动
 ```bash
 # 启动JSON Server (另开终端)
-npx json-server --watch src/mock/db.json --port 3001
+npx json-server --watch public/data/db.json --routes public/data/routes.json --port 3001 --host 0.0.0.0
 ```
+
+## 5. MVP范围边界与只读说明（重要）
+
+- 本MVP以只读为主：资产、字段、血缘、质量、统计、用户、活动日志均提供展示能力。
+- 写入能力（资产创建/编辑、字段CRUD、质量规则配置、版本管理等）本期不落地，仅保留页面按钮或入口用于演示动线。
+- 若需最小写入闭环，建议采用 MSW 在前端内存态实现请求拦截与本地回显，避免破坏统一Mock数据。
+
+## 6. 前端路由表（建议方案）
+
+- `/` → 首页概览
+- `/discovery` → 资产发现
+- `/assets/:id` → 资产详情（默认子标签为概览）
+- `/assets/:id/fields` → 资产字段
+- `/assets/:id/lineage` → 数据血缘
+- `/assets/:id/quality` → 质量报告
+- `/analysis` → 敏捷分析
+- `/system/users` → 用户列表（只读）
+
+## 7. 统一类型清单（前端 types 摘要）
+
+- `APIResponse<T>`、`PaginatedResponse<T>`
+- `Asset`、`Field`
+- `LineageNode`、`LineageEdge`
+- `QualityReport`、`QualityRule`、`QualityTrend`、`QualityIssue`
+- `DashboardStatistics`、`ChartDatum`
+- `User`、`UserActivity`
+
+时间字段统一为 ISO 8601 字符串。
+
+## 8. 交互状态与性能默认
+
+- 列表 `pageSize` 默认 20，最大 100。
+- 图表数据点默认不超过 500；超出采用抽样或分页加载。
+- 血缘视图默认方向 `both`，最大深度 3。
+- 统一加载骨架、空态与错误态：所有页面组件均提供 loading/empty/error 三态显示。
+
+## 9. 启动脚本与代理
+
+package.json 建议：
+```json
+{
+  "scripts": {
+    "dev": "vite",
+    "mock": "json-server --watch public/data/db.json --routes public/data/routes.json --port 3001 --host 0.0.0.0"
+  }
+}
+```
+
+`vite.config.ts` 代理：
+```ts
+server: {
+  port: 3000,
+  open: true,
+  proxy: { '/api': { target: 'http://localhost:3001', changeOrigin: true } }
+}
+```
+
+## 10. 验收清单（用于演示）
+
+- 首页：摘要卡片、类型分布、访问与质量趋势、热门资产、最近活动可见
+- 资产发现：搜索/建议、筛选、卡片/列表切换、分页可用
+- 资产详情：概览/字段/血缘/质量标签页数据完整，血缘交互可点选节点
+- 质量检查：触发后显示“运行中/完成”反馈（Mock）
+- 系统-用户：列表与详情只读展示

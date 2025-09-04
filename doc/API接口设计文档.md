@@ -75,6 +75,16 @@ interface ErrorResponse {
 | `1005` | 系统错误       | 服务器内部错误                 |
 | `1006` | 网络超时       | 请求处理超时                   |
 
+### 📐 **通用约定**
+
+- 分页参数：`page` 默认 1，`pageSize` 默认 20，最大 100。
+- 排序参数：`sortBy` 允许 `name | createTime | updateTime | qualityScore | accessCount`；`sortOrder` 取 `asc | desc`，默认 `desc`。
+- 时间格式：统一使用 ISO 8601 字符串（如 `2024-01-17T17:00:00Z`）。
+- 资产类型：`table | model | report | dashboard`。
+- 质量维度：`completeness | accuracy | consistency | timeliness | validity`。
+- 敏感级别：`low | medium | high`。
+- 血缘方向：`upstream | downstream | both`，默认 `both`；最大深度默认 `3`。
+
 ## 3. 资产管理接口
 
 ### 📊 **3.1 获取资产列表**
@@ -692,16 +702,19 @@ GET /api/v1/charts/{chartType}
 
 ### 🛠 **JSON Server配置**
 
-**db.json结构**
+**db.json结构（聚合数据，推荐）**
 ```json
 {
   "assets": [],
   "fields": [],
   "lineage": [],
   "quality": [],
+  "impactAnalysis": [],
   "users": [],
+  "activities": [],
   "statistics": {},
-  "activities": []
+  "charts": [],
+  "search_suggestions": []
 }
 ```
 
@@ -713,8 +726,14 @@ GET /api/v1/charts/{chartType}
   "/api/v1/assets/:id/fields": "/fields?assetId=:id",
   "/api/v1/assets/:id/lineage": "/lineage?assetId=:id",
   "/api/v1/assets/:id/quality": "/quality?assetId=:id",
+  "/api/v1/assets/:id/impact-analysis": "/impactAnalysis?assetId=:id",
+  "/api/v1/assets/search": "/assets",
+  "/api/v1/assets/search/suggestions": "/search_suggestions",
   "/api/v1/users": "/users",
-  "/api/v1/dashboard/statistics": "/statistics"
+  "/api/v1/users/:id": "/users/:id",
+  "/api/v1/users/:id/activities": "/activities?userId=:id",
+  "/api/v1/dashboard/statistics": "/statistics",
+  "/api/v1/charts/:chartType": "/charts?type=:chartType"
 }
 ```
 
@@ -728,5 +747,12 @@ GET /api/v1/charts/{chartType}
   }
 }
 ```
+
+> 兼容说明：由于 JSON Server 对 `POST /assets/search` 不支持查询语义，前端在 Mock 阶段建议改用 `GET /api/v1/assets?q={keyword}` 与分页、筛选参数组合；正式接口仍按本文定义的 `POST /assets/search` 实现。
+
+## 9. MVP读写范围说明
+
+- MVP 以只读为主：资产、字段、血缘、质量、统计、用户、活动日志均提供读取接口与演示数据。
+- 写入接口（资产创建/编辑、字段CRUD、规则配置等）暂不实现，仅保留前端入口与占位交互；如需最小写入演示，建议用 MSW 在浏览器内存中拦截并回显。
 
 这套API接口设计为前端开发提供了完整的数据交互规范，支持所有MVP功能的实现，同时具备良好的扩展性和维护性。 
