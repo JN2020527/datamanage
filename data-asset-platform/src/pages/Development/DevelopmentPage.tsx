@@ -101,7 +101,7 @@ const DevelopmentPage: React.FC = () => {
 
   const handleDeleteAsset = async (assetId: string) => {
     try {
-      setAssets(assets.filter(asset => asset.id !== assetId));
+      setAssets((assets || []).filter(asset => asset.id !== assetId));
       showSuccess('资产删除成功');
     } catch (error) {
       showError('删除失败，请重试');
@@ -117,7 +117,7 @@ const DevelopmentPage: React.FC = () => {
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       };
-      setAssets([newAsset, ...assets]);
+      setAssets([newAsset, ...(assets || [])]);
       showSuccess('资产复制成功');
     } catch (error) {
       showError('复制失败，请重试');
@@ -128,7 +128,7 @@ const DevelopmentPage: React.FC = () => {
     try {
       if (editingAsset) {
         // 更新资产
-        setAssets(assets.map(asset => 
+        setAssets((assets || []).map(asset => 
           asset.id === editingAsset.id 
             ? { ...asset, ...assetData }
             : asset
@@ -140,7 +140,7 @@ const DevelopmentPage: React.FC = () => {
           accessCount: 0,
           ...assetData,
         } as Asset;
-        setAssets([newAsset, ...assets]);
+        setAssets([newAsset, ...(assets || [])]);
       }
       setModalVisible(false);
       await loadAssets(); // 重新加载列表
@@ -161,7 +161,7 @@ const DevelopmentPage: React.FC = () => {
     setActiveTab('list'); // 回到列表页面
   };
 
-  const filteredAssets = assets.filter(asset => {
+  const filteredAssets = (assets || []).filter(asset => {
     const matchesSearch = !searchText || 
       asset.name.toLowerCase().includes(searchText.toLowerCase()) ||
       asset.description.toLowerCase().includes(searchText.toLowerCase());
