@@ -21,6 +21,8 @@ import { useSearchParams } from 'react-router-dom';
 import SearchInput from '@components/Search/SearchInput';
 import FilterPanel from '@components/Search/FilterPanel';
 import QuickSearchTags from '@components/Search/QuickSearchTags';
+import AdvancedSearch from '@components/Search/AdvancedSearch';
+import SearchHighlight from '@components/Search/SearchHighlight';
 import AssetCard from '@components/Assets/AssetCard';
 import AssetList from '@components/Assets/AssetList';
 import AssetCardSkeleton from '@components/Loading/AssetCardSkeleton';
@@ -189,10 +191,17 @@ const DiscoveryPage: React.FC = () => {
 
       {/* 搜索区域 */}
       <div style={{ marginBottom: '24px' }}>
-        <SearchInput
+        <AdvancedSearch
           onSearch={handleSearch}
-          onAdvancedSearch={handleAdvancedSearch}
-          style={{ maxWidth: '600px', marginBottom: '16px' }}
+          onSuggestionSelect={handleSearch}
+          placeholder="搜索数据资产名称、描述、标签..."
+          showHistory={true}
+          showPopular={true}
+          showTrending={true}
+          categories={['数据表', '数据模型', '报表', '数据集', 'API']}
+          loading={loading}
+          autoFocus={false}
+          className="mb-4"
         />
         <QuickSearchTags onTagClick={handleSearch} />
       </div>
