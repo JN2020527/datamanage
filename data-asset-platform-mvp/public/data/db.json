@@ -1,8 +1,82 @@
 {
-  "assets": [],
+  "assets": [
+    {
+      "id": "asset-1",
+      "name": "用户行为表",
+      "type": "table",
+      "description": "记录用户在平台上的行为数据",
+      "database": "analytics",
+      "schema": "public",
+      "owner": {
+        "id": "user-1",
+        "name": "张三",
+        "department": "数据团队"
+      },
+      "tags": ["用户", "行为", "分析"],
+      "qualityScore": 85,
+      "accessCount": 1205,
+      "updateFrequency": "daily",
+      "lastUpdated": "2024-01-05 09:30:00",
+      "createdAt": "2023-06-01 10:00:00"
+    }
+  ],
   "fields": [],
   "lineage": [],
-  "quality": [],
+  "quality": [
+    {
+      "id": "quality-1",
+      "assetId": "asset-1",
+      "overallScore": 85,
+      "dimensionScores": {
+        "completeness": 90,
+        "accuracy": 88,
+        "consistency": 82,
+        "timeliness": 80
+      },
+      "ruleResults": [
+        {
+          "ruleId": "rule-1",
+          "ruleName": "字段完整性检查",
+          "dimension": "completeness",
+          "status": "passed",
+          "score": 95,
+          "description": "检查所有必填字段是否完整"
+        },
+        {
+          "ruleId": "rule-2", 
+          "ruleName": "数据格式验证",
+          "dimension": "accuracy",
+          "status": "passed",
+          "score": 88,
+          "description": "验证字段格式是否符合规范"
+        },
+        {
+          "ruleId": "rule-3",
+          "ruleName": "重复数据检查",
+          "dimension": "consistency", 
+          "status": "warning",
+          "score": 75,
+          "description": "检查是否存在重复记录"
+        }
+      ],
+      "issues": [
+        {
+          "severity": "medium",
+          "description": "发现3条重复记录",
+          "affectedFields": ["user_id", "email"],
+          "suggestion": "建议清理重复数据并添加唯一约束"
+        }
+      ],
+      "trend": [
+        { "date": "2024-01-01", "score": 82 },
+        { "date": "2024-01-02", "score": 83 },
+        { "date": "2024-01-03", "score": 85 },
+        { "date": "2024-01-04", "score": 84 },
+        { "date": "2024-01-05", "score": 85 }
+      ],
+      "lastUpdated": "2024-01-05 10:30:00"
+    }
+  ],
   "impactAnalysis": [],
   "users": [],
   "activities": [],

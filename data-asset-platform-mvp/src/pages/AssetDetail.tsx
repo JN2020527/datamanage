@@ -1,25 +1,26 @@
 import { useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
-import { Card, Tabs, Descriptions, Tag, Space, Table } from 'antd'
+import { Card, Tabs, Descriptions, Tag, Space, Table, Button } from 'antd'
+import { FileTextOutlined } from '@ant-design/icons'
 import { getAssetDetail, getAssetFields, getAssetLineage, getAssetQuality } from '@/utils/api'
 import LineageGraph from '@/components/LineageGraph'
 import QualityBadge from '@/components/QualityBadge'
 
 export default function AssetDetailPage() {
-  const { id = '' } = useParams()
+  const { assetId = '' } = useParams()
   const [detail, setDetail] = useState<any>()
   const [fields, setFields] = useState<any[]>([])
   const [lineage, setLineage] = useState<{ nodes: any[]; edges: any[] }>({ nodes: [], edges: [] })
   const [quality, setQuality] = useState<any>()
 
   useEffect(() => {
-    if (!id) return
+    if (!assetId) return
     ;(async () => {
       const [d, f, l, q] = await Promise.all([
-        getAssetDetail(id),
-        getAssetFields(id),
-        getAssetLineage(id, { direction: 'both', depth: 3 }),
-        getAssetQuality(id),
+        getAssetDetail(assetId),
+        getAssetFields(assetId),
+        getAssetLineage(assetId, { direction: 'both', depth: 3 }),
+        getAssetQuality(assetId),
       ])
       setDetail(d.data.data)
       setFields(Array.isArray(f.data.data) ? f.data.data : [])
@@ -27,11 +28,23 @@ export default function AssetDetailPage() {
       setLineage({ nodes: lineageData?.nodes ?? [], edges: lineageData?.edges ?? [] })
       setQuality(q.data.data)
     })()
-  }, [id])
+  }, [assetId])
 
   return (
     <Space direction="vertical" style={{ width: '100%' }} size={16}>
-      <Card title={<Space>{detail?.name}<QualityBadge score={detail?.qualityScore ?? 0} /></Space>} extra={<Link to="/discovery">返回</Link>}>
+      <Card 
+        title={<Space>{detail?.name}<QualityBadge score={detail?.qualityScore ?? 0} /></Space>} 
+        extra={
+          <Space>
+            <Link to={`/assets/${assetId}/quality`}>
+              <Button type="primary" icon={<FileTextOutlined />}>
+                质量报告
+              </Button>
+            </Link>
+            <Link to="/discovery">返回</Link>
+          </Space>
+        }
+      >
         <Descriptions column={3}>
           <Descriptions.Item label="类型">{detail?.type}</Descriptions.Item>
           <Descriptions.Item label="库/Schema">{detail?.database}/{detail?.schema}</Descriptions.Item>

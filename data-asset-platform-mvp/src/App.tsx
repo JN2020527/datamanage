@@ -4,6 +4,7 @@ import HomePage from '@/pages/Home'
 import DiscoveryPage from '@/pages/Discovery'
 import AssetDetailPage from '@/pages/AssetDetail'
 import SystemUsersPage from '@/pages/SystemUsers'
+import QualityReportPage from '@/pages/QualityReport'
 import './App.css'
 
 
@@ -14,7 +15,8 @@ export default function App() {
       <Route element={<AppLayout />}>
         <Route path="/" element={<HomePage />} />
         <Route path="/discovery" element={<DiscoveryPage />} />
-        <Route path="/assets/:id" element={<AssetDetailPage />} />
+        <Route path="/assets/:assetId" element={<AssetDetailPage />} />
+        <Route path="/assets/:assetId/quality" element={<QualityReportPage />} />
         <Route path="/system/users" element={<SystemUsersPage />} />
       </Route>
     </Routes>
