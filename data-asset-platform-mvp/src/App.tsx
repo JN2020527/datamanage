@@ -1,4 +1,5 @@
-import { Routes, Route, Link } from 'react-router-dom'
+import { Routes, Route } from 'react-router-dom'
+import AppLayout from '@/components/Layout'
 import './App.css'
 
 function Home() {
@@ -15,17 +16,12 @@ function SystemUsers() {
 
 export default function App() {
   return (
-    <div>
-      <nav style={{ display: 'flex', gap: 12, padding: 12 }}>
-        <Link to="/">首页</Link>
-        <Link to="/discovery">资产发现</Link>
-        <Link to="/system/users">系统-用户</Link>
-      </nav>
-      <Routes>
+    <Routes>
+      <Route element={<AppLayout />}>
         <Route path="/" element={<Home />} />
         <Route path="/discovery" element={<Discovery />} />
         <Route path="/system/users" element={<SystemUsers />} />
-      </Routes>
-    </div>
+      </Route>
+    </Routes>
   )
 }
