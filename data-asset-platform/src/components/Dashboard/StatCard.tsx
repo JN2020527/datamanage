@@ -30,7 +30,7 @@ const StatCard: React.FC<StatCardProps> = ({
   return (
     <Card
       className="stat-card"
-      bodyStyle={{ padding: '24px' }}
+      styles={{ body: { padding: '24px' } }}
       onClick={onClick}
       style={{ cursor: onClick ? 'pointer' : 'default' }}
     >

@@ -136,10 +136,10 @@ const AnalysisPage: React.FC = () => {
   };
 
   const generateCSV = (data: any[], columns: any[]) => {
-    const headers = columns.map(col => col.name).join(',');
-    const rows = data.map(row => 
-      columns.map(col => row[col.key] || '').join(',')
-    ).join('\n');
+    const headers = columns?.map(col => col.name).join(',') || '';
+    const rows = data?.map(row => 
+      columns?.map(col => row[col.key] || '').join(',')
+    ).join('\n') || '';
     return `${headers}\n${rows}`;
   };
 
@@ -174,9 +174,10 @@ const AnalysisPage: React.FC = () => {
     if (loading) {
       return (
         <Card>
-          <div style={{ textAlign: 'center', padding: '60px' }}>
-            <Spin size="large" tip="加载分析数据中..." />
-          </div>
+          <Spin size="large" tip="加载分析数据中..." spinning={true}>
+            <div style={{ textAlign: 'center', padding: '60px', minHeight: '200px' }}>
+            </div>
+          </Spin>
         </Card>
       );
     }
@@ -230,14 +231,14 @@ const AnalysisPage: React.FC = () => {
                 showSearch
                 optionFilterProp="children"
               >
-                {assets.map(asset => (
+                {assets?.map(asset => (
                   <Select.Option key={asset.id} value={asset.id}>
                     <Space>
                       <FileTextOutlined />
                       {asset.name}
                     </Space>
                   </Select.Option>
-                ))}
+                )) || []}
               </Select>
               {selectedAsset && (
                 <>

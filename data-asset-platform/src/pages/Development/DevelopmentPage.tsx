@@ -350,7 +350,7 @@ const DevelopmentPage: React.FC = () => {
             <Card>
               <Statistic
                 title="我的资产"
-                value={assets.length}
+                value={(assets || []).length}
                 prefix={<FileTextOutlined />}
               />
             </Card>
@@ -359,7 +359,7 @@ const DevelopmentPage: React.FC = () => {
             <Card>
               <Statistic
                 title="草稿资产"
-                value={assets.filter(a => a.qualityScore < 60).length}
+                value={(assets || []).filter(a => a.qualityScore < 60).length}
                 valueStyle={{ color: '#faad14' }}
                 prefix={<EditOutlined />}
               />
@@ -369,7 +369,7 @@ const DevelopmentPage: React.FC = () => {
             <Card>
               <Statistic
                 title="已发布"
-                value={assets.filter(a => a.qualityScore >= 80).length}
+                value={(assets || []).filter(a => a.qualityScore >= 80).length}
                 valueStyle={{ color: '#52c41a' }}
                 prefix={<EyeOutlined />}
               />
@@ -379,7 +379,7 @@ const DevelopmentPage: React.FC = () => {
             <Card>
               <Statistic
                 title="平均质量评分"
-                value={assets.length > 0 ? Math.round(assets.reduce((sum, a) => sum + a.qualityScore, 0) / assets.length) : 0}
+                value={(assets || []).length > 0 ? Math.round((assets || []).reduce((sum, a) => sum + a.qualityScore, 0) / (assets || []).length) : 0}
                 suffix="分"
                 valueStyle={{ color: '#1890ff' }}
               />
@@ -448,7 +448,7 @@ const DevelopmentPage: React.FC = () => {
         footer={null}
         width="90%"
         style={{ top: 20 }}
-        destroyOnClose
+        destroyOnHidden
       >
         <AssetForm
           initialData={editingAsset}

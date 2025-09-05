@@ -99,9 +99,10 @@ const AssetDetailPage: React.FC = () => {
 
   if (loading) {
     return (
-      <div style={{ textAlign: 'center', padding: '100px' }}>
-        <Spin size="large" tip="加载中..." />
-      </div>
+      <Spin size="large" tip="加载中..." spinning={true}>
+        <div style={{ textAlign: 'center', padding: '100px', minHeight: '400px' }}>
+        </div>
+      </Spin>
     );
   }
 
@@ -184,11 +185,11 @@ const AssetDetailPage: React.FC = () => {
             </Paragraph>
 
             <Space wrap>
-              {asset.tags.map((tag, index) => (
+              {asset.tags?.map((tag, index) => (
                 <Tag key={index} style={{ marginBottom: '4px' }}>
                   {tag}
                 </Tag>
-              ))}
+              )) || []}
             </Space>
           </Col>
 
@@ -385,7 +386,7 @@ const AssetDetailPage: React.FC = () => {
                     </Card>
                   </div>
                   <div>
-                    {comments.map((item) => (
+                    {comments?.map((item) => (
                       <CommentItem
                         key={item.id}
                         author={item.author}

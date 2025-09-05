@@ -326,7 +326,7 @@ const EnhancedFilter: React.FC<EnhancedFilterProps> = ({
           </Space>
         </div>
       }
-      bodyStyle={{ padding: '16px' }}
+      styles={{ body: { padding: '16px' } }}
     >
       {/* 已保存的过滤器 */}
       {savedFilters.length > 0 && (

@@ -290,7 +290,7 @@ const SystemPage: React.FC = () => {
         <Col span={12}>
           <Card title="系统告警" size="small">
             <Space direction="vertical" style={{ width: '100%' }}>
-              {systemAlerts.map(alert => (
+              {systemAlerts?.map(alert => (
                 <Alert
                   key={alert.id}
                   message={alert.message}

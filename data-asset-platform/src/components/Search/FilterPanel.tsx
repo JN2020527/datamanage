@@ -136,7 +136,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
       }
       size="small"
       style={{ height: 'fit-content' }}
-      bodyStyle={{ padding: '16px' }}
+      styles={{ body: { padding: '16px' } }}
     >
       {/* 资产类型 */}
       <div style={{ marginBottom: '20px' }}>

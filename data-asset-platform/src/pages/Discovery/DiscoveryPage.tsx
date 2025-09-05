@@ -271,9 +271,10 @@ const DiscoveryPage: React.FC = () => {
                 ))}
               </Row>
             ) : (
-              <div style={{ textAlign: 'center', padding: '60px' }}>
-                <Spin size="large" tip="加载中..." />
-              </div>
+              <Spin size="large" tip="加载中..." spinning={true}>
+                <div style={{ textAlign: 'center', padding: '60px', minHeight: '200px' }}>
+                </div>
+              </Spin>
             )
           ) : assets.length === 0 ? (
             <div style={{ textAlign: 'center', padding: '60px' }}>
@@ -289,11 +290,11 @@ const DiscoveryPage: React.FC = () => {
           ) : viewMode === 'card' ? (
             <>
               <Row gutter={[16, 16]}>
-                {assets.map((asset) => (
+                {assets?.map((asset) => (
                   <Col xs={24} sm={12} lg={8} xl={6} key={asset.id}>
                     <AssetCard asset={asset} />
                   </Col>
-                ))}
+                )) || []}
               </Row>
               
               {/* 卡片视图分页 */}

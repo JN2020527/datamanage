@@ -64,9 +64,10 @@ const HomePage: React.FC = () => {
 
   if (loading) {
     return (
-      <div style={{ padding: '100px', textAlign: 'center' }}>
-        <Spin size="large" tip="加载中..." />
-      </div>
+      <Spin size="large" tip="加载中..." spinning={true}>
+        <div style={{ padding: '100px', textAlign: 'center', minHeight: '400px' }}>
+        </div>
+      </Spin>
     );
   }
 

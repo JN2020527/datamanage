@@ -684,7 +684,7 @@ const UserManagement: React.FC = () => {
         onCancel={() => setModalVisible(false)}
         footer={null}
         width={800}
-        destroyOnClose
+        destroyOnHidden
       >
         <Form
           form={form}
@@ -869,7 +869,7 @@ const UserManagement: React.FC = () => {
         onCancel={() => setRoleModalVisible(false)}
         footer={null}
         width={600}
-        destroyOnClose
+        destroyOnHidden
       >
         <Form
           form={roleForm}
