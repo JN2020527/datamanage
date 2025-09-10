@@ -20,3 +20,30 @@
   background: rgba(255, 77, 79, 0.12) !important;
 }
 
+.catalog-no-padding-bottom .ant-layout-content,
+.ant-layout-content.catalog-no-padding-bottom,
+.page-content.catalog-no-padding-bottom {
+  padding-bottom: 0 !important;
+}
+
+.catalog-edit-badge {
+  background-color: #e6f0ff; /* 纯色浅蓝背景，更显眼 */
+  border: 1px solid #1677ff; /* 深色边框与主题色一致 */
+  border-radius: 10px;
+  padding: 2px 8px;
+  display: inline-flex;
+  align-items: center;
+  line-height: 1;
+  font-weight: 400 !important; /* 取消加粗 */
+}
+
+.catalog-edit-badge .ant-badge-status-dot {
+  background-color: #1677ff;
+}
+
+.catalog-edit-badge .ant-badge-status-text {
+  font-size: 11px; /* 再小一号 */
+  color: #1677ff !important;  /* 与主题色一致的蓝色 */
+  font-weight: 400 !important; /* 取消加粗 */
+}
+

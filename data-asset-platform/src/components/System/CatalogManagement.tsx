@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState, useLayoutEffect, useRef } from 'react';
 import {
   Card,
   Row,
@@ -17,6 +17,7 @@ import {
   Tooltip,
   Divider,
   App,
+  Badge,
 } from 'antd';
 import {
   PlusOutlined,
@@ -98,6 +99,8 @@ const CatalogManagement: React.FC = () => {
   const [editingKey, setEditingKey] = useState<string>('');
   const [editingValues, setEditingValues] = useState<{ title?: string; description?: string }>({});
   const [idSeq, setIdSeq] = useState<number>(1000);
+  const areaRef = useRef<HTMLDivElement>(null);
+  const [areaHeight, setAreaHeight] = useState<number>(0);
   // 生成自增ID（字符串）
   const getNextId = (): string => {
     const next = idSeq + 1;
@@ -106,6 +109,29 @@ const CatalogManagement: React.FC = () => {
   };
 
   const currentUser = '张三'; // TODO: 接入登录用户
+
+  useLayoutEffect(() => {
+    const compute = () => {
+      if (!areaRef.current) return;
+      const rect = areaRef.current.getBoundingClientRect();
+      const bottomGap = 0; // 与页面底部不要留缝隙
+      const space = Math.max(window.innerHeight - rect.top - bottomGap, 320);
+      setAreaHeight(space);
+    };
+    compute();
+    window.addEventListener('resize', compute);
+    return () => window.removeEventListener('resize', compute);
+  }, []);
+
+  useEffect(() => {
+    const content = document.querySelector('.ant-layout-content');
+    if (content) {
+      content.classList.add('catalog-no-padding-bottom');
+    }
+    return () => {
+      if (content) content.classList.remove('catalog-no-padding-bottom');
+    };
+  }, []);
 
   const flatList = useMemo(() => {
     const list: CatalogNode[] = [];
@@ -293,6 +319,27 @@ const CatalogManagement: React.FC = () => {
     setEditingValues({});
   };
 
+  // 退出编辑模式（清理未填写的新行）
+  const handleExitEdit = () => {
+    const clean = (nodes: CatalogNode[]): CatalogNode[] =>
+      nodes
+        .filter(n => !(n.isNew && !n.title))
+        .map(n => (n.children ? { ...n, children: clean(n.children) } : n));
+    setTreeData(prev => clean(prev));
+    setEditingKey('');
+    setEditingValues({});
+    setEditMode(false);
+    messageApi.info('已取消编辑');
+  };
+
+  // 发布并退出（模拟发布）
+  const handlePublishExit = () => {
+    setEditingKey('');
+    setEditingValues({});
+    setEditMode(false);
+    messageApi.success('已发布并退出（模拟）');
+  };
+
   return (
     <div>
       {/* 页面标题 */}
@@ -303,9 +350,17 @@ const CatalogManagement: React.FC = () => {
 
       <Row gutter={[16, 16]}>
         <Col span={24}>
+          <div ref={areaRef} style={{ height: areaHeight || undefined, display: 'flex', flexDirection: 'column' }}>
           <Card
             title={
-              <>目录结构</>
+              <Space>
+                目录结构
+                {editMode && (
+                  <span className="catalog-edit-badge">
+                    <Badge status="processing" text="编辑中" />
+                  </span>
+                )}
+              </Space>
             }
             extra={
               <Space wrap>
@@ -350,7 +405,10 @@ const CatalogManagement: React.FC = () => {
                 </Tooltip>
               </Space>
             }
+            style={{ height: '100%', display: 'flex', flexDirection: 'column' }}
+            bodyStyle={{ flex: 1, display: 'flex', flexDirection: 'column' }}
           >
+            <div className="catalog-scroll-container" style={{ flex: 1, overflow: 'auto' }}>
             <Table
               rowKey="key"
               size="small"
@@ -503,7 +561,18 @@ const CatalogManagement: React.FC = () => {
                 }));
               })(treeData)}
             />
+            </div>
+            {editMode && (
+              <>
+                <Divider style={{ margin: '12px 0' }} />
+                <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 12 }}>
+                  <Button onClick={handleExitEdit}>取消编辑</Button>
+                  <Button type="primary" onClick={handlePublishExit}>发布并退出</Button>
+                </div>
+              </>
+            )}
           </Card>
+          </div>
         </Col>
       </Row>
 
