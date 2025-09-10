@@ -28,12 +28,14 @@ import {
   CheckCircleOutlined,
   ExclamationCircleOutlined,
   WarningOutlined,
+  FolderOpenOutlined,
 } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import UserManagement from '@components/System/UserManagement';
 import RoleManagement from '@components/System/RoleManagement';
 import SystemSettings from '@components/System/SystemSettings';
 import OperationLogs from '@components/System/OperationLogs';
+import CatalogManagement from '@components/System/CatalogManagement';
 import { useNotification } from '@hooks/useNotification';
 
 const { Title, Text } = Typography;
@@ -111,6 +113,13 @@ const SystemPage: React.FC = () => {
 
   useEffect(() => {
     loadSystemStats();
+  }, []);
+
+  // 支持通过 URL 参数激活指定 Tab，如 /system?tab=catalog
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const tab = params.get('tab');
+    if (tab) setActiveTab(tab);
   }, []);
 
   const loadSystemStats = async () => {
@@ -363,6 +372,16 @@ const SystemPage: React.FC = () => {
               </Space>
             ),
             children: <RoleManagement />,
+          },
+          {
+            key: 'catalog',
+            label: (
+              <Space>
+                <FolderOpenOutlined />
+                目录管理
+              </Space>
+            ),
+            children: <CatalogManagement />,
           },
           {
             key: 'settings',

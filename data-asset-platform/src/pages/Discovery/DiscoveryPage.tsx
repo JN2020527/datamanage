@@ -40,7 +40,7 @@ const DiscoveryPage: React.FC = () => {
   const [assets, setAssets] = useState<Asset[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-  const [viewMode, setViewMode] = useState<ViewMode>('card');
+  const [viewMode, setViewMode] = useState<ViewMode>('list');
   const [sortField, setSortField] = useState<SortField>('updatedAt');
   const [sortOrder, setSortOrder] = useState<SortOrder>('desc');
   const [filter, setFilter] = useState<SearchFilter>({});
@@ -166,48 +166,28 @@ const DiscoveryPage: React.FC = () => {
 
   return (
     <div className="page-container">
-      {/* 页面标题 */}
-      <div className="page-header">
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <div>
-            <Title level={2} className="page-title">
-              资产发现
-            </Title>
-            <Text className="page-description">
-              搜索和浏览您的数据资产，发现有价值的数据
-            </Text>
-          </div>
-          <Space>
-            <Button
-              icon={<ReloadOutlined />}
-              loading={refreshing}
-              onClick={handleRefresh}
-            >
-              刷新
-            </Button>
-          </Space>
+
+      {/* 搜索区域（去掉标题描述，居中放大） */}
+      <div style={{ marginBottom: 24, display: 'flex', justifyContent: 'center' }}>
+        <div style={{ width: '100%', maxWidth: 960 }}>
+          <AdvancedSearch
+            onSearch={handleSearch}
+            onSuggestionSelect={handleSearch}
+            placeholder="搜索数据资产名称、描述、标签..."
+            showHistory={true}
+            showPopular={true}
+            showTrending={true}
+            categories={['数据表', '数据模型', '报表', '数据集', 'API']}
+            loading={loading}
+            autoFocus={false}
+            className="mb-4"
+          />
+          <QuickSearchTags onTagClick={handleSearch} />
         </div>
       </div>
 
-      {/* 搜索区域 */}
-      <div style={{ marginBottom: '24px' }}>
-        <AdvancedSearch
-          onSearch={handleSearch}
-          onSuggestionSelect={handleSearch}
-          placeholder="搜索数据资产名称、描述、标签..."
-          showHistory={true}
-          showPopular={true}
-          showTrending={true}
-          categories={['数据表', '数据模型', '报表', '数据集', 'API']}
-          loading={loading}
-          autoFocus={false}
-          className="mb-4"
-        />
-        <QuickSearchTags onTagClick={handleSearch} />
-      </div>
-
       <Row gutter={[24, 24]}>
-        {/* 筛选面板 */}
+        {/* 内容区：左筛选 + 右列表 */}
         <Col xs={24} lg={6}>
           <FilterPanel
             filter={filter}
@@ -215,7 +195,6 @@ const DiscoveryPage: React.FC = () => {
           />
         </Col>
 
-        {/* 主内容区 */}
         <Col xs={24} lg={18}>
           {/* 工具栏 */}
           <div
@@ -242,39 +221,13 @@ const DiscoveryPage: React.FC = () => {
                 {renderSortButton('name', '名称')}
               </Space>
             </div>
-
-            <Space>
-              <Text>视图:</Text>
-              <Radio.Group
-                value={viewMode}
-                onChange={(e) => setViewMode(e.target.value)}
-                size="small"
-              >
-                <Radio.Button value="card">
-                  <AppstoreOutlined /> 卡片
-                </Radio.Button>
-                <Radio.Button value="list">
-                  <BarsOutlined /> 列表
-                </Radio.Button>
-              </Radio.Group>
-            </Space>
           </div>
 
-          {/* 资产展示区域 */}
+          {/* 资产展示区域（列表优先） */}
           {loading ? (
-            viewMode === 'card' ? (
-              <Row gutter={[16, 16]}>
-                {Array.from({ length: 8 }, (_, index) => (
-                  <Col xs={24} sm={12} lg={8} xl={6} key={index}>
-                    <AssetCardSkeleton count={1} />
-                  </Col>
-                ))}
-              </Row>
-            ) : (
-              <div style={{ textAlign: 'center', padding: '60px' }}>
-                <Spin size="large" tip="加载中..." />
-              </div>
-            )
+            <div style={{ textAlign: 'center', padding: '60px' }}>
+              <Spin size="large" tip="加载中..." />
+            </div>
           ) : assets.length === 0 ? (
             <div style={{ textAlign: 'center', padding: '60px' }}>
               <Empty
@@ -286,29 +239,6 @@ const DiscoveryPage: React.FC = () => {
                 </Button>
               </Empty>
             </div>
-          ) : viewMode === 'card' ? (
-            <>
-              <Row gutter={[16, 16]}>
-                {assets.map((asset) => (
-                  <Col xs={24} sm={12} lg={8} xl={6} key={asset.id}>
-                    <AssetCard asset={asset} />
-                  </Col>
-                ))}
-              </Row>
-              
-              {/* 卡片视图分页 */}
-              <div style={{ textAlign: 'center', marginTop: '32px' }}>
-                <Button
-                  type="primary"
-                  size="large"
-                  onClick={() => setPagination(prev => ({ ...prev, pageSize: prev.pageSize + 20 }))}
-                  loading={loading}
-                  disabled={assets.length >= total}
-                >
-                  {assets.length >= total ? '已加载全部' : '加载更多'}
-                </Button>
-              </div>
-            </>
           ) : (
             <AssetList
               assets={assets}

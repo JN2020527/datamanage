@@ -8,6 +8,7 @@ import DevelopmentPage from '@pages/Development/DevelopmentPage';
 import GovernancePage from '@pages/Governance/GovernancePage';
 import AnalysisPage from '@pages/Analysis/AnalysisPage';
 import SystemPage from '@pages/System/SystemPage';
+import CatalogManagement from '@components/System/CatalogManagement';
 
 // 创建路由配置
 export const router = createBrowserRouter([
@@ -157,6 +158,10 @@ export const router = createBrowserRouter([
           {
             index: true,
             element: <SystemPage />,
+          },
+          {
+            path: 'catalog',
+            element: <CatalogManagement />,
           },
           {
             path: 'users',

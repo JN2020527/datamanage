@@ -41,7 +41,7 @@ const mainMenuItems: MenuItem[] = [
   },
   {
     key: 'discovery',
-    label: '资产发现',
+    label: '资产目录',
     icon: <SearchOutlined />,
     path: '/discovery',
   },
@@ -74,18 +74,7 @@ const mainMenuItems: MenuItem[] = [
 // 侧边栏菜单配置
 const sideMenuConfig: Record<string, MenuItem[]> = {
   home: [],
-  discovery: [
-    {
-      key: 'discovery-search',
-      label: '资产搜索',
-      path: '/discovery',
-    },
-    {
-      key: 'discovery-category',
-      label: '分类浏览',
-      path: '/discovery/category',
-    },
-  ],
+  discovery: [], // 资产目录页取消侧边栏
   development: [
     {
       key: 'development-my',
@@ -175,6 +164,11 @@ const sideMenuConfig: Record<string, MenuItem[]> = {
     },
   ],
   system: [
+    {
+      key: 'system-catalog-top',
+      label: '目录管理',
+      path: '/system/catalog',
+    },
     {
       key: 'system-user',
       label: '用户管理',
@@ -467,18 +461,7 @@ const MainLayout: React.FC = () => {
 
         {/* 主内容区 */}
         <Layout className="layout-content">
-          {/* 面包屑导航 */}
-          <div className="breadcrumb-container">
-            <Breadcrumb
-              items={breadcrumbs.map(crumb => ({
-                title: crumb.path ? (
-                  <a onClick={() => navigate(crumb.path!)}>{crumb.title}</a>
-                ) : (
-                  crumb.title
-                ),
-              }))}
-            />
-          </div>
+          {/* 面包屑已移除 */}
 
           {/* 页面内容 */}
           <Content className="page-content">

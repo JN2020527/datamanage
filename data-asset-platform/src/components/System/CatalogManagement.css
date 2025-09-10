@@ -1,0 +1,22 @@
+.catalog-action-btn {
+  border: none !important;
+  box-shadow: none !important;
+  background: transparent;
+}
+
+.catalog-action-btn:hover {
+  background: rgba(0, 0, 0, 0.04) !important;
+}
+
+.catalog-action-btn:active {
+  background: rgba(0, 0, 0, 0.06) !important;
+}
+
+.catalog-action-btn.ant-btn-dangerous:hover {
+  background: rgba(255, 77, 79, 0.08) !important;
+}
+
+.catalog-action-btn.ant-btn-dangerous:active {
+  background: rgba(255, 77, 79, 0.12) !important;
+}
+
