@@ -54,6 +54,9 @@ interface CatalogNode {
   isNew?: boolean; // 是否新建未保存
 }
 
+// 本地持久化键名
+const STORAGE_KEY = 'dap_catalog_tree_v1';
+
 const initialTree: CatalogNode[] = [
   {
     key: 'root-1',
@@ -132,6 +135,25 @@ const CatalogManagement: React.FC = () => {
       if (content) content.classList.remove('catalog-no-padding-bottom');
     };
   }, []);
+
+  // 初始化：读取本地持久化
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw) as { tree: CatalogNode[]; idSeq?: number };
+        if (parsed?.tree?.length) setTreeData(parsed.tree);
+        if (typeof parsed?.idSeq === 'number') setIdSeq(parsed.idSeq);
+      }
+    } catch {}
+  }, []);
+
+  const persistToLocal = (tree: CatalogNode[], id: number) => {
+    try {
+      const payload = JSON.stringify({ tree, idSeq: id });
+      localStorage.setItem(STORAGE_KEY, payload);
+    } catch {}
+  };
 
   const flatList = useMemo(() => {
     const list: CatalogNode[] = [];
@@ -337,7 +359,9 @@ const CatalogManagement: React.FC = () => {
     setEditingKey('');
     setEditingValues({});
     setEditMode(false);
-    messageApi.success('已发布并退出（模拟）');
+    // 持久化到本地
+    persistToLocal(treeData, idSeq);
+    messageApi.success('已发布并退出（已保存到本地）');
   };
 
   return (
@@ -410,6 +434,7 @@ const CatalogManagement: React.FC = () => {
           >
             <div className="catalog-scroll-container" style={{ flex: 1, overflow: 'auto' }}>
             <Table
+              className="catalog-table"
               rowKey="key"
               size="small"
               pagination={false}
@@ -434,7 +459,7 @@ const CatalogManagement: React.FC = () => {
                         placeholder="请输入目录名称"
                         onChange={(e) => setEditingValues(v => ({ ...v, title: e.target.value }))}
                         onPressEnter={handleSaveInline}
-                        style={{ width: '100%' }}
+                        style={{ width: '100%', height: 24, lineHeight: '24px' }}
                       />
                     </div>
                   ) : (
@@ -451,7 +476,7 @@ const CatalogManagement: React.FC = () => {
                         placeholder="请输入目录描述"
                         onChange={(e) => setEditingValues(v => ({ ...v, description: e.target.value }))}
                         onPressEnter={handleSaveInline}
-                        style={{ width: '100%' }}
+                        style={{ width: '100%', height: 24, lineHeight: '24px' }}
                       />
                     </div>
                   ) : (

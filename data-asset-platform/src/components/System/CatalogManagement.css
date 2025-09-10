@@ -47,3 +47,17 @@
   font-weight: 400 !important; /* 取消加粗 */
 }
 
+/* 保持表格行高一致（编辑态与非编辑态） */
+.catalog-table .ant-table-tbody > tr > td {
+  padding-top: 8px !important;
+  padding-bottom: 8px !important;
+}
+
+.catalog-table .ant-table-cell {
+  line-height: 24px !important;
+}
+
+.catalog-table input.ant-input {
+  height: 24px;
+}
+
