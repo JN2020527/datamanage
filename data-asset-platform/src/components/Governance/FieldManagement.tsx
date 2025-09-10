@@ -17,6 +17,7 @@ import {
   Col,
   Switch,
   Divider,
+  Checkbox,
 } from 'antd';
 import {
   PlusOutlined,
@@ -25,6 +26,7 @@ import {
   EyeOutlined,
   DatabaseOutlined,
   SearchOutlined,
+  SettingOutlined,
 } from '@ant-design/icons';
 import { useNotification } from '@hooks/useNotification';
 
@@ -62,6 +64,18 @@ const FieldManagement: React.FC = () => {
   const [searchText, setSearchText] = useState('');
   const areaRef = useRef<HTMLDivElement>(null);
   const [areaHeight, setAreaHeight] = useState<number>(0);
+  const [isColumnSettingVisible, setIsColumnSettingVisible] = useState(false);
+  
+  // 表头配置状态
+  const [visibleColumns, setVisibleColumns] = useState<string[]>([
+    'fieldName',
+    'chineseName', 
+    'dataType',
+    'description',
+    'category',
+    'status',
+    'action'
+  ]);
 
   // 模拟数据
   const mockFields: Field[] = [
@@ -259,26 +273,27 @@ const FieldManagement: React.FC = () => {
     item.dataType.toLowerCase().includes(searchText.toLowerCase())
   );
 
-  const columns = [
+  // 所有可用的列配置
+  const allColumns = [
     {
+      key: 'fieldName',
       title: '字段名称',
       dataIndex: 'fieldName',
-      key: 'fieldName',
       width: 140,
       render: (text: string) => (
         <Text code strong>{text}</Text>
       ),
     },
     {
+      key: 'chineseName',
       title: '中文名称',
       dataIndex: 'chineseName',
-      key: 'chineseName',
       width: 120,
     },
     {
+      key: 'dataType',
       title: '数据类型',
       dataIndex: 'dataType',
-      key: 'dataType',
       width: 100,
       render: (text: string, record: Field) => (
         <Text>
@@ -288,9 +303,9 @@ const FieldManagement: React.FC = () => {
       ),
     },
     {
+      key: 'description',
       title: '描述',
       dataIndex: 'description',
-      key: 'description',
       width: 200,
       ellipsis: true,
       render: (text: string) => (
@@ -300,18 +315,18 @@ const FieldManagement: React.FC = () => {
       ),
     },
     {
+      key: 'category',
       title: '分类',
       dataIndex: 'category',
-      key: 'category',
       width: 100,
       render: (category: string) => (
         <Tag color="blue">{category}</Tag>
       ),
     },
     {
+      key: 'status',
       title: '状态',
       dataIndex: 'status',
-      key: 'status',
       width: 80,
       render: (status: string) => (
         <Tag color={status === 'active' ? 'green' : 'red'}>
@@ -320,9 +335,9 @@ const FieldManagement: React.FC = () => {
       ),
     },
     {
+      key: 'wordRoots',
       title: '组成词根',
       dataIndex: 'wordRoots',
-      key: 'wordRoots',
       width: 150,
       render: (wordRoots: string[]) => (
         <Space wrap>
@@ -335,9 +350,9 @@ const FieldManagement: React.FC = () => {
       ),
     },
     {
+      key: 'usageCount',
       title: '使用次数',
       dataIndex: 'usageCount',
-      key: 'usageCount',
       width: 90,
       sorter: (a: Field, b: Field) => a.usageCount - b.usageCount,
       render: (count: number) => (
@@ -347,22 +362,22 @@ const FieldManagement: React.FC = () => {
       ),
     },
     {
+      key: 'creator',
       title: '创建人',
       dataIndex: 'creator',
-      key: 'creator',
       width: 100,
     },
     {
+      key: 'updateTime',
       title: '更新时间',
       dataIndex: 'updateTime',
-      key: 'updateTime',
       width: 140,
       sorter: (a: Field, b: Field) => 
         new Date(a.updateTime).getTime() - new Date(b.updateTime).getTime(),
     },
     {
-      title: '操作',
       key: 'action',
+      title: '操作',
       width: 160,
       fixed: 'right' as const,
       render: (_: any, record: Field) => (
@@ -408,6 +423,32 @@ const FieldManagement: React.FC = () => {
     },
   ];
 
+  // 根据可见列配置过滤列
+  const columns = allColumns.filter(col => visibleColumns.includes(col.key));
+
+  // 列配置选项
+  const columnOptions = [
+    { label: '字段名称', value: 'fieldName' },
+    { label: '中文名称', value: 'chineseName' },
+    { label: '数据类型', value: 'dataType' },
+    { label: '描述', value: 'description' },
+    { label: '分类', value: 'category' },
+    { label: '状态', value: 'status' },
+    { label: '组成词根', value: 'wordRoots' },
+    { label: '使用次数', value: 'usageCount' },
+    { label: '创建人', value: 'creator' },
+    { label: '更新时间', value: 'updateTime' },
+    { label: '操作', value: 'action' },
+  ];
+
+  const handleColumnChange = (selectedColumns: string[]) => {
+    // 确保操作列始终显示
+    const columnsWithAction = selectedColumns.includes('action') 
+      ? selectedColumns 
+      : [...selectedColumns, 'action'];
+    setVisibleColumns(columnsWithAction);
+  };
+
   return (
     <div>
       {/* 页面标题 */}
@@ -444,6 +485,12 @@ const FieldManagement: React.FC = () => {
                     onChange={(e) => setSearchText(e.target.value)}
                     allowClear
                   />
+                  <Tooltip title="列设置">
+                    <Button 
+                      icon={<SettingOutlined />}
+                      onClick={() => setIsColumnSettingVisible(true)}
+                    />
+                  </Tooltip>
                   <Button 
                     type="primary" 
                     icon={<PlusOutlined />}
@@ -774,6 +821,30 @@ const FieldManagement: React.FC = () => {
             </Row>
           </div>
         )}
+      </Modal>
+
+      {/* 列设置模态框 */}
+      <Modal
+        title="列设置"
+        open={isColumnSettingVisible}
+        onOk={() => setIsColumnSettingVisible(false)}
+        onCancel={() => setIsColumnSettingVisible(false)}
+        width={400}
+        okText="确定"
+        cancelText="取消"
+      >
+        <div style={{ marginBottom: 16 }}>
+          <Text type="secondary">请选择要显示的列：</Text>
+        </div>
+        <Checkbox.Group
+          options={columnOptions}
+          value={visibleColumns}
+          onChange={handleColumnChange}
+          style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}
+        />
+        <div style={{ marginTop: 16, color: '#666', fontSize: '12px' }}>
+          注：操作列将始终显示
+        </div>
       </Modal>
     </div>
   );
