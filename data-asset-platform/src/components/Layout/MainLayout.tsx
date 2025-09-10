@@ -111,6 +111,7 @@ const sideMenuConfig: Record<string, MenuItem[]> = {
         { key: 'governance-dictionary', label: '数据字典', path: '/governance/dictionary' },
         { key: 'governance-glossary', label: '业务术语', path: '/governance/glossary' },
         { key: 'governance-wordroot', label: '词根管理', path: '/governance/wordroot' },
+        { key: 'governance-field', label: '字段管理', path: '/governance/field' },
       ],
     },
     {

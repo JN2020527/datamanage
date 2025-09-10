@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useLayoutEffect } from 'react';
 import {
   Card,
   Table,
@@ -18,6 +18,7 @@ import {
   Tabs,
   Switch,
   DatePicker,
+  Divider,
 } from 'antd';
 import {
   PlusOutlined,
@@ -58,6 +59,8 @@ const WordRootManagement: React.FC = () => {
   const [viewingWordRoot, setViewingWordRoot] = useState<WordRoot | null>(null);
   const [form] = Form.useForm();
   const [searchText, setSearchText] = useState('');
+  const areaRef = useRef<HTMLDivElement>(null);
+  const [areaHeight, setAreaHeight] = useState<number>(0);
 
   // 模拟数据
   const mockWordRoots: WordRoot[] = [
@@ -115,6 +118,19 @@ const WordRootManagement: React.FC = () => {
     },
   ];
 
+  useLayoutEffect(() => {
+    const compute = () => {
+      if (!areaRef.current) return;
+      const rect = areaRef.current.getBoundingClientRect();
+      const bottomGap = 0; // 与页面底部不要留缝隙
+      const space = Math.max(window.innerHeight - rect.top - bottomGap, 320);
+      setAreaHeight(space);
+    };
+    compute();
+    window.addEventListener('resize', compute);
+    return () => window.removeEventListener('resize', compute);
+  }, []);
+
   useEffect(() => {
     fetchWordRoots();
   }, []);
@@ -142,7 +158,6 @@ const WordRootManagement: React.FC = () => {
     setEditingWordRoot(record);
     form.setFieldsValue({
       ...record,
-      examples: record.examples.join('\n'),
     });
     setIsModalVisible(true);
   };
@@ -166,11 +181,10 @@ const WordRootManagement: React.FC = () => {
   const handleSubmit = async () => {
     try {
       const values = await form.validateFields();
-      const examples = values.examples.split('\n').filter((item: string) => item.trim());
       
       const wordRootData: WordRoot = {
         ...values,
-        examples,
+        examples: editingWordRoot?.examples || [], // 保留原有的examples或使用空数组
         id: editingWordRoot?.id || Date.now().toString(),
         creator: editingWordRoot?.creator || '当前用户',
         createTime: editingWordRoot?.createTime || new Date().toLocaleString(),
@@ -221,23 +235,9 @@ const WordRootManagement: React.FC = () => {
       title: '词根名称',
       dataIndex: 'rootName',
       key: 'rootName',
-      width: 120,
-      render: (text: string, record: WordRoot) => (
-        <Space>
-          <Text code strong>{text}</Text>
-          <Tag color={record.status === 'active' ? 'green' : 'red'}>
-            {record.status === 'active' ? '启用' : '禁用'}
-          </Tag>
-        </Space>
-      ),
-    },
-    {
-      title: '分类',
-      dataIndex: 'category',
-      key: 'category',
       width: 100,
-      render: (category: string) => (
-        <Tag color="blue">{category}</Tag>
+      render: (text: string) => (
+        <Text code strong>{text}</Text>
       ),
     },
     {
@@ -250,36 +250,39 @@ const WordRootManagement: React.FC = () => {
       title: '描述',
       dataIndex: 'description',
       key: 'description',
+      width: 260,
       ellipsis: true,
       render: (text: string) => (
         <Tooltip title={text}>
-          <Text ellipsis style={{ maxWidth: 200 }}>{text}</Text>
+          <Text ellipsis>{text}</Text>
         </Tooltip>
       ),
     },
     {
-      title: '使用示例',
-      dataIndex: 'examples',
-      key: 'examples',
-      width: 200,
-      render: (examples: string[]) => (
-        <Space wrap>
-          {examples.slice(0, 2).map((example, index) => (
-            <Tag key={index} color="geekblue" style={{ fontSize: '11px' }}>
-              {example}
-            </Tag>
-          ))}
-          {examples.length > 2 && (
-            <Tag color="default">+{examples.length - 2}</Tag>
-          )}
-        </Space>
+      title: '分类',
+      dataIndex: 'category',
+      key: 'category',
+      width: 120,
+      render: (category: string) => (
+        <Tag color="blue">{category}</Tag>
+      ),
+    },
+    {
+      title: '状态',
+      dataIndex: 'status',
+      key: 'status',
+      width: 80,
+      render: (status: string) => (
+        <Tag color={status === 'active' ? 'green' : 'red'}>
+          {status === 'active' ? '启用' : '禁用'}
+        </Tag>
       ),
     },
     {
       title: '使用次数',
       dataIndex: 'usageCount',
       key: 'usageCount',
-      width: 80,
+      width: 90,
       sorter: (a: WordRoot, b: WordRoot) => a.usageCount - b.usageCount,
       render: (count: number) => (
         <Text strong style={{ color: count > 100 ? '#52c41a' : count > 50 ? '#faad14' : '#8c8c8c' }}>
@@ -297,14 +300,14 @@ const WordRootManagement: React.FC = () => {
       title: '更新时间',
       dataIndex: 'updateTime',
       key: 'updateTime',
-      width: 150,
+      width: 140,
       sorter: (a: WordRoot, b: WordRoot) => 
         new Date(a.updateTime).getTime() - new Date(b.updateTime).getTime(),
     },
     {
       title: '操作',
       key: 'action',
-      width: 180,
+      width: 160,
       fixed: 'right' as const,
       render: (_: any, record: WordRoot) => (
         <Space size="small">
@@ -350,48 +353,60 @@ const WordRootManagement: React.FC = () => {
   ];
 
   return (
-    <div style={{ padding: '24px' }}>
-      <Card>
-        <div style={{ marginBottom: 16 }}>
-          <Row justify="space-between" align="middle">
-            <Col>
-              <Space>
-                <Title level={4} style={{ margin: 0 }}>
-                  <FileTextOutlined /> 词根管理
-                </Title>
-                <Text type="secondary">
-                  管理数据命名中使用的词根，确保命名标准化
-                </Text>
-              </Space>
-            </Col>
-            <Col>
-              <Space>
-                <Input
-                  placeholder="搜索词根名称、含义或描述"
-                  prefix={<SearchOutlined />}
-                  style={{ width: 250 }}
-                  value={searchText}
-                  onChange={(e) => setSearchText(e.target.value)}
-                  allowClear
-                />
-                <Button 
-                  type="primary" 
-                  icon={<PlusOutlined />}
-                  onClick={handleAdd}
-                >
-                  新增词根
-                </Button>
-              </Space>
-            </Col>
-          </Row>
-        </div>
+    <div>
+      {/* 页面标题 */}
+      <div style={{ marginBottom: 12 }}>
+        <Title level={3} style={{ margin: 0, fontWeight: 600 }}>
+          <FileTextOutlined style={{ marginRight: 8 }} />
+          词根管理
+        </Title>
+      </div>
+      <div style={{ marginBottom: 20, color: 'rgba(0, 0, 0, 0.65)' }}>
+        管理数据命名中使用的词根，确保命名标准化和规范性
+      </div>
+      <Divider style={{ margin: '8px 0 20px' }} />
 
-        <Table
+      <Row gutter={[16, 16]}>
+        <Col span={24}>
+          <div ref={areaRef} style={{ height: areaHeight || undefined, display: 'flex', flexDirection: 'column' }}>
+            <Card
+              title={
+                <Space>
+                  词根列表
+                  <Text type="secondary" style={{ fontSize: '14px', fontWeight: 'normal' }}>
+                    共 {filteredWordRoots.length} 条记录
+                  </Text>
+                </Space>
+              }
+              extra={
+                <Space>
+                  <Input
+                    placeholder="搜索词根名称、含义或描述"
+                    prefix={<SearchOutlined />}
+                    style={{ width: 250 }}
+                    value={searchText}
+                    onChange={(e) => setSearchText(e.target.value)}
+                    allowClear
+                  />
+                  <Button 
+                    type="primary" 
+                    icon={<PlusOutlined />}
+                    onClick={handleAdd}
+                  >
+                    新增词根
+                  </Button>
+                </Space>
+              }
+              style={{ height: '100%', display: 'flex', flexDirection: 'column', minHeight: 0 }}
+              bodyStyle={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0 }}
+            >
+              <div style={{ flex: 1, overflow: 'auto' }}>
+                <Table
           columns={columns}
           dataSource={filteredWordRoots}
           rowKey="id"
           loading={loading}
-          scroll={{ x: 1200 }}
+          scroll={{ x: 1110 }}
           pagination={{
             total: filteredWordRoots.length,
             pageSize: 10,
@@ -401,7 +416,11 @@ const WordRootManagement: React.FC = () => {
               `第 ${range[0]}-${range[1]} 条/总共 ${total} 条`,
           }}
         />
-      </Card>
+              </div>
+            </Card>
+          </div>
+        </Col>
+      </Row>
 
       {/* 新增/编辑模态框 */}
       <Modal
@@ -475,18 +494,6 @@ const WordRootManagement: React.FC = () => {
           </Form.Item>
 
           <Form.Item
-            label="使用示例"
-            name="examples"
-            rules={[{ required: true, message: '请输入使用示例' }]}
-            extra="每行一个示例，展示该词根在实际命名中的应用"
-          >
-            <TextArea 
-              rows={4} 
-              placeholder={`user_id\nuser_name\nuser_profile\nuser_status`}
-            />
-          </Form.Item>
-
-          <Form.Item
             label="状态"
             name="status"
             valuePropName="checked"
@@ -548,19 +555,6 @@ const WordRootManagement: React.FC = () => {
               <Paragraph style={{ marginTop: 8, marginBottom: 0 }}>
                 {viewingWordRoot.description}
               </Paragraph>
-            </div>
-
-            <div style={{ marginBottom: 16 }}>
-              <Text strong>使用示例：</Text>
-              <div style={{ marginTop: 8 }}>
-                <Space wrap>
-                  {viewingWordRoot.examples.map((example, index) => (
-                    <Tag key={index} color="geekblue">
-                      {example}
-                    </Tag>
-                  ))}
-                </Space>
-              </div>
             </div>
 
             <Row gutter={16} style={{ marginBottom: 16 }}>

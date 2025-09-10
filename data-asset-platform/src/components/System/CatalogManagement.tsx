@@ -368,7 +368,13 @@ const CatalogManagement: React.FC = () => {
     <div>
       {/* 页面标题 */}
       <div style={{ marginBottom: 12 }}>
-        <Title level={3} style={{ margin: 0, fontWeight: 600 }}>目录管理</Title>
+        <Title level={3} style={{ margin: 0, fontWeight: 600 }}>
+          <FolderOpenOutlined style={{ marginRight: 8 }} />
+          目录管理
+        </Title>
+      </div>
+      <div style={{ marginBottom: 20, color: 'rgba(0, 0, 0, 0.65)' }}>
+        管理系统的目录结构，配置资产分类和组织方式
       </div>
       <Divider style={{ margin: '8px 0 20px' }} />
 
