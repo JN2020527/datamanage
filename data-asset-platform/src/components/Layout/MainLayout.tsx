@@ -376,7 +376,7 @@ const MainLayout: React.FC = () => {
       <Header className="layout-header">
         <div className="header-left">
           <div className="logo">
-            <span className="logo-icon">📊</span>
+            <img src="/Logos.svg" alt="平台Logo" className="logo-icon" />
             <span className="logo-text">数据资产平台</span>
           </div>
         </div>

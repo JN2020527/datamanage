@@ -47,7 +47,7 @@
   margin-right: 32px;
   font-size: 18px;
   font-weight: 600;
-  color: #1677ff;
+  color: #1f1f1f; /* 与深色Logo一致 */
   cursor: pointer;
   transition: all 0.3s;
 }
@@ -57,8 +57,12 @@
 }
 
 .logo-icon {
-  font-size: 24px;
+  width: 28px;
+  height: 28px;
   margin-right: 8px;
+  display: inline-block;
+  /* 将白色SVG置为深色，在浅色头部更清晰 */
+  filter: brightness(0) saturate(100%);
 }
 
 .logo-text {
@@ -88,15 +92,15 @@
 
 .main-menu .ant-menu-item:hover {
   background: rgba(22, 119, 255, 0.08);
-  transform: translateY(-1px);
-  box-shadow: 0 2px 8px rgba(22, 119, 255, 0.15);
+  transform: none; /* 去掉悬浮位移 */
+  box-shadow: none; /* 去掉悬浮阴影 */
 }
 
 .main-menu .ant-menu-item-selected {
   background: rgba(22, 119, 255, 0.12);
   color: #1677ff;
   font-weight: 600;
-  box-shadow: 0 2px 8px rgba(22, 119, 255, 0.2);
+  box-shadow: none; /* 去掉选中状态阴影 */
 }
 
 
@@ -367,6 +371,14 @@
 
   .page-content {
     background: #000;
+  }
+
+  /* 暗色主题下恢复浅色Logo与文字 */
+  .logo {
+    color: #ffffff;
+  }
+  .logo-icon {
+    filter: none;
   }
 }
 
