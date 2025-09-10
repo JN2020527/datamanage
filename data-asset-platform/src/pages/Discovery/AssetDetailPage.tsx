@@ -18,6 +18,7 @@ import {
   Form,
   message,
   Spin,
+  Breadcrumb,
 } from 'antd';
 import {
   StarOutlined,
@@ -99,10 +100,9 @@ const AssetDetailPage: React.FC = () => {
 
   if (loading) {
     return (
-      <Spin size="large" tip="加载中..." spinning={true}>
-        <div style={{ textAlign: 'center', padding: '100px', minHeight: '400px' }}>
-        </div>
-      </Spin>
+      <div style={{ textAlign: 'center', padding: '100px' }}>
+        <Spin size="large" tip="加载中..." />
+      </div>
     );
   }
 
@@ -141,7 +141,15 @@ const AssetDetailPage: React.FC = () => {
   return (
     <div className="page-container">
       {/* 面包屑导航 */}
-      
+      <Breadcrumb style={{ marginBottom: '16px' }}>
+        <Breadcrumb.Item>
+          <a onClick={() => navigate('/')}>首页</a>
+        </Breadcrumb.Item>
+        <Breadcrumb.Item>
+          <a onClick={() => navigate('/discovery')}>资产发现</a>
+        </Breadcrumb.Item>
+        <Breadcrumb.Item>{asset.name}</Breadcrumb.Item>
+      </Breadcrumb>
 
       {/* 资产基本信息 */}
       <Card style={{ marginBottom: '24px' }}>
@@ -185,11 +193,11 @@ const AssetDetailPage: React.FC = () => {
             </Paragraph>
 
             <Space wrap>
-              {asset.tags?.map((tag, index) => (
+              {asset.tags.map((tag, index) => (
                 <Tag key={index} style={{ marginBottom: '4px' }}>
                   {tag}
                 </Tag>
-              )) || []}
+              ))}
             </Space>
           </Col>
 
@@ -386,7 +394,7 @@ const AssetDetailPage: React.FC = () => {
                     </Card>
                   </div>
                   <div>
-                    {comments?.map((item) => (
+                    {comments.map((item) => (
                       <CommentItem
                         key={item.id}
                         author={item.author}

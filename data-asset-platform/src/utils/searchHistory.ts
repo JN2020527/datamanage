@@ -1,18 +1,18 @@
-interface SearchHistoryItem {
+export type SearchHistoryItem = {
   id: string;
   query: string;
   timestamp: number;
   type: 'search' | 'suggestion' | 'recent';
   resultCount?: number;
   category?: string;
-}
+};
 
-interface PopularSearchItem {
+export type PopularSearchItem = {
   query: string;
   count: number;
   category?: string;
   trending?: boolean;
-}
+};
 
 const STORAGE_KEY = 'data-asset-search-history';
 const POPULAR_SEARCHES_KEY = 'data-asset-popular-searches';
@@ -288,6 +288,3 @@ export class SearchHistoryManager {
 
 // 导出单例实例
 export const searchHistory = SearchHistoryManager.getInstance();
-
-// 导出类型
-export type { SearchHistoryItem, PopularSearchItem };

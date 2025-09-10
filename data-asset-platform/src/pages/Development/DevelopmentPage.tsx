@@ -7,6 +7,7 @@ import {
   Table,
   Tag,
   Modal,
+  Breadcrumb,
   Row,
   Col,
   Statistic,
@@ -101,7 +102,7 @@ const DevelopmentPage: React.FC = () => {
 
   const handleDeleteAsset = async (assetId: string) => {
     try {
-      setAssets((assets || []).filter(asset => asset.id !== assetId));
+      setAssets(assets.filter(asset => asset.id !== assetId));
       showSuccess('资产删除成功');
     } catch (error) {
       showError('删除失败，请重试');
@@ -117,7 +118,7 @@ const DevelopmentPage: React.FC = () => {
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       };
-      setAssets([newAsset, ...(assets || [])]);
+      setAssets([newAsset, ...assets]);
       showSuccess('资产复制成功');
     } catch (error) {
       showError('复制失败，请重试');
@@ -128,7 +129,7 @@ const DevelopmentPage: React.FC = () => {
     try {
       if (editingAsset) {
         // 更新资产
-        setAssets((assets || []).map(asset => 
+        setAssets(assets.map(asset => 
           asset.id === editingAsset.id 
             ? { ...asset, ...assetData }
             : asset
@@ -140,7 +141,7 @@ const DevelopmentPage: React.FC = () => {
           accessCount: 0,
           ...assetData,
         } as Asset;
-        setAssets([newAsset, ...(assets || [])]);
+        setAssets([newAsset, ...assets]);
       }
       setModalVisible(false);
       await loadAssets(); // 重新加载列表
@@ -161,7 +162,7 @@ const DevelopmentPage: React.FC = () => {
     setActiveTab('list'); // 回到列表页面
   };
 
-  const filteredAssets = (assets || []).filter(asset => {
+  const filteredAssets = assets.filter(asset => {
     const matchesSearch = !searchText || 
       asset.name.toLowerCase().includes(searchText.toLowerCase()) ||
       asset.description.toLowerCase().includes(searchText.toLowerCase());
@@ -337,7 +338,12 @@ const DevelopmentPage: React.FC = () => {
   return (
     <div className="page-container">
       {/* 面包屑导航 */}
-      
+      <Breadcrumb style={{ marginBottom: '16px' }}>
+        <Breadcrumb.Item>
+          <a onClick={() => navigate('/')}>首页</a>
+        </Breadcrumb.Item>
+        <Breadcrumb.Item>资产开发</Breadcrumb.Item>
+      </Breadcrumb>
 
       {/* 页面标题和统计 */}
       <div style={{ marginBottom: '24px' }}>
@@ -350,7 +356,7 @@ const DevelopmentPage: React.FC = () => {
             <Card>
               <Statistic
                 title="我的资产"
-                value={(assets || []).length}
+                value={assets.length}
                 prefix={<FileTextOutlined />}
               />
             </Card>
@@ -359,7 +365,7 @@ const DevelopmentPage: React.FC = () => {
             <Card>
               <Statistic
                 title="草稿资产"
-                value={(assets || []).filter(a => a.qualityScore < 60).length}
+                value={assets.filter(a => a.qualityScore < 60).length}
                 valueStyle={{ color: '#faad14' }}
                 prefix={<EditOutlined />}
               />
@@ -369,7 +375,7 @@ const DevelopmentPage: React.FC = () => {
             <Card>
               <Statistic
                 title="已发布"
-                value={(assets || []).filter(a => a.qualityScore >= 80).length}
+                value={assets.filter(a => a.qualityScore >= 80).length}
                 valueStyle={{ color: '#52c41a' }}
                 prefix={<EyeOutlined />}
               />
@@ -379,7 +385,7 @@ const DevelopmentPage: React.FC = () => {
             <Card>
               <Statistic
                 title="平均质量评分"
-                value={(assets || []).length > 0 ? Math.round((assets || []).reduce((sum, a) => sum + a.qualityScore, 0) / (assets || []).length) : 0}
+                value={assets.length > 0 ? Math.round(assets.reduce((sum, a) => sum + a.qualityScore, 0) / assets.length) : 0}
                 suffix="分"
                 valueStyle={{ color: '#1890ff' }}
               />
@@ -448,7 +454,7 @@ const DevelopmentPage: React.FC = () => {
         footer={null}
         width="90%"
         style={{ top: 20 }}
-        destroyOnHidden
+        destroyOnClose
       >
         <AssetForm
           initialData={editingAsset}

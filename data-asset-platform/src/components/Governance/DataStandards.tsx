@@ -459,7 +459,7 @@ const DataStandards: React.FC = () => {
         onCancel={() => setModalVisible(false)}
         footer={null}
         width={800}
-        destroyOnHidden
+        destroyOnClose
       >
         <Form
           form={form}

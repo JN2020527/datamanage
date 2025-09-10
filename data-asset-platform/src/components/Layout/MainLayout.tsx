@@ -5,6 +5,7 @@ import {
   Button,
   Avatar,
   Dropdown,
+  Breadcrumb,
   Badge,
   Drawer,
   Space,
@@ -214,8 +215,10 @@ const MainLayout: React.FC = () => {
     currentUser,
     activeMenu,
     sidebarCollapsed,
+    breadcrumbs,
     setActiveMenu,
     setSidebarCollapsed,
+    setBreadcrumbs,
   } = useAppStore();
 
   // 检测移动端
@@ -238,7 +241,45 @@ const MainLayout: React.FC = () => {
     const path = location.pathname;
     const menuKey = path.split('/')[1] || 'home';
     setActiveMenu(menuKey);
-  }, [location.pathname, setActiveMenu]);
+
+    // 生成面包屑
+    const generateBreadcrumbs = () => {
+      const segments = path.split('/').filter(Boolean);
+      const crumbs = [{ title: '首页', path: '/' }];
+
+      if (segments.length > 0) {
+        const mainMenu = mainMenuItems.find(item => item.key === segments[0]);
+        if (mainMenu) {
+          crumbs.push({ title: mainMenu.label, path: mainMenu.path });
+        }
+
+        // 添加子页面面包屑
+        if (segments.length > 1) {
+          const sideMenus = sideMenuConfig[segments[0]] || [];
+          const findSubMenu = (menus: MenuItem[], segment: string): MenuItem | undefined => {
+            for (const menu of menus) {
+              if (menu.key?.includes(segment)) {
+                return menu;
+              }
+              if (menu.children) {
+                const found = findSubMenu(menu.children, segment);
+                if (found) return found;
+              }
+            }
+          };
+
+          const subMenu = findSubMenu(sideMenus, segments[1]);
+          if (subMenu) {
+            crumbs.push({ title: subMenu.label });
+          }
+        }
+      }
+
+      setBreadcrumbs(crumbs);
+    };
+
+    generateBreadcrumbs();
+  }, [location.pathname, setActiveMenu, setBreadcrumbs]);
 
   // 主导航点击处理
   const handleMainMenuClick = (key: string) => {
@@ -335,29 +376,24 @@ const MainLayout: React.FC = () => {
       <Header className="layout-header">
         <div className="header-left">
           <div className="logo">
-            <img 
-              src="/Logos.svg" 
-              alt="数据资产平台" 
-              className="logo-icon"
-              style={{ width: '24px', height: '24px' }}
-            />
+            <span className="logo-icon">📊</span>
             <span className="logo-text">数据资产平台</span>
           </div>
+          
+          {!isMobile && (
+            <Menu
+              mode="horizontal"
+              selectedKeys={[activeMenu]}
+              items={mainMenuItems.map(item => ({
+                key: item.key,
+                label: item.label,
+                icon: item.icon,
+              }))}
+              onClick={({ key }) => handleMainMenuClick(key)}
+              className="main-menu"
+            />
+          )}
         </div>
-        
-        {!isMobile && (
-          <Menu
-            mode="horizontal"
-            selectedKeys={[activeMenu]}
-            items={mainMenuItems.map(item => ({
-              key: item.key,
-              label: item.label,
-              icon: item.icon,
-            }))}
-            onClick={({ key }) => handleMainMenuClick(key)}
-            className="main-menu"
-          />
-        )}
 
         <div className="header-right">
           <Space size="middle">
@@ -429,6 +465,19 @@ const MainLayout: React.FC = () => {
 
         {/* 主内容区 */}
         <Layout className="layout-content">
+          {/* 面包屑导航 */}
+          <div className="breadcrumb-container">
+            <Breadcrumb
+              items={breadcrumbs.map(crumb => ({
+                title: crumb.path ? (
+                  <a onClick={() => navigate(crumb.path!)}>{crumb.title}</a>
+                ) : (
+                  crumb.title
+                ),
+              }))}
+            />
+          </div>
+
           {/* 页面内容 */}
           <Content className="page-content">
             <Outlet />

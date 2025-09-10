@@ -29,7 +29,7 @@ import {
   TagOutlined
 } from '@ant-design/icons';
 import { motion, AnimatePresence } from 'framer-motion';
-import { searchHistory } from '@utils/searchHistory';
+import { searchHistory } from '../../utils/searchHistory';
 import dayjs from 'dayjs';
 
 const { Panel } = Collapse;
@@ -326,7 +326,7 @@ const EnhancedFilter: React.FC<EnhancedFilterProps> = ({
           </Space>
         </div>
       }
-      styles={{ body: { padding: '16px' } }}
+      bodyStyle={{ padding: '16px' }}
     >
       {/* 已保存的过滤器 */}
       {savedFilters.length > 0 && (

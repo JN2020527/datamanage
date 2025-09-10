@@ -6,7 +6,7 @@
 
 /* 顶部导航栏 */
 .layout-header {
-  background: #111827;
+  background: #fff;
   padding: 0 24px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
   display: flex;
@@ -14,15 +14,14 @@
   justify-content: space-between;
   position: relative;
   z-index: 1000;
-  height: 56px;
-  line-height: 56px;
+  height: 64px;
+  line-height: 64px;
 }
 
 .header-left {
   display: flex;
   align-items: center;
   height: 100%;
-  flex: 1;
 }
 
 .logo {
@@ -31,7 +30,7 @@
   margin-right: 32px;
   font-size: 18px;
   font-weight: 600;
-  color: #ffffff;
+  color: #1677ff;
   cursor: pointer;
   transition: all 0.3s;
 }
@@ -41,10 +40,8 @@
 }
 
 .logo-icon {
-  width: 24px;
-  height: 24px;
+  font-size: 24px;
   margin-right: 8px;
-  filter: brightness(0) invert(1); /* 将 SVG 转换为白色 */
 }
 
 .logo-text {
@@ -54,48 +51,24 @@
 .main-menu {
   border-bottom: none;
   height: 100%;
-  line-height: 56px;
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 1001;
-  background: transparent;
-  display: flex;
-  align-items: center;
+  line-height: 64px;
 }
 
 .main-menu .ant-menu-item {
-  height: 32px;
-  line-height: 32px;
+  height: 64px;
+  line-height: 64px;
   margin: 0 4px;
-  border-radius: 3px;
+  border-radius: 6px;
   transition: all 0.3s;
-  color: #ffffff !important;
-  border-bottom: none !important;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 .main-menu .ant-menu-item:hover {
-  background: rgba(255, 255, 255, 0.1) !important;
-  color: #ffffff !important;
-  height: 32px !important;
-  line-height: 32px !important;
-  margin: 0 4px !important;
-  border-radius: 3px !important;
+  background: rgba(22, 119, 255, 0.06);
 }
 
-.main-menu .ant-menu-item-selected,
-.main-menu .ant-menu-item.ant-menu-item-selected {
-  background: #0B4385 !important;
-  color: #ffffff !important;
-  border-bottom: none !important;
-  height: 32px !important;
-  line-height: 32px !important;
-  margin: 0 4px !important;
-  border-radius: 3px !important;
-  box-shadow: none !important;
+.main-menu .ant-menu-item-selected {
+  background: rgba(22, 119, 255, 0.1);
+  color: #1677ff;
 }
 
 .header-right {
@@ -106,14 +79,14 @@
 
 .header-action-btn {
   border: none;
-  color: rgba(255, 255, 255, 0.85);
+  color: rgba(0, 0, 0, 0.65);
   font-size: 16px;
   transition: all 0.3s;
 }
 
 .header-action-btn:hover {
-  color: #ffffff;
-  background: rgba(255, 255, 255, 0.1);
+  color: #1677ff;
+  background: rgba(22, 119, 255, 0.06);
 }
 
 .user-info {
@@ -126,24 +99,24 @@
 }
 
 .user-info:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(22, 119, 255, 0.06);
 }
 
 .username {
   margin-left: 8px;
-  color: rgba(255, 255, 255, 0.85);
+  color: rgba(0, 0, 0, 0.85);
   font-weight: 500;
 }
 
 .mobile-menu-btn {
   border: none;
-  color: rgba(255, 255, 255, 0.85);
+  color: rgba(0, 0, 0, 0.65);
   font-size: 18px;
 }
 
 /* 布局主体 */
 .layout-body {
-  height: calc(100vh - 56px);
+  height: calc(100vh - 64px);
   overflow: hidden;
 }
 
@@ -231,7 +204,24 @@
   overflow: hidden;
 }
 
+.breadcrumb-container {
+  background: #fff;
+  padding: 12px 24px;
+  border-bottom: 1px solid #f0f0f0;
+}
 
+.breadcrumb-container .ant-breadcrumb {
+  font-size: 14px;
+}
+
+.breadcrumb-container .ant-breadcrumb a {
+  color: rgba(0, 0, 0, 0.65);
+  transition: all 0.3s;
+}
+
+.breadcrumb-container .ant-breadcrumb a:hover {
+  color: #1677ff;
+}
 
 .page-content {
   flex: 1;
@@ -258,19 +248,12 @@
     display: none;
   }
 
-
+  .breadcrumb-container {
+    padding: 8px 16px;
+  }
 
   .page-content {
     padding: 16px;
-  }
-}
-
-/* 确保菜单在中等屏幕上也能居中 */
-@media (min-width: 769px) and (max-width: 1200px) {
-  .main-menu {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
   }
 }
 
@@ -283,7 +266,9 @@
     margin-right: 16px;
   }
 
-
+  .breadcrumb-container {
+    padding: 8px 12px;
+  }
 
   .page-content {
     padding: 12px;
@@ -307,7 +292,10 @@
     border-bottom: 1px solid #303030;
   }
 
-
+  .breadcrumb-container {
+    background: #141414;
+    border-bottom: 1px solid #303030;
+  }
 
   .layout-content {
     background: #000;

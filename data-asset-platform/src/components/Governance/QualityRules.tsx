@@ -533,7 +533,7 @@ const QualityRules: React.FC = () => {
         onCancel={() => setModalVisible(false)}
         footer={null}
         width={900}
-        destroyOnHidden
+        destroyOnClose
       >
         <Form
           form={form}

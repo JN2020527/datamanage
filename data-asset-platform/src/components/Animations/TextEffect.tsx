@@ -1,16 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 
-// 定义 Variants 类型
-type Variants = {
-  hidden: any;
-  visible: any;
-};
+interface Variants {
+  [key: string]: any;
+}
 
 interface TextEffectProps {
   children: string;
   per?: 'word' | 'char' | 'line';
-  as?: keyof React.JSX.IntrinsicElements;
+  as?: keyof JSX.IntrinsicElements;
   variants?: { container?: Variants; item?: Variants };
   className?: string;
   preset?: 'blur-sm' | 'fade-in-blur' | 'scale' | 'fade' | 'slide';
@@ -175,12 +173,6 @@ const TextEffect: React.FC<TextEffectProps> = ({
   }, [trigger, hasAnimated, onAnimationStart]);
 
   const currentVariants = variants || presetVariants[preset];
-  
-  // 类型保护：确保 currentVariants 存在
-  if (!currentVariants || !currentVariants.container || !currentVariants.item) {
-    console.warn('TextEffect: Invalid variants configuration');
-    return null;
-  }
 
   const splitText = (text: string, type: 'word' | 'char' | 'line') => {
     switch (type) {

@@ -9,15 +9,8 @@ import {
   SearchOutlined
 } from '@ant-design/icons';
 import { motion, AnimatePresence } from 'framer-motion';
-import { searchHistory } from '@utils/searchHistory';
-
-// 定义 PopularSearchItem 类型
-interface PopularSearchItem {
-  query: string;
-  count: number;
-  category?: string;
-  trending?: boolean;
-}
+import { searchHistory } from '../../utils/searchHistory';
+import type { PopularSearchItem } from '../../utils/searchHistory';
 
 interface QuickSearchTagsProps {
   onTagClick?: (tag: string) => void;

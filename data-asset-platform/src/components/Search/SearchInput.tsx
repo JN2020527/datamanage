@@ -7,7 +7,7 @@ import {
 } from '@ant-design/icons';
 import { useAppStore } from '@store/useAppStore';
 import { api } from '@mock/api';
-import { debounce } from '@utils/index';
+import { debounce } from '../../utils/index';
 
 interface SearchInputProps {
   placeholder?: string;

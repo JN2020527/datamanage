@@ -5,6 +5,7 @@ import {
   Tabs,
   Button,
   Space,
+  Breadcrumb,
   Row,
   Col,
   Statistic,
@@ -12,13 +13,13 @@ import {
   Alert,
 } from 'antd';
 import {
-  SafetyOutlined,
+  SafetyCertificateOutlined,
   FileTextOutlined,
   BugOutlined,
   DatabaseOutlined,
   BarChartOutlined,
   TrophyOutlined,
-  ExclamationCircleOutlined,
+  WarningOutlined,
   CheckCircleOutlined,
 } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
@@ -215,12 +216,17 @@ const GovernancePage: React.FC = () => {
   return (
     <div className="page-container">
       {/* 面包屑导航 */}
-      
+      <Breadcrumb style={{ marginBottom: '16px' }}>
+        <Breadcrumb.Item>
+          <a onClick={() => navigate('/')}>首页</a>
+        </Breadcrumb.Item>
+        <Breadcrumb.Item>数据治理</Breadcrumb.Item>
+      </Breadcrumb>
 
       {/* 页面标题 */}
       <div style={{ marginBottom: '24px' }}>
         <Title level={2} style={{ margin: 0 }}>
-                      <SafetyOutlined /> 数据治理
+          <SafetyCertificateOutlined /> 数据治理
         </Title>
         <Text type="secondary">
           确保数据质量、合规性和标准化，建立企业数据治理体系

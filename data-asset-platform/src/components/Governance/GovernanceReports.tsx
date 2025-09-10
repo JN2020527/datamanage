@@ -26,7 +26,7 @@ import {
   ShareAltOutlined,
   BarChartOutlined,
   TrophyOutlined,
-  ExclamationCircleOutlined,
+  WarningOutlined,
   CheckCircleOutlined,
   ClockCircleOutlined,
   FireOutlined,
@@ -582,7 +582,7 @@ const GovernanceReports: React.FC = () => {
             <Statistic
               title="问题数量"
               value={23}
-              prefix={<ExclamationCircleOutlined />}
+              prefix={<WarningOutlined />}
               valueStyle={{ color: '#ff4d4f' }}
             />
           </Card>

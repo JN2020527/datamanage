@@ -39,7 +39,7 @@ const AssetCard: React.FC<AssetCardProps> = ({ asset, onEdit, onView }) => {
       hoverable
       onClick={handleCardClick}
       style={{ height: '100%' }}
-      styles={{ body: { padding: '20px' } }}
+      bodyStyle={{ padding: '20px' }}
       actions={[
         <Tooltip key="view" title="查看详情">
           <Button type="text" icon={<EyeOutlined />} onClick={handleCardClick}>

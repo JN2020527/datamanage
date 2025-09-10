@@ -26,25 +26,9 @@ import {
   DownOutlined
 } from '@ant-design/icons';
 import { motion, AnimatePresence } from 'framer-motion';
-import { searchHistory } from '@utils/searchHistory';
-
-// 定义类型
-interface SearchHistoryItem {
-  id: string;
-  query: string;
-  timestamp: number;
-  type: 'search' | 'suggestion' | 'recent';
-  resultCount?: number;
-  category?: string;
-}
-
-interface PopularSearchItem {
-  query: string;
-  count: number;
-  category?: string;
-  trending?: boolean;
-}
-import { debounce } from '@utils/index';
+import { searchHistory } from '../../utils/searchHistory';
+import type { SearchHistoryItem, PopularSearchItem } from '../../utils/searchHistory';
+import { debounce } from '../../utils/index';
 
 const { Text, Title } = Typography;
 

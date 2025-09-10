@@ -108,7 +108,7 @@ const SearchResultItem: React.FC<SearchResultItemProps> = ({
         hoverable
         className="search-result-item cursor-pointer border border-gray-200 hover:border-blue-300 hover:shadow-lg transition-all duration-200"
         onClick={() => onResultClick?.(asset)}
-        styles={{ body: { padding: '20px' } }}
+        bodyStyle={{ padding: '20px' }}
       >
         <div className="flex items-start justify-between">
           <div className="flex-1">

@@ -71,7 +71,7 @@ const QuickActions: React.FC = () => {
           <Col xs={12} sm={8} md={6} lg={4} key={action.key}>
             <Card
               className="quick-action-item"
-              styles={{ body: { padding: '20px 16px' } }}
+              bodyStyle={{ padding: '20px 16px' }}
               onClick={() => navigate(action.path)}
               style={{
                 cursor: 'pointer',

@@ -17,7 +17,7 @@ const AssetCardSkeleton: React.FC<AssetCardSkeletonProps> = ({ count = 8 }) => {
             backgroundSize: '200% 100%',
             animation: 'skeleton-loading 1.5s infinite',
           }}
-          styles={{ body: { padding: '20px' } }}
+          bodyStyle={{ padding: '20px' }}
         >
           <Space direction="vertical" style={{ width: '100%' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>

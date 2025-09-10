@@ -786,7 +786,7 @@ const RoleManagement: React.FC = () => {
         onCancel={() => setModalVisible(false)}
         footer={null}
         width={600}
-        destroyOnHidden
+        destroyOnClose
       >
         <Form
           form={form}
@@ -868,7 +868,7 @@ const RoleManagement: React.FC = () => {
           )
         }
         width={800}
-        destroyOnHidden
+        destroyOnClose
       >
         {selectedRole?.code === 'SuperAdmin' ? (
           <Alert

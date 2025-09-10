@@ -5,6 +5,7 @@ import {
   Tabs,
   Button,
   Space,
+  Breadcrumb,
   Row,
   Col,
   Statistic,
@@ -290,7 +291,7 @@ const SystemPage: React.FC = () => {
         <Col span={12}>
           <Card title="系统告警" size="small">
             <Space direction="vertical" style={{ width: '100%' }}>
-              {systemAlerts?.map(alert => (
+              {systemAlerts.map(alert => (
                 <Alert
                   key={alert.id}
                   message={alert.message}
@@ -311,7 +312,12 @@ const SystemPage: React.FC = () => {
   return (
     <div className="page-container">
       {/* 面包屑导航 */}
-      
+      <Breadcrumb style={{ marginBottom: '16px' }}>
+        <Breadcrumb.Item>
+          <a onClick={() => navigate('/')}>首页</a>
+        </Breadcrumb.Item>
+        <Breadcrumb.Item>系统管理</Breadcrumb.Item>
+      </Breadcrumb>
 
       {/* 页面标题 */}
       <div style={{ marginBottom: '24px' }}>
