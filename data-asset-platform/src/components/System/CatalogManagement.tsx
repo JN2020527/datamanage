@@ -405,7 +405,7 @@ const CatalogManagement: React.FC = () => {
                     setSelectedKey(key);
                     setEditingKey(key);
                     setEditingValues({ title: '', description: '' });
-                    message.info('已新增一级目录，请填写名称与描述');
+                    messageApi.info('已新增一级目录，请填写名称与描述');
                     setTimeout(() => {
                       const rowEl = document.querySelector(`tr[data-row-key="${key}"]`) as HTMLElement | null;
                       rowEl?.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -429,8 +429,8 @@ const CatalogManagement: React.FC = () => {
                 </Tooltip>
               </Space>
             }
-            style={{ height: '100%', display: 'flex', flexDirection: 'column' }}
-            bodyStyle={{ flex: 1, display: 'flex', flexDirection: 'column' }}
+            style={{ height: '100%', display: 'flex', flexDirection: 'column', minHeight: 0 }}
+            bodyStyle={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0 }}
           >
             <div className="catalog-scroll-container" style={{ flex: 1, overflow: 'auto' }}>
             <Table
@@ -439,6 +439,7 @@ const CatalogManagement: React.FC = () => {
               size="small"
               pagination={false}
               expandable={{ expandedRowKeys: expandedKeys, onExpandedRowsChange: (keys) => setExpandedKeys(keys as string[]) }}
+              rowExpandable={(record: any) => Array.isArray(record.children) && record.children.length > 0}
               onRow={(record: any) => ({
                 onClick: () => setSelectedKey(record.key),
                 onDoubleClick: (e) => {
@@ -582,7 +583,7 @@ const CatalogManagement: React.FC = () => {
                   description: n.description || '',
                   updater: n.updater || '',
                   updatedAt: n.updatedAt || '',
-                  children: n.children ? map(n.children) : undefined,
+                  children: n.children && n.children.length > 0 ? map(n.children) : undefined,
                 }));
               })(treeData)}
             />

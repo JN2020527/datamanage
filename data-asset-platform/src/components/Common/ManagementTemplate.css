@@ -1,0 +1,21 @@
+.management-scroll-area {
+  height: 100%;
+  overflow: auto;
+}
+
+/* 复用目录页徽章样式 */
+.catalog-edit-badge {
+  background-color: #e6f0ff;
+  border: 1px solid #1677ff;
+  border-radius: 10px;
+  padding: 2px 8px;
+  display: inline-flex;
+  align-items: center;
+  line-height: 1;
+  font-weight: 400 !important;
+}
+
+.catalog-edit-badge .ant-badge-status-dot { background-color: #1677ff; }
+.catalog-edit-badge .ant-badge-status-text { font-size: 11px; color: #1677ff; font-weight: 400; }
+
+

@@ -24,6 +24,7 @@
 .ant-layout-content.catalog-no-padding-bottom,
 .page-content.catalog-no-padding-bottom {
   padding-bottom: 0 !important;
+  overflow: hidden !important; /* 锁定外层滚动 */
 }
 
 .catalog-edit-badge {
@@ -55,6 +56,12 @@
 
 .catalog-table .ant-table-cell {
   line-height: 24px !important;
+}
+
+.catalog-scroll-container {
+  height: 100%;
+  overflow: auto;
+  min-height: 0; /* 防止撑开导致父容器无法滚动 */
 }
 
 .catalog-table input.ant-input {
