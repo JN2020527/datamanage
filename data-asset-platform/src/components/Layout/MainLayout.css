@@ -200,6 +200,10 @@
   height: 40px;
   line-height: 40px;
   transition: all 0.3s;
+  width: calc(100% - 20px);
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
 }
 
 .sider-content .ant-menu-item:hover {
@@ -217,10 +221,41 @@
   height: 40px;
   line-height: 40px;
   transition: all 0.3s;
+  width: calc(100% - 20px);
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
 }
 
 .sider-content .ant-menu-submenu-title:hover {
   background: rgba(22, 119, 255, 0.06);
+}
+
+/* 移除所有菜单项的焦点和活动状态边框 */
+.sider-content .ant-menu-item:focus,
+.sider-content .ant-menu-item:active,
+.sider-content .ant-menu-item.ant-menu-item-active {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.sider-content .ant-menu-submenu-title:focus,
+.sider-content .ant-menu-submenu-title:active,
+.sider-content .ant-menu-submenu-title.ant-menu-submenu-title-active {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* 移除Ant Design菜单的默认边框样式 */
+.sider-content .ant-menu {
+  border: none !important;
+}
+
+.sider-content .ant-menu-item::after,
+.sider-content .ant-menu-submenu-title::after {
+  display: none !important;
 }
 
 /* 主内容区 */

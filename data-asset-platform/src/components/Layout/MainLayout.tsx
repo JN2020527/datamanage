@@ -26,7 +26,7 @@ import {
 } from '@ant-design/icons';
 import { useNavigate, useLocation, Outlet } from 'react-router-dom';
 import { useAppStore } from '@store/useAppStore';
-import type { MenuItem } from '@types/index';
+import type { MenuItem } from '@/types/index';
 import './MainLayout.css';
 
 const { Header, Sider, Content } = Layout;
@@ -110,6 +110,7 @@ const sideMenuConfig: Record<string, MenuItem[]> = {
         { key: 'governance-naming', label: '命名规范', path: '/governance/naming' },
         { key: 'governance-dictionary', label: '数据字典', path: '/governance/dictionary' },
         { key: 'governance-glossary', label: '业务术语', path: '/governance/glossary' },
+        { key: 'governance-wordroot', label: '词根管理', path: '/governance/wordroot' },
       ],
     },
     {
@@ -243,7 +244,7 @@ const MainLayout: React.FC = () => {
 
       if (segments.length > 0) {
         const mainMenu = mainMenuItems.find(item => item.key === segments[0]);
-        if (mainMenu) {
+        if (mainMenu && mainMenu.path) {
           crumbs.push({ title: mainMenu.label, path: mainMenu.path });
         }
 
@@ -264,7 +265,7 @@ const MainLayout: React.FC = () => {
 
           const subMenu = findSubMenu(sideMenus, segments[1]);
           if (subMenu) {
-            crumbs.push({ title: subMenu.label });
+            crumbs.push({ title: subMenu.label, path: subMenu.path || '' });
           }
         }
       }
@@ -437,7 +438,7 @@ const MainLayout: React.FC = () => {
             trigger={null}
             collapsible
             collapsed={sidebarCollapsed}
-            width={280}
+            width={220}
             className="layout-sider"
           >
             <div className="sider-header">
@@ -477,7 +478,7 @@ const MainLayout: React.FC = () => {
           placement="left"
           onClose={() => setMobileMenuVisible(false)}
           open={mobileMenuVisible}
-          width={280}
+          width={220}
         >
           <Menu
             mode="inline"

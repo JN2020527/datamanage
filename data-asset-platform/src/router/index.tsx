@@ -9,6 +9,7 @@ import GovernancePage from '@pages/Governance/GovernancePage';
 import AnalysisPage from '@pages/Analysis/AnalysisPage';
 import SystemPage from '@pages/System/SystemPage';
 import CatalogManagement from '@components/System/CatalogManagement';
+import WordRootManagement from '@components/Governance/WordRootManagement';
 
 // 创建路由配置
 export const router = createBrowserRouter([
@@ -92,6 +93,10 @@ export const router = createBrowserRouter([
           {
             path: 'glossary',
             element: <div>业务术语 - 开发中</div>,
+          },
+          {
+            path: 'wordroot',
+            element: <WordRootManagement />,
           },
           {
             path: 'rules',
