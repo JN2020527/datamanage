@@ -46,17 +46,23 @@ const AnalysisPage: React.FC = () => {
 
   useEffect(() => {
     loadAssets();
-    
+  }, []);
+
+  useEffect(() => {
     // 检查URL参数，如果指定了资产ID
     const assetId = searchParams.get('asset');
     if (assetId) {
       setSelectedAsset(assetId);
     }
-  }, [searchParams]);
+  }, [searchParams, assets]);
 
   useEffect(() => {
     if (selectedAsset) {
       loadAnalysisData(selectedAsset);
+    } else {
+      // 清空上一次的分析数据，确保渲染安全
+      setAnalysisData([]);
+      setColumns([]);
     }
   }, [selectedAsset]);
 
@@ -69,10 +75,11 @@ const AnalysisPage: React.FC = () => {
         filter: {},
         sort: 'updatedAt_desc',
       });
-      setAssets(data.items);
+      setAssets(data?.items || []);
     } catch (error) {
       console.error('加载资产列表失败:', error);
       showError('加载资产列表失败');
+      setAssets([]);
     }
   };
 
@@ -136,11 +143,14 @@ const AnalysisPage: React.FC = () => {
     showSuccess('数据导出成功');
   };
 
-  const generateCSV = (data: any[], columns: any[]) => {
-    const headers = columns.map(col => col.name).join(',');
-    const rows = data.map(row => 
-      columns.map(col => row[col.key] || '').join(',')
-    ).join('\n');
+  const generateCSV = (data: any[] = [], columns: any[] = []) => {
+    const safeColumns = Array.isArray(columns) ? columns : [];
+    const safeData = Array.isArray(data) ? data : [];
+
+    const headers = safeColumns.map(col => col?.name ?? '').join(',');
+    const rows = safeData
+      .map(row => safeColumns.map(col => (row?.[col?.key] ?? '')).join(','))
+      .join('\n');
     return `${headers}\n${rows}`;
   };
 
@@ -236,7 +246,7 @@ const AnalysisPage: React.FC = () => {
                 showSearch
                 optionFilterProp="children"
               >
-                {assets.map(asset => (
+                {(assets || []).map(asset => (
                   <Select.Option key={asset.id} value={asset.id}>
                     <Space>
                       <FileTextOutlined />
@@ -285,7 +295,7 @@ const AnalysisPage: React.FC = () => {
             <Card>
               <Statistic
                 title="数值字段"
-                value={columns.filter(col => col.type === 'number').length}
+                value={(columns || []).filter(col => col.type === 'number').length}
                 prefix={<PieChartOutlined />}
               />
             </Card>
@@ -294,7 +304,7 @@ const AnalysisPage: React.FC = () => {
             <Card>
               <Statistic
                 title="文本字段"
-                value={columns.filter(col => col.type === 'string').length}
+                value={(columns || []).filter(col => col.type === 'string').length}
                 prefix={<FileTextOutlined />}
               />
             </Card>

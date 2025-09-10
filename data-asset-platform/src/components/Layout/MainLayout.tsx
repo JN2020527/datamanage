@@ -379,7 +379,9 @@ const MainLayout: React.FC = () => {
             <span className="logo-icon">📊</span>
             <span className="logo-text">数据资产平台</span>
           </div>
-          
+        </div>
+
+        <div className="header-center">
           {!isMobile && (
             <Menu
               mode="horizontal"

@@ -57,13 +57,15 @@ const DevelopmentPage: React.FC = () => {
 
   useEffect(() => {
     loadAssets();
-    
+  }, []);
+
+  useEffect(() => {
     // 检查URL参数，如果有edit参数则打开编辑页面
     const editId = searchParams.get('edit');
-    if (editId) {
+    if (editId && assets.length > 0) {
       handleEditAsset(editId);
     }
-  }, [searchParams]);
+  }, [searchParams, assets]);
 
   const loadAssets = async () => {
     setLoading(true);
@@ -75,10 +77,11 @@ const DevelopmentPage: React.FC = () => {
         filter: {},
         sort: 'updatedAt_desc',
       });
-      setAssets(data.items);
+      setAssets(data?.items || []);
     } catch (error) {
       console.error('加载资产列表失败:', error);
       showError('加载资产列表失败');
+      setAssets([]); // 确保在错误情况下设置为空数组
     } finally {
       setLoading(false);
     }
@@ -102,7 +105,7 @@ const DevelopmentPage: React.FC = () => {
 
   const handleDeleteAsset = async (assetId: string) => {
     try {
-      setAssets(assets.filter(asset => asset.id !== assetId));
+      setAssets((prevAssets) => (prevAssets || []).filter(asset => asset.id !== assetId));
       showSuccess('资产删除成功');
     } catch (error) {
       showError('删除失败，请重试');
@@ -162,10 +165,10 @@ const DevelopmentPage: React.FC = () => {
     setActiveTab('list'); // 回到列表页面
   };
 
-  const filteredAssets = assets.filter(asset => {
+  const filteredAssets = (assets || []).filter(asset => {
     const matchesSearch = !searchText || 
       asset.name.toLowerCase().includes(searchText.toLowerCase()) ||
-      asset.description.toLowerCase().includes(searchText.toLowerCase());
+      asset.description?.toLowerCase().includes(searchText.toLowerCase());
     
     const matchesType = filterType === 'all' || asset.type === filterType;
     
@@ -365,7 +368,7 @@ const DevelopmentPage: React.FC = () => {
             <Card>
               <Statistic
                 title="草稿资产"
-                value={assets.filter(a => a.qualityScore < 60).length}
+                value={(assets || []).filter(a => a.qualityScore < 60).length}
                 valueStyle={{ color: '#faad14' }}
                 prefix={<EditOutlined />}
               />
@@ -375,7 +378,7 @@ const DevelopmentPage: React.FC = () => {
             <Card>
               <Statistic
                 title="已发布"
-                value={assets.filter(a => a.qualityScore >= 80).length}
+                value={(assets || []).filter(a => a.qualityScore >= 80).length}
                 valueStyle={{ color: '#52c41a' }}
                 prefix={<EyeOutlined />}
               />
