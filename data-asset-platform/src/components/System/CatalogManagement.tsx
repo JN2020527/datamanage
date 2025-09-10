@@ -14,9 +14,9 @@ import {
   Modal,
   Tag,
   Table,
-  message,
   Tooltip,
   Divider,
+  App,
 } from 'antd';
 import {
   PlusOutlined,
@@ -87,6 +87,7 @@ const columnsDef = [
 ];
 
 const CatalogManagement: React.FC = () => {
+  const { message: messageApi, modal } = App.useApp();
   const [treeData, setTreeData] = useState<CatalogNode[]>(initialTree);
   const [selectedKey, setSelectedKey] = useState<string>('');
   const [editing, setEditing] = useState<boolean>(false);
@@ -175,7 +176,7 @@ const CatalogManagement: React.FC = () => {
 
   const handleAdd = (type: CatalogNode['type']) => {
     if (!selectedNode && type !== 'folder') {
-      message.warning('请先选择一个目录作为父节点');
+      messageApi.warning('请先选择一个目录作为父节点');
       return;
     }
     const key = `${type}-${Date.now()}`;
@@ -209,7 +210,7 @@ const CatalogManagement: React.FC = () => {
 
   const handleDelete = () => {
     if (!selectedNode) return;
-    Modal.confirm({
+    modal.confirm({
       title: '确认删除',
       content: '删除后不可恢复，是否继续？',
       onOk: () => {
@@ -345,7 +346,7 @@ const CatalogManagement: React.FC = () => {
                   <Button icon={<CompressOutlined />} onClick={handleCollapseAll} />
                 </Tooltip>
                 <Tooltip title="刷新">
-                  <Button icon={<ReloadOutlined />} onClick={() => message.info('已刷新（模拟）')} />
+                  <Button icon={<ReloadOutlined />} onClick={() => messageApi.info('已刷新（模拟）')} />
                 </Tooltip>
               </Space>
             }
@@ -468,7 +469,7 @@ const CatalogManagement: React.FC = () => {
                               icon={<DeleteOutlined />}
                               onClick={(e) => {
                                 e.stopPropagation();
-                                Modal.confirm({
+                                modal.confirm({
                                   title: '确认删除',
                                   onOk: () => {
                                     const remove = (nodes: CatalogNode[]): CatalogNode[] => nodes
@@ -514,7 +515,7 @@ const CatalogManagement: React.FC = () => {
         onCancel={() => setEditing(false)}
         okText="保存"
         cancelText="取消"
-        destroyOnClose
+        destroyOnHidden
       >
         {selectedNode ? (
           <Form
