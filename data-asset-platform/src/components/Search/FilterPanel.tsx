@@ -85,10 +85,10 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
 
   return (
     <div className={styles.filterPanel}>
-      {/* 目录结构筛选 */}
+      {/* 筛选条件 */}
       {catalogGroups.length > 0 ? (
         <Card
-          title="目录结构"
+          title="筛选"
           size="small"
           extra={
             filter.catalogKeys?.length ? (
@@ -146,7 +146,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
         </Card>
       ) : (
         <Card
-          title="目录结构"
+          title="筛选"
           size="small"
           style={{ width: '100%' }}
         >

@@ -44,10 +44,23 @@
   height: fit-content;
   max-height: calc(100vh - 200px);
   overflow-y: auto;
+  padding: 16px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
 }
 
 .catalogGroup {
   margin-bottom: 16px;
+}
+
+/* 筛选面板内的卡片样式 */
+.filterPanel :global(.ant-card) {
+  margin-bottom: 16px;
+}
+
+.filterPanel :global(.ant-card:last-child) {
+  margin-bottom: 0;
 }
 
 .catalogGroupTitle {
@@ -206,7 +219,6 @@
 /* 分页器样式 - 减小与表格的间距 */
 .listColumn :global(.ant-pagination) {
   margin-top: 8px;
-  padding-top: 8px;
 }
 
 .loadingContainer {
@@ -347,6 +359,10 @@
   .listColumn :global(.ant-spin-container) {
     padding: 12px;
   }
+  
+  .filterPanel {
+    padding: 12px;
+  }
 }
 
 @media (max-width: 768px) {
@@ -363,6 +379,10 @@
   }
   
   .listColumn :global(.ant-spin-container) {
+    padding: 8px;
+  }
+  
+  .filterPanel {
     padding: 8px;
   }
   
