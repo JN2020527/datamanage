@@ -120,7 +120,7 @@ const SearchInput: React.FC<SearchInputProps> = ({
       <Space.Compact style={{ width: '100%' }}>
         <AutoComplete
           ref={inputRef}
-          style={{ flex: 1 }}
+          style={{ flex: 2 }} // Modified from flex: 1 to make the search box wider
           size={size}
           value={searchValue}
           options={showSuggestions ? options : []}

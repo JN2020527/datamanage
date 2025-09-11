@@ -12,7 +12,7 @@
 }
 
 .searchContainer {
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
   width: 100%;
 }
@@ -27,22 +27,51 @@
 /* 让输入本身在容器中有更大的最大宽度并居中 */
 .searchBarCentered :global(.search-input),
 .searchBarCentered :global(.ant-input-affix-wrapper) {
-  max-width: 960px;
-  width: 100%;
+  max-width: 1200px !important;
+  width: 100% !important;
 }
 
 /* 确保搜索框容器使用完整宽度 */
 .searchBarCentered :global(.ant-input-affix-wrapper) {
-  max-width: 960px !important;
+  max-width: 1200px !important;
+  width: 100% !important;
+}
+
+/* 增强搜索框容器样式优先级 */
+.searchBarCentered > div {
+  max-width: 1200px !important;
+  width: 100% !important;
+}
+
+/* 直接针对search-input-container类 */
+.searchBarCentered :global(.search-input-container) {
+  max-width: 1200px !important;
+  width: 100% !important;
+}
+
+/* 强制覆盖所有可能的Ant Design样式限制 */
+.searchBarCentered :global(.ant-input),
+.searchBarCentered :global(.ant-input-group),
+.searchBarCentered :global(.ant-input-group-wrapper) {
+  max-width: 1200px !important;
   width: 100% !important;
 }
 
 /* 搜索框样式 */
 .searchContainer :global(.search-input) {
-  border-radius: 10px !important;
+  border-radius: 20px !important;
   padding: 8px 16px !important;
   font-size: 16px !important;
   height: 48px !important;
+}
+
+/* 确保所有搜索框相关元素都有20px圆角 */
+.searchBarCentered :global(.ant-input-affix-wrapper) {
+  border-radius: 20px !important;
+}
+
+.searchBarCentered :global(.ant-input) {
+  border-radius: 20px !important;
 }
 
 .searchContainer :global(.search-input:focus) {
@@ -381,6 +410,17 @@
 }
 
 /* 响应式设计 */
+@media (max-width: 1400px) {
+  .searchContainer {
+    max-width: 1200px;
+  }
+  
+  .searchBarCentered :global(.search-input),
+  .searchBarCentered :global(.ant-input-affix-wrapper) {
+    max-width: 1000px;
+  }
+}
+
 @media (max-width: 1200px) {
   .contentSection {
     padding: 12px 16px;
@@ -388,6 +428,15 @@
   
   .searchSection {
     padding: 12px 16px;
+  }
+  
+  .searchContainer {
+    max-width: 960px;
+  }
+  
+  .searchBarCentered :global(.search-input),
+  .searchBarCentered :global(.ant-input-affix-wrapper) {
+    max-width: 800px;
   }
   
   .listColumn :global(.ant-spin-container) {
@@ -410,6 +459,16 @@
   
   .searchSection {
     padding: 8px 12px;
+  }
+  
+  .searchContainer {
+    max-width: 100%;
+    padding: 0 8px;
+  }
+  
+  .searchBarCentered :global(.search-input),
+  .searchBarCentered :global(.ant-input-affix-wrapper) {
+    max-width: 100%;
   }
   
   .listColumn :global(.ant-spin-container) {
