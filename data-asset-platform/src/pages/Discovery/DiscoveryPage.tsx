@@ -93,7 +93,6 @@ const DiscoveryPage: React.FC = () => {
             showHistory
             showPopular
             showTrending
-            categories={['数据表', '数据模型', '报表', '数据集', 'API']}
             loading={loading}
             autoFocus={false}
           />

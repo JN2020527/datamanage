@@ -416,6 +416,7 @@ const AdvancedSearch: React.FC<AdvancedSearchProps> = ({
             value={query}
             onChange={(e) => handleInputChange(e.target.value)}
             onKeyDown={handleKeyDown}
+            onPressEnter={() => handleSearch()}
             onFocus={() => {
               setIsDropdownOpen(true);
               debouncedGenerateSuggestions(query);
@@ -437,6 +438,13 @@ const AdvancedSearch: React.FC<AdvancedSearchProps> = ({
                     onClick={handleClear}
                   />
                 )}
+                <Button
+                  type="primary"
+                  size="small"
+                  icon={<SearchOutlined />}
+                  onClick={() => handleSearch()}
+                  className="search-button"
+                />
               </Space>
             }
             className="search-input"
@@ -543,16 +551,6 @@ const AdvancedSearch: React.FC<AdvancedSearchProps> = ({
           </AnimatePresence>
         </div>
 
-        {/* 搜索按钮 */}
-        <Button
-          type="primary"
-          size={size}
-          icon={<SearchOutlined />}
-          onClick={() => handleSearch()}
-          loading={loading}
-        >
-          搜索
-        </Button>
       </div>
     </div>
   );
