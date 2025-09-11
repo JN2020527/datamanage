@@ -17,6 +17,8 @@ export default defineConfig({
       '@mock': path.resolve(__dirname, './src/mock'),
       '@router': path.resolve(__dirname, './src/router'),
       '@assets': path.resolve(__dirname, './src/assets'),
+      '@constants': path.resolve(__dirname, './src/constants'),
+      '@styles': path.resolve(__dirname, './src/styles'),
     },
   },
   server: {

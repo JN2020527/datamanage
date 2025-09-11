@@ -1,11 +1,10 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Card, Checkbox, DatePicker, Button, Space, Divider, Badge } from 'antd';
+import { Card, Checkbox, Button, Space, Badge } from 'antd';
 import { ClearOutlined } from '@ant-design/icons';
 import { api } from '@mock/api';
+import { ASSET_TYPES, QUALITY_LEVELS, DEPARTMENTS } from '@constants/assetConfig';
 import type { SearchFilter, AssetType, QualityLevel } from '@types/index';
-import dayjs from 'dayjs';
 
-const { RangePicker } = DatePicker;
 
 interface FilterPanelProps {
   filter: SearchFilter;
@@ -20,23 +19,9 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
   collapsed = false,
   fullHeight = false,
 }) => {
-  const [departments, setDepartments] = useState<string[]>([]);
-  const [loading, setLoading] = useState(true);
   const [catalogTree, setCatalogTree] = useState<any[]>([]);
 
   useEffect(() => {
-    const loadDepartments = async () => {
-      try {
-        const { data } = await api.getDepartments();
-        setDepartments(data);
-      } catch (error) {
-        console.error('加载部门列表失败:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadDepartments();
     // 读取目录管理本地配置
     try {
       const raw = localStorage.getItem('dap_catalog_tree_v1');
@@ -45,22 +30,10 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
         const tree = Array.isArray(parsed) ? parsed : parsed?.tree;
         if (Array.isArray(tree)) setCatalogTree(tree);
       }
-    } catch {}
+    } catch (error) {
+      console.error('读取目录配置失败:', error);
+    }
   }, []);
-
-  const assetTypes: { label: string; value: AssetType; color: string }[] = [
-    { label: '数据表', value: 'table', color: '#1677FF' },
-    { label: '数据模型', value: 'model', color: '#722ED1' },
-    { label: '报表', value: 'report', color: '#52C41A' },
-    { label: '看板', value: 'dashboard', color: '#FAAD14' },
-  ];
-
-  const qualityLevels: { label: string; value: QualityLevel; color: string }[] = [
-    { label: '优秀 (90-100分)', value: 'excellent', color: '#52C41A' },
-    { label: '良好 (80-89分)', value: 'good', color: '#1677FF' },
-    { label: '一般 (70-79分)', value: 'fair', color: '#FAAD14' },
-    { label: '待改进 (<70分)', value: 'poor', color: '#FF4D4F' },
-  ];
 
   const handleAssetTypeChange = (checkedValues: AssetType[]) => {
     onChange({
@@ -83,20 +56,6 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
     });
   };
 
-  const handleDateRangeChange = (dates: any) => {
-    if (dates && dates.length === 2) {
-      onChange({
-        ...filter,
-        dateRange: [dates[0].format('YYYY-MM-DD'), dates[1].format('YYYY-MM-DD')],
-      });
-    } else {
-      onChange({
-        ...filter,
-        dateRange: undefined,
-      });
-    }
-  };
-
   const handleClearAll = () => {
     onChange({
       keyword: filter.keyword, // 保留搜索关键词
@@ -104,16 +63,14 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
   };
 
   // 计算当前筛选条件数量
-  const getFilterCount = () => {
+  const filterCount = useMemo(() => {
     let count = 0;
     if (filter.assetTypes?.length) count++;
     if (filter.departments?.length) count++;
     if (filter.qualityLevels?.length) count++;
-    if (filter.dateRange?.length) count++;
+    if (filter.catalogKeys?.length) count++;
     return count;
-  };
-
-  const filterCount = getFilterCount();
+  }, [filter]);
 
   const catalogGroups = useMemo(() => {
     const groups: Array<{ title: string; options: Array<{ label: string; value: string }> }> = [];
@@ -153,40 +110,157 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
   }
 
   return (
-    <Card
-      title={
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <span>目录结构</span>
-          {(filter.catalogKeys?.length || 0) > 0 && (
-            <Button type="link" size="small" onClick={() => onChange({ ...filter, catalogKeys: [] })}>清空</Button>
-          )}
-        </div>
-      }
-      size="small"
-      style={{ height: fullHeight ? '100%' : 'fit-content', display: 'flex', flexDirection: 'column' }}
-      bodyStyle={{ padding: '8px', flex: 1, overflow: 'auto' }}
-    >
-      {catalogGroups.length === 0 ? (
-        <div style={{ color: '#8c8c8c', fontSize: 13 }}>请先在 系统管理 → 目录管理 中配置目录。</div>
-      ) : (
-        catalogGroups.map(group => (
-          <div key={group.title} style={{ marginBottom: 12 }}>
-            <div style={{ fontSize: 13, color: '#595959', marginBottom: 8 }}>{group.title}</div>
-            <Checkbox.Group
-              value={filter.catalogKeys || []}
-              onChange={handleCatalogChange}
-              style={{ width: '100%' }}
+    <Space direction="vertical" style={{ width: '100%' }} size="middle">
+      {/* 资产类型筛选 */}
+      <Card
+        title="资产类型"
+        size="small"
+        extra={
+          filter.assetTypes?.length ? (
+            <Button 
+              type="link" 
+              size="small" 
+              onClick={() => onChange({ ...filter, assetTypes: [] })}
             >
-              <Space direction="vertical" style={{ width: '100%' }}>
-                {group.options.map(op => (
-                  <Checkbox key={op.value} value={op.value}>{op.label}</Checkbox>
-                ))}
-              </Space>
-            </Checkbox.Group>
-          </div>
-        ))
+              清空
+            </Button>
+          ) : null
+        }
+      >
+        <Checkbox.Group
+          value={filter.assetTypes || []}
+          onChange={handleAssetTypeChange}
+          style={{ width: '100%' }}
+        >
+          <Space direction="vertical" style={{ width: '100%' }}>
+            {ASSET_TYPES.map(type => (
+              <Checkbox key={type.value} value={type.value}>
+                <span style={{ color: type.color }}>
+                  {type.icon} {type.label}
+                </span>
+              </Checkbox>
+            ))}
+          </Space>
+        </Checkbox.Group>
+      </Card>
+
+      {/* 所属部门筛选 */}
+      <Card
+        title="所属部门"
+        size="small"
+        extra={
+          filter.departments?.length ? (
+            <Button 
+              type="link" 
+              size="small" 
+              onClick={() => onChange({ ...filter, departments: [] })}
+            >
+              清空
+            </Button>
+          ) : null
+        }
+      >
+        <Checkbox.Group
+          value={filter.departments || []}
+          onChange={handleDepartmentChange}
+          style={{ width: '100%' }}
+        >
+          <Space direction="vertical" style={{ width: '100%' }}>
+            {DEPARTMENTS.map(dept => (
+              <Checkbox key={dept.value} value={dept.value}>
+                <span style={{ color: dept.color }}>
+                  {dept.label}
+                </span>
+              </Checkbox>
+            ))}
+          </Space>
+        </Checkbox.Group>
+      </Card>
+
+      {/* 质量等级筛选 */}
+      <Card
+        title="质量等级"
+        size="small"
+        extra={
+          filter.qualityLevels?.length ? (
+            <Button 
+              type="link" 
+              size="small" 
+              onClick={() => onChange({ ...filter, qualityLevels: [] })}
+            >
+              清空
+            </Button>
+          ) : null
+        }
+      >
+        <Checkbox.Group
+          value={filter.qualityLevels || []}
+          onChange={handleQualityLevelChange}
+          style={{ width: '100%' }}
+        >
+          <Space direction="vertical" style={{ width: '100%' }}>
+            {QUALITY_LEVELS.map(level => (
+              <Checkbox key={level.value} value={level.value}>
+                <span style={{ color: level.color }}>
+                  {level.label}
+                </span>
+              </Checkbox>
+            ))}
+          </Space>
+        </Checkbox.Group>
+      </Card>
+
+      {/* 目录结构筛选 */}
+      {catalogGroups.length > 0 && (
+        <Card
+          title="目录结构"
+          size="small"
+          extra={
+            filter.catalogKeys?.length ? (
+              <Button 
+                type="link" 
+                size="small" 
+                onClick={() => onChange({ ...filter, catalogKeys: [] })}
+              >
+                清空
+              </Button>
+            ) : null
+          }
+        >
+          {catalogGroups.map(group => (
+            <div key={group.title} style={{ marginBottom: 12 }}>
+              <div style={{ fontSize: 13, color: '#595959', marginBottom: 8 }}>
+                {group.title}
+              </div>
+              <Checkbox.Group
+                value={filter.catalogKeys || []}
+                onChange={handleCatalogChange}
+                style={{ width: '100%' }}
+              >
+                <Space direction="vertical" style={{ width: '100%' }}>
+                  {group.options.map(op => (
+                    <Checkbox key={op.value} value={op.value}>
+                      {op.label}
+                    </Checkbox>
+                  ))}
+                </Space>
+              </Checkbox.Group>
+            </div>
+          ))}
+        </Card>
       )}
-    </Card>
+
+      {/* 清空所有筛选 */}
+      {filterCount > 0 && (
+        <Button 
+          block 
+          icon={<ClearOutlined />} 
+          onClick={handleClearAll}
+        >
+          清空所有筛选 ({filterCount})
+        </Button>
+      )}
+    </Space>
   );
 };
 

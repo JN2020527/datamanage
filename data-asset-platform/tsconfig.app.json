@@ -35,7 +35,9 @@
       "@types/*": ["src/types/*"],
       "@mock/*": ["src/mock/*"],
       "@router/*": ["src/router/*"],
-      "@assets/*": ["src/assets/*"]
+      "@assets/*": ["src/assets/*"],
+      "@constants/*": ["src/constants/*"],
+      "@styles/*": ["src/styles/*"]
     }
   },
   "include": ["src"]
