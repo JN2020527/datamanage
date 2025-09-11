@@ -5,9 +5,9 @@ import {
   Typography,
   Space,
   Button,
-  Radio,
   Spin,
   Empty,
+  Card,
   message,
 } from 'antd';
 import {
@@ -46,7 +46,7 @@ const DiscoveryPage: React.FC = () => {
   const [filter, setFilter] = useState<SearchFilter>({});
   const [pagination, setPagination] = useState<PaginationParams>({
     page: 1,
-    pageSize: 20,
+    pageSize: 10,
   });
   const [total, setTotal] = useState(0);
 
@@ -91,7 +91,30 @@ const DiscoveryPage: React.FC = () => {
         return sortOrder === 'asc' ? result : -result;
       });
       
-      setAssets(sortedData);
+      // 目录筛选：若设置了 catalogKeys，则在客户端根据模拟映射过滤
+      const catalogKeys = filter.catalogKeys || [];
+      let afterCatalog = sortedData;
+      if (catalogKeys.length) {
+        // 简化规则：根据目录管理中约定的 targetTypes 过滤（若存在）
+        try {
+          const raw = localStorage.getItem('dap_catalog_tree_v1');
+          const parsed = raw ? JSON.parse(raw) : null;
+          const tree = Array.isArray(parsed) ? parsed : parsed?.tree;
+          const keyToTypes = new Map<string, string[]>();
+          const collect = (nodes: any[]) => nodes?.forEach(n => {
+            if (n.key && Array.isArray(n.targetTypes)) keyToTypes.set(n.key, n.targetTypes);
+            if (n.children?.length) collect(n.children);
+          });
+          if (Array.isArray(tree)) collect(tree);
+          const wantedTypes = new Set<string>();
+          catalogKeys.forEach(k => (keyToTypes.get(k) || []).forEach(t => wantedTypes.add(t)));
+          if (wantedTypes.size > 0) {
+            afterCatalog = sortedData.filter(a => wantedTypes.has(a.type as any));
+          }
+        } catch {}
+      }
+
+      setAssets(afterCatalog);
       setTotal(totalCount || 0);
     } catch (error) {
       console.error('加载资产列表失败:', error);
@@ -165,94 +188,83 @@ const DiscoveryPage: React.FC = () => {
   );
 
   return (
-    <div className="page-container">
-
-      {/* 搜索区域（去掉标题描述，居中放大） */}
-      <div style={{ marginBottom: 24, display: 'flex', justifyContent: 'center' }}>
-        <div style={{ width: '100%', maxWidth: 960 }}>
+    <div className="page-container" style={{ height: '100vh', overflow: 'hidden', display: 'flex', flexDirection: 'column', paddingBottom: 0 }}>
+      {/* 顶部搜索区：紧凑布局 */}
+      <div style={{ padding: '8px 0', display: 'flex', justifyContent: 'center', flexShrink: 0 }}>
+        <div style={{ width: '100%', maxWidth: 800 }}>
           <AdvancedSearch
             onSearch={handleSearch}
             onSuggestionSelect={handleSearch}
             placeholder="搜索数据资产名称、描述、标签..."
-            showHistory={true}
-            showPopular={true}
-            showTrending={true}
+            showHistory
+            showPopular
+            showTrending
             categories={['数据表', '数据模型', '报表', '数据集', 'API']}
             loading={loading}
             autoFocus={false}
-            className="mb-4"
           />
-          <QuickSearchTags onTagClick={handleSearch} />
+          <div style={{ marginTop: '4px' }}>
+            <QuickSearchTags onTagClick={handleSearch} />
+          </div>
         </div>
       </div>
 
-      <Row gutter={[24, 24]}>
-        {/* 内容区：左筛选 + 右列表 */}
-        <Col xs={24} lg={6}>
-          <FilterPanel
-            filter={filter}
-            onChange={handleFilterChange}
-          />
+      {/* 下方内容区：左筛选 + 右侧列表容器内滚动 */}
+      <div style={{ flex: 1, minHeight: 0, overflow: 'hidden' }}>
+      <Row gutter={[12, 12]} style={{ height: '100%' }}>
+        <Col xs={24} lg={4} style={{ height: '100%' }}>
+          <FilterPanel fullHeight filter={filter} onChange={handleFilterChange} />
         </Col>
 
-        <Col xs={24} lg={18}>
-          {/* 工具栏 */}
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              marginBottom: '16px',
-              padding: '16px',
-              backgroundColor: '#fff',
-              borderRadius: '8px',
-              boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.03)',
+        <Col xs={24} lg={20} style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+          <Card 
+            bodyStyle={{ 
+              padding: 8, 
+              display: 'flex', 
+              flexDirection: 'column', 
+              height: '100%',
+              minHeight: 0 
+            }} 
+            style={{ 
+              height: '100%', 
+              display: 'flex', 
+              flexDirection: 'column' 
             }}
           >
-            <div>
-              <Text style={{ marginRight: '16px' }}>
-                找到 <Text strong>{total}</Text> 个资产
-              </Text>
-              
-              <Space>
-                {renderSortButton('updatedAt', '更新时间')}
-                {renderSortButton('qualityScore', '质量评分')}
-                {renderSortButton('accessCount', '访问量')}
-                {renderSortButton('name', '名称')}
-              </Space>
-            </div>
-          </div>
-
-          {/* 资产展示区域（列表优先） */}
-          {loading ? (
-            <div style={{ textAlign: 'center', padding: '60px' }}>
-              <Spin size="large" tip="加载中..." />
-            </div>
-          ) : assets.length === 0 ? (
-            <div style={{ textAlign: 'center', padding: '60px' }}>
-              <Empty
-                description="暂无匹配的资产"
-                image={Empty.PRESENTED_IMAGE_SIMPLE}
-              >
-                <Button type="primary" onClick={() => setFilter({})}>
-                  清空筛选条件
-                </Button>
-              </Empty>
-            </div>
-          ) : (
-            <AssetList
-              assets={assets}
-              loading={loading}
-              pagination={{
-                current: pagination.page,
-                pageSize: pagination.pageSize,
-                total,
-                onChange: handlePaginationChange,
-              }}
-            />
-          )}
+            {/* 列表内滚动容器 */}
+            {loading ? (
+              <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <Spin size="large" tip="加载中..." />
+              </div>
+            ) : assets.length === 0 ? (
+              <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <Empty description="暂无匹配的资产" image={Empty.PRESENTED_IMAGE_SIMPLE}>
+                  <Button type="primary" onClick={() => setFilter({})}>清空筛选条件</Button>
+                </Empty>
+              </div>
+            ) : (
+              <div style={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column' }}>
+                <AssetList
+                  assets={assets}
+                  loading={loading}
+                  pagination={{
+                    current: pagination.page,
+                    pageSize: pagination.pageSize,
+                    total,
+                    onChange: handlePaginationChange,
+                  }}
+                  summaryInfo={
+                    <Text style={{ color: '#595959', fontSize: '14px' }}>
+                      找到 <Text strong>{total}</Text> 个资产
+                    </Text>
+                  }
+                />
+              </div>
+            )}
+          </Card>
         </Col>
       </Row>
+      </div>
     </div>
   );
 };

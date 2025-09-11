@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Card, Checkbox, DatePicker, Button, Space, Divider, Badge } from 'antd';
 import { ClearOutlined } from '@ant-design/icons';
 import { api } from '@mock/api';
@@ -11,15 +11,18 @@ interface FilterPanelProps {
   filter: SearchFilter;
   onChange: (filter: SearchFilter) => void;
   collapsed?: boolean;
+  fullHeight?: boolean;
 }
 
 const FilterPanel: React.FC<FilterPanelProps> = ({
   filter,
   onChange,
   collapsed = false,
+  fullHeight = false,
 }) => {
   const [departments, setDepartments] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
+  const [catalogTree, setCatalogTree] = useState<any[]>([]);
 
   useEffect(() => {
     const loadDepartments = async () => {
@@ -34,6 +37,15 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
     };
 
     loadDepartments();
+    // 读取目录管理本地配置
+    try {
+      const raw = localStorage.getItem('dap_catalog_tree_v1');
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        const tree = Array.isArray(parsed) ? parsed : parsed?.tree;
+        if (Array.isArray(tree)) setCatalogTree(tree);
+      }
+    } catch {}
   }, []);
 
   const assetTypes: { label: string; value: AssetType; color: string }[] = [
@@ -103,6 +115,31 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
 
   const filterCount = getFilterCount();
 
+  const catalogGroups = useMemo(() => {
+    const groups: Array<{ title: string; options: Array<{ label: string; value: string }> }> = [];
+    const visit = (nodes: any[], parentTitle?: string) => {
+      nodes?.forEach(n => {
+        if (n.type === 'folder' && n.children?.length) {
+          const options = n.children
+            .filter((c: any) => c.visible !== false)
+            .map((c: any) => ({ label: c.title, value: c.key }));
+          if (options.length) groups.push({ title: n.title, options });
+        } else if (n.children?.length) {
+          visit(n.children, n.title);
+        }
+      });
+    };
+    visit(catalogTree);
+    return groups;
+  }, [catalogTree]);
+
+  const handleCatalogChange = (checkedValues: string[]) => {
+    onChange({
+      ...filter,
+      catalogKeys: checkedValues,
+    });
+  };
+
   if (collapsed) {
     return (
       <div style={{ padding: '16px 0' }}>
@@ -119,146 +156,36 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
     <Card
       title={
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <span>筛选条件</span>
-          {filterCount > 0 && (
-            <Badge count={filterCount} style={{ backgroundColor: '#1677FF' }}>
-              <Button
-                type="link"
-                size="small"
-                icon={<ClearOutlined />}
-                onClick={handleClearAll}
-              >
-                清空
-              </Button>
-            </Badge>
+          <span>目录结构</span>
+          {(filter.catalogKeys?.length || 0) > 0 && (
+            <Button type="link" size="small" onClick={() => onChange({ ...filter, catalogKeys: [] })}>清空</Button>
           )}
         </div>
       }
       size="small"
-      style={{ height: 'fit-content' }}
-      bodyStyle={{ padding: '16px' }}
+      style={{ height: fullHeight ? '100%' : 'fit-content', display: 'flex', flexDirection: 'column' }}
+      bodyStyle={{ padding: '8px', flex: 1, overflow: 'auto' }}
     >
-      {/* 资产类型 */}
-      <div style={{ marginBottom: '20px' }}>
-        <div style={{ fontSize: '14px', fontWeight: 500, marginBottom: '12px' }}>
-          🗂️ 资产类型
-        </div>
-        <Checkbox.Group
-          value={filter.assetTypes || []}
-          onChange={handleAssetTypeChange}
-          style={{ width: '100%' }}
-        >
-          <Space direction="vertical" style={{ width: '100%' }}>
-            {assetTypes.map(type => (
-              <Checkbox key={type.value} value={type.value}>
-                <span style={{ color: type.color, marginRight: '4px' }}>●</span>
-                {type.label}
-              </Checkbox>
-            ))}
-          </Space>
-        </Checkbox.Group>
-      </div>
-
-      <Divider style={{ margin: '16px 0' }} />
-
-      {/* 所属部门 */}
-      <div style={{ marginBottom: '20px' }}>
-        <div style={{ fontSize: '14px', fontWeight: 500, marginBottom: '12px' }}>
-          👥 所属部门
-        </div>
-        <Checkbox.Group
-          value={filter.departments || []}
-          onChange={handleDepartmentChange}
-          style={{ width: '100%' }}
-        >
-          <Space direction="vertical" style={{ width: '100%' }}>
-            {departments.map(dept => (
-              <Checkbox key={dept} value={dept}>
-                {dept}
-              </Checkbox>
-            ))}
-          </Space>
-        </Checkbox.Group>
-      </div>
-
-      <Divider style={{ margin: '16px 0' }} />
-
-      {/* 质量等级 */}
-      <div style={{ marginBottom: '20px' }}>
-        <div style={{ fontSize: '14px', fontWeight: 500, marginBottom: '12px' }}>
-          ⭐ 质量等级
-        </div>
-        <Checkbox.Group
-          value={filter.qualityLevels || []}
-          onChange={handleQualityLevelChange}
-          style={{ width: '100%' }}
-        >
-          <Space direction="vertical" style={{ width: '100%' }}>
-            {qualityLevels.map(level => (
-              <Checkbox key={level.value} value={level.value}>
-                <span style={{ color: level.color, marginRight: '4px' }}>●</span>
-                {level.label}
-              </Checkbox>
-            ))}
-          </Space>
-        </Checkbox.Group>
-      </div>
-
-      <Divider style={{ margin: '16px 0' }} />
-
-      {/* 创建时间 */}
-      <div style={{ marginBottom: '20px' }}>
-        <div style={{ fontSize: '14px', fontWeight: 500, marginBottom: '12px' }}>
-          📅 创建时间
-        </div>
-        <RangePicker
-          style={{ width: '100%' }}
-          value={
-            filter.dateRange
-              ? [dayjs(filter.dateRange[0]), dayjs(filter.dateRange[1])]
-              : null
-          }
-          onChange={handleDateRangeChange}
-          placeholder={['开始日期', '结束日期']}
-          allowClear
-        />
-      </div>
-
-      {/* 快速筛选 */}
-      <div>
-        <div style={{ fontSize: '14px', fontWeight: 500, marginBottom: '12px' }}>
-          🔥 快速筛选
-        </div>
-        <Space direction="vertical" style={{ width: '100%' }}>
-          <Button
-            type="text"
-            size="small"
-            block
-            style={{ textAlign: 'left', padding: '4px 8px' }}
-            onClick={() => handleDateRangeChange([dayjs().subtract(7, 'day'), dayjs()])}
-          >
-            最近一周
-          </Button>
-          <Button
-            type="text"
-            size="small"
-            block
-            style={{ textAlign: 'left', padding: '4px 8px' }}
-            onClick={() => handleDateRangeChange([dayjs().subtract(30, 'day'), dayjs()])}
-          >
-            最近一月
-          </Button>
-          <Button
-            type="text"
-            size="small"
-            block
-            style={{ textAlign: 'left', padding: '4px 8px' }}
-            onClick={() => handleQualityLevelChange(['excellent'])}
-          >
-            高质量资产
-          </Button>
-        </Space>
-      </div>
+      {catalogGroups.length === 0 ? (
+        <div style={{ color: '#8c8c8c', fontSize: 13 }}>请先在 系统管理 → 目录管理 中配置目录。</div>
+      ) : (
+        catalogGroups.map(group => (
+          <div key={group.title} style={{ marginBottom: 12 }}>
+            <div style={{ fontSize: 13, color: '#595959', marginBottom: 8 }}>{group.title}</div>
+            <Checkbox.Group
+              value={filter.catalogKeys || []}
+              onChange={handleCatalogChange}
+              style={{ width: '100%' }}
+            >
+              <Space direction="vertical" style={{ width: '100%' }}>
+                {group.options.map(op => (
+                  <Checkbox key={op.value} value={op.value}>{op.label}</Checkbox>
+                ))}
+              </Space>
+            </Checkbox.Group>
+          </div>
+        ))
+      )}
     </Card>
   );
 };

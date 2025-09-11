@@ -96,6 +96,8 @@ export interface SearchFilter {
   departments?: string[];
   qualityLevels?: QualityLevel[];
   dateRange?: [string, string];
+  // 目录筛选（来自目录管理配置的节点 key）
+  catalogKeys?: string[];
 }
 
 // API响应类型

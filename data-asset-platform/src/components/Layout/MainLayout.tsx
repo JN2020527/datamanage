@@ -466,7 +466,7 @@ const MainLayout: React.FC = () => {
           {/* 面包屑已移除 */}
 
           {/* 页面内容 */}
-          <Content className="page-content">
+          <Content className={`page-content ${location.pathname === '/discovery' ? 'discovery-page' : ''}`}>
             <Outlet />
           </Content>
         </Layout>

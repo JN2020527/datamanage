@@ -24,6 +24,7 @@ interface AssetListProps {
   };
   onEdit?: (asset: Asset) => void;
   onView?: (asset: Asset) => void;
+  summaryInfo?: React.ReactNode;
 }
 
 const AssetList: React.FC<AssetListProps> = ({
@@ -32,6 +33,7 @@ const AssetList: React.FC<AssetListProps> = ({
   pagination,
   onEdit,
   onView,
+  summaryInfo,
 }) => {
   const navigate = useNavigate();
 
@@ -151,30 +153,6 @@ const AssetList: React.FC<AssetListProps> = ({
       ),
     },
     {
-      title: '质量评分',
-      dataIndex: 'qualityScore',
-      key: 'qualityScore',
-      width: 120,
-      align: 'center',
-      render: (score: number) => {
-        const qualityInfo = getQualityInfo(score);
-        return (
-          <div style={{ textAlign: 'center' }}>
-            <div style={{ color: qualityInfo.color, fontWeight: 500 }}>
-              {score}分
-            </div>
-            <Rate
-              disabled
-              allowHalf
-              value={score / 20}
-              style={{ fontSize: '12px' }}
-            />
-          </div>
-        );
-      },
-      sorter: (a, b) => a.qualityScore - b.qualityScore,
-    },
-    {
       title: '访问量',
       dataIndex: 'accessCount',
       key: 'accessCount',
@@ -263,35 +241,100 @@ const AssetList: React.FC<AssetListProps> = ({
   ];
 
   return (
-    <Table
-      columns={columns}
-      dataSource={assets}
-      rowKey="id"
-      loading={loading}
-      pagination={
-        pagination
-          ? {
-              ...pagination,
-              showSizeChanger: pagination.showSizeChanger ?? true,
-              showQuickJumper: pagination.showQuickJumper ?? true,
-              showTotal: (total, range) =>
-                `第 ${range[0]}-${range[1]} 条 / 共 ${total} 条`,
-              pageSizeOptions: ['10', '20', '50', '100'],
-            }
-          : false
-      }
-      scroll={{ x: 1400 }}
-      size="middle"
-      style={{
-        backgroundColor: '#fff',
-        borderRadius: '8px',
-        boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.03)',
-      }}
-      onRow={(record) => ({
-        style: { cursor: 'pointer' },
-        onClick: () => handleView(record),
-      })}
-    />
+    <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+      <div style={{ flex: 1, minHeight: 0, overflow: 'hidden' }}>
+        <Table
+          columns={columns}
+          dataSource={assets}
+          rowKey="id"
+          loading={loading}
+          pagination={false} // 禁用内置分页器
+          scroll={{ x: 1400, y: 'calc(100vh - 280px)' }}
+          sticky={{ offsetHeader: 0 }}
+          size="middle"
+          style={{
+            backgroundColor: '#fff',
+            borderRadius: '8px',
+            boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.03)',
+          }}
+          onRow={(record) => ({
+            style: { cursor: 'pointer' },
+            onClick: () => handleView(record),
+          })}
+        />
+      </div>
+      {/* 自定义分页器容器 */}
+      {pagination && (
+        <div style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          padding: '8px 0',
+          backgroundColor: '#fff',
+          borderTop: '1px solid #f0f0f0',
+          flexShrink: 0,
+          minHeight: '40px'
+        }}>
+          <div>
+            {summaryInfo}
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+            <span style={{ color: '#595959', fontSize: '14px' }}>
+              第 {((pagination.current - 1) * pagination.pageSize) + 1}-
+              {Math.min(pagination.current * pagination.pageSize, pagination.total)} 条 / 共 {pagination.total} 条
+            </span>
+            <select
+              value={pagination.pageSize}
+              onChange={(e) => pagination.onChange?.(1, Number(e.target.value))}
+              style={{
+                padding: '4px 8px',
+                border: '1px solid #d9d9d9',
+                borderRadius: '6px',
+                fontSize: '14px'
+              }}
+            >
+              <option value={10}>10 条/页</option>
+              <option value={20}>20 条/页</option>
+              <option value={50}>50 条/页</option>
+              <option value={100}>100 条/页</option>
+            </select>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <button
+                onClick={() => pagination.onChange?.(Math.max(1, pagination.current - 1), pagination.pageSize)}
+                disabled={pagination.current <= 1}
+                style={{
+                  padding: '4px 8px',
+                  border: '1px solid #d9d9d9',
+                  borderRadius: '6px',
+                  backgroundColor: pagination.current <= 1 ? '#f5f5f5' : '#fff',
+                  cursor: pagination.current <= 1 ? 'not-allowed' : 'pointer',
+                  fontSize: '14px'
+                }}
+              >
+                上一页
+              </button>
+              <span style={{ fontSize: '14px', color: '#595959' }}>
+                {pagination.current} / {Math.ceil(pagination.total / pagination.pageSize)}
+              </span>
+              <button
+                onClick={() => pagination.onChange?.(Math.min(Math.ceil(pagination.total / pagination.pageSize), pagination.current + 1), pagination.pageSize)}
+                disabled={pagination.current >= Math.ceil(pagination.total / pagination.pageSize)}
+                style={{
+                  padding: '4px 8px',
+                  border: '1px solid #d9d9d9',
+                  borderRadius: '6px',
+                  backgroundColor: pagination.current >= Math.ceil(pagination.total / pagination.pageSize) ? '#f5f5f5' : '#fff',
+                  cursor: pagination.current >= Math.ceil(pagination.total / pagination.pageSize) ? 'not-allowed' : 'pointer',
+                  fontSize: '14px'
+                }}
+              >
+                下一页
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
   );
 };
 
