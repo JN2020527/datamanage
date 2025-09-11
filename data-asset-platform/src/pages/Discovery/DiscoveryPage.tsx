@@ -111,7 +111,7 @@ const DiscoveryPage: React.FC = () => {
           </Col>
 
           <Col xs={24} lg={20} className={styles.listColumn}>
-            <Card className={styles.assetListCard} bodyStyle={{ padding: 0 }}>
+            <div className={styles.assetListContainer}>
               <AssetList
                 assets={assets}
                 loading={loading}
@@ -122,7 +122,7 @@ const DiscoveryPage: React.FC = () => {
                   onChange: handlePaginationChange,
                 }}
               />
-            </Card>
+            </div>
           </Col>
         </Row>
       </div>

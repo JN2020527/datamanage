@@ -4,6 +4,7 @@
   display: flex;
   flex-direction: column;
   background-color: #f5f5f5;
+  overflow: hidden;
 }
 
 .searchSection {
@@ -27,6 +28,7 @@
   min-height: 0;
   padding: 16px 24px;
   overflow: hidden;
+  background-color: #f5f5f5;
 }
 
 .contentRow {
@@ -37,33 +39,99 @@
   height: 100%;
 }
 
+/* 筛选面板样式 */
+.filterPanel {
+  height: fit-content;
+  max-height: calc(100vh - 200px);
+  overflow-y: auto;
+}
+
+.catalogGroup {
+  margin-bottom: 16px;
+}
+
+.catalogGroupTitle {
+  font-size: 14px;
+  color: #262626;
+  font-weight: 500;
+  margin-bottom: 8px;
+  padding: 4px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.catalogOption {
+  margin: 2px 0;
+  padding: 2px 0;
+}
+
+.catalogOptionLabel {
+  font-size: 13px;
+}
+
+.emptyState {
+  color: #8c8c8c;
+  font-size: 13px;
+  text-align: center;
+  padding: 20px 0;
+}
+
+.emptyStateIcon {
+  margin-bottom: 8px;
+  font-size: 24px;
+}
+
+.emptyStateHint {
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+.clearButton {
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid #f0f0f0;
+}
+
 .listColumn {
   height: 100%;
   display: flex;
   flex-direction: column;
 }
 
-.assetListCard {
+/* 简化的资产列表容器 */
+.assetListContainer {
   height: 100%;
-  display: flex;
-  flex-direction: column;
+  background: #fff;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-}
-
-.assetListCardBody {
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  min-height: 0;
+  padding: 16px;
 }
 
 .listContainer {
-  flex: 1;
-  min-height: 0;
-  display: flex;
-  flex-direction: column;
+  /* 移除复杂的flex设置，让Ant Design表格使用默认布局 */
+}
+
+
+/* 简化的表格样式 */
+.assetListContainer :global(.ant-table-thead > tr > th) {
+  background: #fafafa;
+  border-bottom: 1px solid #f0f0f0;
+  font-weight: 500;
+  color: #262626;
+}
+
+.assetListContainer :global(.ant-table-tbody > tr > td) {
+  border-bottom: 1px solid #f5f5f5;
+}
+
+.assetListContainer :global(.ant-table-tbody > tr:hover > td) {
+  background: #f8f9ff;
+}
+
+/* 分页器样式 - 移除上边框避免与表格底部边框重叠 */
+.assetListContainer :global(.ant-pagination) {
+  margin-top: 16px;
+  padding-top: 16px;
+  /* 移除 border-top，避免与表格底部边框重叠 */
 }
 
 .loadingContainer {
@@ -199,6 +267,10 @@
   .searchSection {
     padding: 12px 16px;
   }
+  
+  .assetListContainer {
+    padding: 12px;
+  }
 }
 
 @media (max-width: 768px) {
@@ -212,6 +284,10 @@
   
   .searchSection {
     padding: 8px 12px;
+  }
+  
+  .assetListContainer {
+    padding: 8px;
   }
   
   .assetNameCell {
