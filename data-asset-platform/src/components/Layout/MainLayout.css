@@ -266,6 +266,11 @@
   overflow: hidden;
 }
 
+/* 资产目录页面特殊背景处理 */
+.layout-content:has(.discovery-page) {
+  background: transparent;
+}
+
 /* 面包屑已移除，相关样式清理 */
 
 .page-content {
@@ -275,9 +280,11 @@
   background: #f5f5f5;
 }
 
-/* 资产目录页面特殊样式 - 禁用滚动条 */
+/* 资产目录页面特殊样式 - 禁用滚动条和移除背景 */
 .page-content.discovery-page {
   overflow: hidden;
+  background: transparent;
+  padding: 0;
 }
 
 /* 响应式适配 */

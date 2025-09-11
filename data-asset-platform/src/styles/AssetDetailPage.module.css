@@ -1,0 +1,315 @@
+/* 资产详情页面样式 */
+
+.assetDetailPage {
+  min-height: 100vh;
+  background: #f5f5f5;
+}
+
+.headerCard {
+  margin-bottom: 24px;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+}
+
+.contentRow {
+  margin: 0 !important;
+}
+
+.leftPanel {
+  height: fit-content;
+}
+
+.rightPanel {
+  height: fit-content;
+}
+
+.leftCard {
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+  min-height: 600px;
+}
+
+.rightCard {
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  transition: box-shadow 0.3s ease;
+  height: fit-content;
+  max-width: 320px;
+  min-width: 240px;
+}
+
+.rightCard:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+.infoSection {
+  margin-bottom: 8px;
+}
+
+.assetIcon {
+  width: 64px;
+  height: 64px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  margin-right: 16px;
+  background-color: rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.assetTitle {
+  margin: 0 !important;
+  margin-bottom: 8px !important;
+  font-weight: 600;
+}
+
+.assetId {
+  margin-top: 8px;
+  color: #8c8c8c;
+  font-size: 14px;
+  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+}
+
+.assetDescription {
+  color: #595959;
+  font-size: 16px;
+  line-height: 1.6;
+  margin-bottom: 16px !important;
+}
+
+.qualityCard {
+  text-align: center;
+}
+
+.qualityScore {
+  font-size: 32px;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.qualityLabel {
+  color: #8c8c8c;
+  margin-bottom: 16px;
+}
+
+.qualityRate {
+  display: block;
+  text-align: center;
+  margin-bottom: 16px !important;
+}
+
+.qualityTag {
+  padding: 4px 12px;
+  border-radius: 6px;
+  font-weight: 500;
+}
+
+.statisticCard {
+  text-align: center;
+  padding: 16px;
+}
+
+.timelineCard {
+  padding: 16px;
+}
+
+.timelineItem {
+  font-size: 13px;
+}
+
+.timelineItemTitle {
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.timelineItemMeta {
+  color: #8c8c8c;
+  font-size: 12px;
+}
+
+/* 响应式设计 */
+@media (max-width: 1200px) {
+  .rightCard {
+    max-width: 280px;
+    min-width: 220px;
+  }
+  
+  .rightCard :global(.ant-card-body) {
+    padding: 16px 12px;
+  }
+  
+  .infoSection :global(.ant-descriptions-item-label) {
+    width: 70px;
+    font-size: 11px;
+  }
+  
+  .infoSection :global(.ant-descriptions-item-content) {
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 1400px) and (min-width: 1201px) {
+  .infoSection :global(.ant-descriptions-item-label) {
+    width: 75px;
+  }
+}
+
+@media (max-width: 992px) {
+  .contentRow {
+    flex-direction: column;
+  }
+  
+  .leftPanel {
+    margin-bottom: 24px;
+  }
+  
+  .rightCard {
+    max-width: 100%;
+    min-width: 300px;
+  }
+  
+  .infoSection :global(.ant-descriptions-item-label) {
+    width: 90px;
+    font-size: 13px;
+  }
+  
+  .infoSection :global(.ant-descriptions-item-content) {
+    font-size: 13px;
+  }
+  
+  .assetIcon {
+    width: 48px;
+    height: 48px;
+    font-size: 24px;
+    margin-right: 12px;
+  }
+  
+  .assetTitle {
+    font-size: 20px !important;
+  }
+  
+  .qualityScore {
+    font-size: 24px;
+  }
+}
+
+@media (max-width: 768px) {
+  .headerCard {
+    margin-bottom: 16px;
+  }
+  
+  .assetDescription {
+    font-size: 14px;
+  }
+  
+  .rightCard {
+    margin-bottom: 12px;
+  }
+}
+
+/* Tabs样式优化 */
+.leftCard :global(.ant-tabs-nav) {
+  padding: 0 24px;
+  background: #fafafa;
+  border-radius: 12px 12px 0 0;
+}
+
+.leftCard :global(.ant-tabs-tab) {
+  font-weight: 500;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+}
+
+.leftCard :global(.ant-tabs-tab-active) {
+  font-weight: 600;
+}
+
+.leftCard :global(.ant-tabs-tab span) {
+  display: flex;
+  align-items: center;
+}
+
+.leftCard :global(.ant-tabs-content-holder) {
+  padding: 24px;
+}
+
+/* 右侧卡片标题样式 */
+.rightCard :global(.ant-card-head) {
+  background: #fafafa;
+  border-radius: 12px 12px 0 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.rightCard :global(.ant-card-head-title) {
+  font-weight: 600;
+  font-size: 15px;
+  color: #262626;
+}
+
+.rightCard :global(.ant-card-body) {
+  padding: 20px 16px;
+}
+
+/* 信息区域样式 */
+.infoSection :global(.ant-descriptions-item-label) {
+  font-size: 12px;
+  color: #8c8c8c;
+  font-weight: 400;
+  width: 80px;
+  line-height: 1.4;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.infoSection :global(.ant-descriptions-item-content) {
+  font-size: 12px;
+  color: #262626;
+  font-weight: 400;
+  line-height: 1.4;
+  word-break: break-word;
+}
+
+.infoSection :global(.ant-descriptions-item) {
+  padding-bottom: 10px;
+}
+
+/* 分割线样式 */
+.rightCard :global(.ant-divider-horizontal) {
+  margin: 16px 0;
+  border-color: #f0f0f0;
+}
+
+/* 小节标题样式 */
+.rightCard :global(.ant-typography h5) {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1890ff !important;
+  margin-bottom: 12px !important;
+  margin-top: 4px !important;
+}
+
+/* 统计数据样式优化 */
+.rightCard :global(.ant-statistic-title) {
+  font-size: 13px;
+  color: #8c8c8c;
+  margin-bottom: 8px;
+}
+
+.rightCard :global(.ant-statistic-content) {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+/* 时间轴样式优化 */
+.rightCard :global(.ant-timeline-item-head) {
+  width: 8px;
+  height: 8px;
+}
+
+.rightCard :global(.ant-timeline-item-content) {
+  font-size: 13px;
+}

@@ -124,7 +124,7 @@ export const SEARCH_CONFIG = {
  * 表格配置
  */
 export const TABLE_CONFIG = {
-  scroll: { x: 1400, y: 'calc(100vh - 320px)' },
+  scroll: { x: 1200, y: 'calc(100vh - 320px)' },
   size: 'middle' as const,
   sticky: { offsetHeader: 0 },
 } as const;

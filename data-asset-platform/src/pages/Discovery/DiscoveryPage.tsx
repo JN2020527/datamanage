@@ -105,7 +105,7 @@ const DiscoveryPage: React.FC = () => {
 
       {/* 内容区域 */}
       <div className={styles.contentSection}>
-        <Row gutter={16} className={styles.contentRow}>
+        <Row gutter={[16, 16]} align="top" className={styles.contentRow}>
           <Col xs={24} lg={4} className={styles.filterColumn}>
             <FilterPanel filter={filter} onChange={handleFilterChange} />
           </Col>

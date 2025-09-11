@@ -23,6 +23,9 @@ import {
   UploadOutlined,
   SaveOutlined,
   EyeOutlined,
+  FileTextOutlined,
+  UnorderedListOutlined,
+  SettingOutlined,
 } from '@ant-design/icons';
 import { useNotification } from '@hooks/useNotification';
 import type { Asset, Field } from '@types/index';
@@ -372,17 +375,32 @@ const AssetForm: React.FC<AssetFormProps> = ({ initialData, onSave, onCancel, mo
           items={[
             {
               key: 'basic',
-              label: '📋 基本信息',
+              label: (
+                <span>
+                  <FileTextOutlined style={{ marginRight: '8px' }} />
+                  基本信息
+                </span>
+              ),
               children: basicInfoTab,
             },
             {
               key: 'fields',
-              label: '🗂️ 字段定义',
+              label: (
+                <span>
+                  <UnorderedListOutlined style={{ marginRight: '8px' }} />
+                  字段定义
+                </span>
+              ),
               children: fieldsTab,
             },
             {
               key: 'config',
-              label: '⚙️ 高级配置',
+              label: (
+                <span>
+                  <SettingOutlined style={{ marginRight: '8px' }} />
+                  高级配置
+                </span>
+              ),
               children: configTab,
             },
           ]}

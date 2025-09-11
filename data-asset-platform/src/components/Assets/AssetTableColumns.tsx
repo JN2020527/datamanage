@@ -170,7 +170,7 @@ export const createAssetTableColumns = (options?: {
     title: '资产名称',
     dataIndex: 'name',
     key: 'name',
-    width: 300,
+    width: 260,
     fixed: 'left',
     render: (name: string, record: Asset) => (
       <AssetNameCell name={name} record={record} />
@@ -180,7 +180,7 @@ export const createAssetTableColumns = (options?: {
     title: '类型',
     dataIndex: 'type',
     key: 'type',
-    width: 100,
+    width: 90,
     render: (type: string) => <AssetTypeCell type={type} />,
     filters: [
       { text: '数据表', value: 'table' },
@@ -194,7 +194,7 @@ export const createAssetTableColumns = (options?: {
     title: '描述',
     dataIndex: 'description',
     key: 'description',
-    width: 300,
+    width: 280,
     render: (description: string) => (
       <AssetDescriptionCell description={description} />
     ),
@@ -203,7 +203,7 @@ export const createAssetTableColumns = (options?: {
     title: '负责人',
     dataIndex: 'owner',
     key: 'owner',
-    width: 120,
+    width: 110,
     render: (owner: string, record: Asset) => (
       <OwnerCell owner={owner} department={record.department} />
     ),
@@ -212,7 +212,7 @@ export const createAssetTableColumns = (options?: {
     title: '访问量',
     dataIndex: 'accessCount',
     key: 'accessCount',
-    width: 100,
+    width: 80,
     align: 'center',
     render: (count: number) => <AccessCountCell count={count} />,
     sorter: (a, b) => a.accessCount - b.accessCount,
@@ -221,7 +221,7 @@ export const createAssetTableColumns = (options?: {
     title: '更新时间',
     dataIndex: 'updatedAt',
     key: 'updatedAt',
-    width: 120,
+    width: 110,
     render: (updatedAt: string) => <UpdateTimeCell updatedAt={updatedAt} />,
     sorter: (a, b) => new Date(a.updatedAt).getTime() - new Date(b.updatedAt).getTime(),
   },
@@ -229,13 +229,13 @@ export const createAssetTableColumns = (options?: {
     title: '标签',
     dataIndex: 'tags',
     key: 'tags',
-    width: 200,
+    width: 160,
     render: (tags: string[]) => <TagsCell tags={tags} />,
   },
   {
     title: '操作',
     key: 'actions',
-    width: 120,
+    width: 100,
     fixed: 'right',
     render: (_, record: Asset) => (
       <ActionsCell 

@@ -1,6 +1,7 @@
 import dayjs from 'dayjs';
 import 'dayjs/locale/zh-cn';
 import relativeTime from 'dayjs/plugin/relativeTime';
+import { getAssetTypeConfig } from '@constants/assetConfig';
 
 dayjs.locale('zh-cn');
 dayjs.extend(relativeTime);
@@ -83,13 +84,12 @@ export const getQualityInfo = (score: number) => {
  * 获取资产类型图标和文本
  */
 export const getAssetTypeInfo = (type: string) => {
-  const typeMap = {
-    table: { icon: '📊', text: '数据表', color: '#1890ff' },
-    model: { icon: '🏗️', text: '数据模型', color: '#722ed1' },
-    report: { icon: '📈', text: '报表', color: '#52c41a' },
-    dashboard: { icon: '📋', text: '看板', color: '#fa8c16' },
+  const config = getAssetTypeConfig(type as any);
+  return {
+    icon: config.icon,
+    text: config.label,
+    color: config.color
   };
-  return typeMap[type as keyof typeof typeMap] || { icon: '📄', text: '未知', color: '#d9d9d9' };
 };
 
 /**
