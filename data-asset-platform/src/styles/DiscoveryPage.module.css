@@ -12,9 +12,29 @@
 }
 
 .searchContainer {
-  max-width: 1000px;
+  max-width: 1200px;
   margin: 0 auto;
   width: 100%;
+}
+
+/* 居中 AdvancedSearch 外层 */
+.searchBarCentered {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+/* 让输入本身在容器中有更大的最大宽度并居中 */
+.searchBarCentered :global(.search-input),
+.searchBarCentered :global(.ant-input-affix-wrapper) {
+  max-width: 960px;
+  width: 100%;
+}
+
+/* 确保搜索框容器使用完整宽度 */
+.searchBarCentered :global(.ant-input-affix-wrapper) {
+  max-width: 960px !important;
+  width: 100% !important;
 }
 
 /* 搜索框样式 */

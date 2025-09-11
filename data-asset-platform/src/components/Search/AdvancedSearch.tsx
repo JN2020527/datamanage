@@ -409,7 +409,7 @@ const AdvancedSearch: React.FC<AdvancedSearchProps> = ({
         )}
 
         {/* 搜索输入框 */}
-        <div className="flex-1 relative">
+        <div className="relative" style={{ width: '100%', maxWidth: 960, margin: '0 auto' }}>
           <Input
             ref={inputRef}
             size={size}
@@ -448,6 +448,7 @@ const AdvancedSearch: React.FC<AdvancedSearchProps> = ({
               </Space>
             }
             className="search-input"
+            style={{ width: '100%' }}
           />
 
           {/* 建议下拉菜单 */}

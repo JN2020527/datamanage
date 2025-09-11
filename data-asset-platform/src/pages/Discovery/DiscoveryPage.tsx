@@ -93,6 +93,7 @@ const DiscoveryPage: React.FC = () => {
             showHistory
             showPopular
             showTrending
+            className={styles.searchBarCentered}
             loading={loading}
             autoFocus={false}
           />
