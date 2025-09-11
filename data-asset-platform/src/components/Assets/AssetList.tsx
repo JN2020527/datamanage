@@ -60,28 +60,26 @@ const AssetList: React.FC<AssetListProps> = ({
   }
 
   return (
-    <div className={styles.listContainer}>
-      <Table
-        columns={columns}
-        dataSource={assets}
-        rowKey="id"
-        loading={loading}
-        pagination={pagination ? {
-          ...PAGINATION_CONFIG,
-          current: pagination.current,
-          pageSize: pagination.pageSize,
-          total: pagination.total,
-          onChange: pagination.onChange,
-        } : false}
-        scroll={TABLE_CONFIG.scroll}
-        sticky={TABLE_CONFIG.sticky}
-        size={TABLE_CONFIG.size}
-        onRow={(record) => ({
-          style: { cursor: 'pointer' },
-          onClick: () => handleRowClick(record),
-        })}
-      />
-    </div>
+    <Table
+      columns={columns}
+      dataSource={assets}
+      rowKey="id"
+      loading={loading}
+      pagination={pagination ? {
+        ...PAGINATION_CONFIG,
+        current: pagination.current,
+        pageSize: pagination.pageSize,
+        total: pagination.total,
+        onChange: pagination.onChange,
+      } : false}
+      scroll={TABLE_CONFIG.scroll}
+      sticky={TABLE_CONFIG.sticky}
+      size={TABLE_CONFIG.size}
+      onRow={(record) => ({
+        style: { cursor: 'pointer' },
+        onClick: () => handleRowClick(record),
+      })}
+    />
   );
 };
 

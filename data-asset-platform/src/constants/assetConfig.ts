@@ -1,4 +1,13 @@
 import type { AssetType, QualityLevel } from '@types/index';
+import { 
+  TableOutlined, 
+  PartitionOutlined, 
+  BarChartOutlined, 
+  DashboardOutlined,
+  DatabaseOutlined,
+  ApiOutlined,
+  FileTextOutlined 
+} from '@ant-design/icons';
 
 /**
  * 资产类型配置
@@ -8,29 +17,43 @@ export const ASSET_TYPES = [
     label: '数据表', 
     value: 'table' as AssetType, 
     color: '#1677FF', 
-    icon: '📊',
+    icon: TableOutlined,
     description: '结构化数据表'
   },
   { 
     label: '数据模型', 
     value: 'model' as AssetType, 
     color: '#722ED1', 
-    icon: '🏗️',
+    icon: PartitionOutlined,
     description: '数据建模结果'
   },
   { 
     label: '报表', 
     value: 'report' as AssetType, 
     color: '#52C41A', 
-    icon: '📈',
+    icon: BarChartOutlined,
     description: '数据分析报表'
   },
   { 
     label: '看板', 
     value: 'dashboard' as AssetType, 
     color: '#FAAD14', 
-    icon: '📋',
+    icon: DashboardOutlined,
     description: '数据可视化看板'
+  },
+  { 
+    label: '数据集', 
+    value: 'dataset' as AssetType, 
+    color: '#13C2C2', 
+    icon: DatabaseOutlined,
+    description: '数据集合'
+  },
+  { 
+    label: 'API', 
+    value: 'api' as AssetType, 
+    color: '#F759AB', 
+    icon: ApiOutlined,
+    description: '数据接口'
   },
 ] as const;
 

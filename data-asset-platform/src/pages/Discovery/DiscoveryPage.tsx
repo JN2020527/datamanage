@@ -111,18 +111,16 @@ const DiscoveryPage: React.FC = () => {
           </Col>
 
           <Col xs={24} lg={20} className={styles.listColumn}>
-            <div className={styles.assetListContainer}>
-              <AssetList
-                assets={assets}
-                loading={loading}
-                pagination={{
-                  current: pagination.page,
-                  pageSize: pagination.pageSize,
-                  total,
-                  onChange: handlePaginationChange,
-                }}
-              />
-            </div>
+            <AssetList
+              assets={assets}
+              loading={loading}
+              pagination={{
+                current: pagination.page,
+                pageSize: pagination.pageSize,
+                total,
+                onChange: handlePaginationChange,
+              }}
+            />
           </Col>
         </Row>
       </div>

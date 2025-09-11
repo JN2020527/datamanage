@@ -19,14 +19,15 @@ export const AssetNameCell: React.FC<{ name: string; record: Asset }> = ({
   record 
 }) => {
   const typeConfig = getAssetTypeConfig(record.type);
+  const IconComponent = typeConfig.icon;
   
   return (
     <div className={styles.assetNameCell}>
       <div 
         className={styles.assetIcon} 
-        style={{ backgroundColor: typeConfig.color }}
+        style={{ color: typeConfig.color }}
       >
-        {typeConfig.icon}
+        <IconComponent />
       </div>
       <div className={styles.assetInfo}>
         <div className={styles.assetName} title={name}>
@@ -45,7 +46,17 @@ export const AssetTypeCell: React.FC<{ type: string }> = ({ type }) => {
   const typeConfig = getAssetTypeConfig(type as any);
   
   return (
-    <Tag color={typeConfig.color} style={{ border: 'none' }}>
+    <Tag 
+      style={{ 
+        backgroundColor: `${typeConfig.color}15`, // 添加透明度
+        color: typeConfig.color,
+        border: `1px solid ${typeConfig.color}30`,
+        borderRadius: '6px',
+        padding: '2px 8px',
+        fontSize: '12px',
+        fontWeight: 500,
+      }}
+    >
       {typeConfig.label}
     </Tag>
   );

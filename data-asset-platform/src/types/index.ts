@@ -1,5 +1,5 @@
 // 数据资产类型
-export type AssetType = 'table' | 'model' | 'report' | 'dashboard';
+export type AssetType = 'table' | 'model' | 'report' | 'dashboard' | 'dataset' | 'api';
 
 // 资产状态
 export type AssetStatus = 'developing' | 'pending' | 'published' | 'offline';
