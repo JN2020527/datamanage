@@ -124,7 +124,7 @@ export const SEARCH_CONFIG = {
  * 表格配置
  */
 export const TABLE_CONFIG = {
-  scroll: { x: 1200, y: 'calc(100vh - 280px)' }, // 调整y值以匹配容器高度
+  scroll: { x: 1200, y: 'calc(100vh - 240px)' }, // 进一步增加表格滚动高度
   size: 'middle' as const,
   sticky: { offsetHeader: 0 },
 } as const;

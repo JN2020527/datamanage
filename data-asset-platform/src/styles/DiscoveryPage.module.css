@@ -7,7 +7,7 @@
 }
 
 .searchSection {
-  padding: 20px 24px 16px 24px;
+  padding: 18px 24px 12px 24px;
 }
 
 .searchContainer {
@@ -90,7 +90,7 @@
 
 .contentSection {
   flex: 1;
-  padding: 0 24px 12px 24px;
+  padding: 0 24px 8px 24px;
   background: transparent;
 }
 
@@ -115,7 +115,7 @@
 }
 
 .filterColumn {
-  height: calc(100vh - 220px);
+  height: calc(100vh - 180px);
   display: flex;
   flex-direction: column;
   align-items: stretch;
@@ -123,7 +123,7 @@
 
 /* 筛选面板样式 */
 .filterPanel {
-  height: calc(100vh - 220px);
+  height: calc(100vh - 180px);
   overflow-y: auto;
   overflow-x: hidden;
   padding: 0;
@@ -229,124 +229,91 @@
 }
 
 .listColumn {
-  height: calc(100vh - 220px);
+  height: calc(100vh - 180px);
   display: flex;
   flex-direction: column;
-  background: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-  /* 移除外层padding，由ant-spin-container内部处理 */
+  /* 移除背景和阴影，由表格包装器处理 */
 }
 
 
 
-/* 简化的表格样式 */
+/* 表格容器样式 - 重新设计 */
+.listColumn :global(.ant-table-wrapper) {
+  background: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+/* 表格头部样式 */
 .listColumn :global(.ant-table-thead > tr > th) {
   background: #fafafa;
   border-bottom: 1px solid #f0f0f0;
   font-weight: 600;
   color: #1f1f1f;
   font-size: 14px;
+  padding: 16px;
 }
 
+/* 表格主体样式 */
 .listColumn :global(.ant-table-tbody > tr > td) {
   border-bottom: 1px solid #f5f5f5;
+  padding: 16px;
 }
 
-/* 优化表格底部边框 - 移除最后一行的边框，使用容器边框代替 */
 .listColumn :global(.ant-table-tbody > tr:last-child > td) {
-  border-bottom: none;
+  border-bottom: 1px solid #f0f0f0;
 }
 
 .listColumn :global(.ant-table-tbody > tr:hover > td) {
   background: #f8f9ff;
 }
 
-/* Ant Design Spin容器样式 */
-.listColumn :global(.ant-spin-container) {
-  padding: 16px 16px 8px 16px;
-}
-
-/* 表格内容区域 - 移除底部边框，由分页器边框代替 */
+/* 表格容器 */
 .listColumn :global(.ant-table-container) {
-  border-bottom: none;
+  border-radius: 8px 8px 0 0;
 }
 
-/* 美化表格滚动条样式 */
+/* 分页器样式 - 完全融入表格容器 */
+.listColumn :global(.ant-table-pagination) {
+  margin: 0 !important;
+  padding: 16px !important;
+  background: #fafafa !important;
+  border-top: 1px solid #f0f0f0 !important;
+  border-radius: 0 0 8px 8px !important;
+}
+
+.listColumn :global(.ant-pagination) {
+  margin: 0 !important;
+  padding: 16px !important;
+  background: #fafafa !important;
+  border-top: 1px solid #f0f0f0 !important;
+  border-radius: 0 0 8px 8px !important;
+}
+
+/* 表格滚动条样式 */
 .listColumn :global(.ant-table-body) {
-  /* WebKit浏览器滚动条 */
   scrollbar-width: thin;
   scrollbar-color: #d9d9d9 transparent;
 }
 
 .listColumn :global(.ant-table-body)::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
 }
 
 .listColumn :global(.ant-table-body)::-webkit-scrollbar-track {
   background: #f5f5f5;
-  border-radius: 4px;
+  border-radius: 3px;
 }
 
 .listColumn :global(.ant-table-body)::-webkit-scrollbar-thumb {
   background: #d9d9d9;
-  border-radius: 4px;
-  transition: background-color 0.3s ease;
+  border-radius: 3px;
 }
 
 .listColumn :global(.ant-table-body)::-webkit-scrollbar-thumb:hover {
   background: #bfbfbf;
-}
-
-.listColumn :global(.ant-table-body)::-webkit-scrollbar-thumb:active {
-  background: #999999;
-}
-
-.listColumn :global(.ant-table-body)::-webkit-scrollbar-corner {
-  background: #f5f5f5;
-}
-
-/* 表格容器滚动条样式 */
-.listColumn :global(.ant-table-container) {
-  scrollbar-width: thin;
-  scrollbar-color: #d9d9d9 transparent;
-}
-
-.listColumn :global(.ant-table-container)::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-
-.listColumn :global(.ant-table-container)::-webkit-scrollbar-track {
-  background: #f5f5f5;
-  border-radius: 4px;
-}
-
-.listColumn :global(.ant-table-container)::-webkit-scrollbar-thumb {
-  background: #d9d9d9;
-  border-radius: 4px;
-  transition: background-color 0.3s ease;
-}
-
-.listColumn :global(.ant-table-container)::-webkit-scrollbar-thumb:hover {
-  background: #bfbfbf;
-}
-
-.listColumn :global(.ant-table-container)::-webkit-scrollbar-thumb:active {
-  background: #999999;
-}
-
-.listColumn :global(.ant-table-container)::-webkit-scrollbar-corner {
-  background: #f5f5f5;
-}
-
-/* 分页器样式 - 包含在表格容器内 */
-.listColumn :global(.ant-pagination) {
-  margin: 16px 16px 16px 16px;
-  padding: 12px 0;
-  background: #fff;
-  border-top: 1px solid #f0f0f0;
 }
 
 .loadingContainer {
@@ -488,11 +455,11 @@
 
 @media (max-width: 1200px) {
   .contentSection {
-    padding: 0 16px 8px 16px;
+    padding: 0 16px 6px 16px;
   }
   
   .searchSection {
-    padding: 16px 16px 12px 16px;
+    padding: 14px 16px 10px 16px;
   }
   
   .searchContainer {
@@ -505,29 +472,30 @@
   }
   
   .filterColumn {
-    height: calc(100vh - 200px);
+    height: calc(100vh - 160px);
   }
   
   .listColumn {
-    height: calc(100vh - 200px);
+    height: calc(100vh - 160px);
   }
   
-  .listColumn :global(.ant-spin-container) {
-    padding: 12px 12px 6px 12px;
+  .listColumn :global(.ant-table-thead > tr > th) {
+    padding: 12px;
+    font-size: 13px;
+  }
+  
+  .listColumn :global(.ant-table-tbody > tr > td) {
+    padding: 12px;
   }
   
   .listColumn :global(.ant-pagination) {
-    margin: 12px 12px 12px 12px;
-    padding: 8px 0;
+    padding: 12px !important;
   }
   
   .filterPanel {
-    height: calc(100vh - 200px);
+    height: calc(100vh - 160px);
   }
   
-  .filterPanel :global(.ant-card-head) {
-    padding: 16px 12px;
-  }
 }
 
 @media (max-width: 768px) {
@@ -536,11 +504,11 @@
   }
   
   .contentSection {
-    padding: 0 12px 6px 12px;
+    padding: 0 12px 4px 12px;
   }
   
   .searchSection {
-    padding: 12px 12px 8px 12px;
+    padding: 10px 12px 6px 12px;
   }
   
   .searchContainer {
@@ -554,29 +522,30 @@
   }
   
   .filterColumn {
-    height: calc(100vh - 180px);
+    height: calc(100vh - 140px);
   }
   
   .listColumn {
-    height: calc(100vh - 180px);
+    height: calc(100vh - 140px);
   }
   
-  .listColumn :global(.ant-spin-container) {
-    padding: 8px 8px 4px 8px;
+  .listColumn :global(.ant-table-thead > tr > th) {
+    padding: 8px;
+    font-size: 12px;
+  }
+  
+  .listColumn :global(.ant-table-tbody > tr > td) {
+    padding: 8px;
   }
   
   .listColumn :global(.ant-pagination) {
-    margin: 8px 8px 8px 8px;
-    padding: 6px 0;
+    padding: 8px !important;
   }
   
   .filterPanel {
-    height: calc(100vh - 180px);
+    height: calc(100vh - 140px);
   }
   
-  .filterPanel :global(.ant-card-head) {
-    padding: 12px 8px;
-  }
   
   .assetNameCell {
     gap: 8px;
