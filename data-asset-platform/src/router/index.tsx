@@ -10,6 +10,8 @@ import GovernancePage from '@pages/Governance/GovernancePage';
 import AnalysisPage from '@pages/Analysis/AnalysisPage';
 import SelfServicePage from '@pages/Analysis/SelfServicePage';
 import DashboardPage from '@pages/Analysis/DashboardPage';
+import TestDashboard from '@pages/Analysis/TestDashboard';
+import SimpleDashboardPage from '@pages/Analysis/SimpleDashboardPage';
 import SystemPage from '@pages/System/SystemPage';
 import CatalogManagement from '@components/System/CatalogManagement';
 import WordRootManagement from '@components/Governance/WordRootManagement';
@@ -145,7 +147,7 @@ export const router = createBrowserRouter([
           },
           {
             path: 'dashboard',
-            element: <DashboardPage />,
+            element: <SimpleDashboardPage />,
           },
           {
             path: 'preview',

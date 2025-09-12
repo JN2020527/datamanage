@@ -7,7 +7,6 @@ import {
   Breadcrumb,
   Row,
   Col,
-  message,
   Modal,
   Form,
   Input,
@@ -17,6 +16,7 @@ import {
   Tag,
   Popconfirm,
   Empty,
+  Tooltip,
 } from 'antd';
 import {
   PlusOutlined,
@@ -32,6 +32,7 @@ import {
 } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import DashboardDesigner from '@components/Analysis/DashboardDesigner';
+import DashboardTemplates from '@components/Analysis/DashboardTemplates';
 import { useNotification } from '@hooks/useNotification';
 import { api } from '@mock/api';
 
@@ -55,7 +56,7 @@ const DashboardPage: React.FC = () => {
   const navigate = useNavigate();
   const { showSuccess, showError } = useNotification();
   
-  const [activeView, setActiveView] = useState<'list' | 'designer'>('list');
+  const [activeView, setActiveView] = useState<'list' | 'designer' | 'templates'>('list');
   const [dashboards, setDashboards] = useState<Dashboard[]>([]);
   const [loading, setLoading] = useState(false);
   const [selectedDashboard, setSelectedDashboard] = useState<Dashboard | null>(null);
@@ -216,6 +217,67 @@ const DashboardPage: React.FC = () => {
     }
   };
 
+  const handleSelectTemplate = (template: any) => {
+    const newDashboard: Dashboard = {
+      id: Date.now().toString(),
+      name: template.name,
+      description: template.description,
+      thumbnail: '',
+      componentCount: template.components.length,
+      createdAt: new Date().toISOString().split('T')[0],
+      updatedAt: new Date().toISOString().split('T')[0],
+      createdBy: '当前用户',
+      status: 'draft',
+      views: 0,
+      config: {
+        id: Date.now().toString(),
+        name: template.name,
+        description: template.description,
+        theme: template.config.theme || 'default',
+        layout: template.config.layout || {
+          background: '#f0f2f5',
+          padding: 20,
+          grid: { enabled: true, size: 20, color: 'rgba(0,0,0,0.1)' },
+        },
+        components: template.components || [],
+        settings: {
+          responsive: true,
+          autoSave: false,
+          snapToGrid: true,
+          showGrid: true,
+        },
+      },
+    };
+
+    setDashboards([newDashboard, ...dashboards]);
+    setSelectedDashboard(newDashboard);
+    setActiveView('designer');
+    showSuccess(`已基于"${template.name}"模板创建看板`);
+  };
+
+  const handlePreviewTemplate = (template: any) => {
+    // 预览模板功能
+    Modal.info({
+      title: `预览: ${template.name}`,
+      content: (
+        <div>
+          <Paragraph>{template.description}</Paragraph>
+          <div style={{ marginTop: 16 }}>
+            <Text strong>包含组件:</Text>
+            <ul style={{ marginTop: 8 }}>
+              {template.components.map((comp: any, index: number) => (
+                <li key={index}>{comp.name} ({comp.type})</li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      ),
+      width: 600,
+      okText: '使用此模板',
+      onOk: () => handleSelectTemplate(template),
+    });
+  };
+
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'published': return 'green';
@@ -263,16 +325,63 @@ const DashboardPage: React.FC = () => {
     );
   }
 
+  if (activeView === 'templates') {
+    return (
+      <div className="page-container">
+        {/* 面包屑导航 */}
+        <Breadcrumb 
+          style={{ marginBottom: '16px' }}
+          items={[
+            {
+              title: <a onClick={() => navigate('/')}>首页</a>,
+            },
+            {
+              title: '敏捷分析',
+            },
+            {
+              title: '看板设计器',
+            },
+            {
+              title: '模板库',
+            },
+          ]}
+        />
+
+        <Card>
+          <Row justify="space-between" align="middle" style={{ marginBottom: 24 }}>
+            <Col>
+              <Button onClick={() => setActiveView('list')}>
+                ← 返回看板列表
+              </Button>
+            </Col>
+          </Row>
+
+          <DashboardTemplates
+            onSelectTemplate={handleSelectTemplate}
+            onPreviewTemplate={handlePreviewTemplate}
+          />
+        </Card>
+      </div>
+    );
+  }
+
   return (
     <div className="page-container">
       {/* 面包屑导航 */}
-      <Breadcrumb style={{ marginBottom: '16px' }}>
-        <Breadcrumb.Item>
-          <a onClick={() => navigate('/')}>首页</a>
-        </Breadcrumb.Item>
-        <Breadcrumb.Item>敏捷分析</Breadcrumb.Item>
-        <Breadcrumb.Item>看板设计器</Breadcrumb.Item>
-      </Breadcrumb>
+      <Breadcrumb 
+        style={{ marginBottom: '16px' }}
+        items={[
+          {
+            title: <a onClick={() => navigate('/')}>首页</a>,
+          },
+          {
+            title: '敏捷分析',
+          },
+          {
+            title: '看板设计器',
+          },
+        ]}
+      />
 
       {/* 页面标题和操作 */}
       <div style={{ marginBottom: '24px' }}>
@@ -290,6 +399,13 @@ const DashboardPage: React.FC = () => {
           </Col>
           <Col>
             <Space>
+              <Button
+                icon={<AppstoreOutlined />}
+                size="large"
+                onClick={() => setActiveView('templates')}
+              >
+                模板库
+              </Button>
               <Button
                 type="primary"
                 icon={<PlusOutlined />}

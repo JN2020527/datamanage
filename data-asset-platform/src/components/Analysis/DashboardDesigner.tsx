@@ -18,7 +18,6 @@ import {
   Slider,
   ColorPicker,
   Drawer,
-  message,
   Badge,
   Tag,
   Popconfirm,
@@ -31,15 +30,12 @@ import {
   DragOverlay,
   useDraggable,
   useDroppable,
-  useDndMonitor,
   closestCenter,
   PointerSensor,
   useSensor,
   useSensors,
-  DragStartEvent,
-  DragEndEvent,
-  UniqueIdentifier,
 } from '@dnd-kit/core';
+// 使用内联类型定义替代单独的类型导入
 import {
   restrictToWindowEdges,
   restrictToParentElement,
@@ -80,12 +76,14 @@ import {
 import * as echarts from 'echarts';
 import type { EChartsOption } from 'echarts';
 import { useNotification } from '@hooks/useNotification';
+import ComponentConfigPanel from './ComponentConfigPanel';
+import './DashboardDesigner.css';
 
 const { Title, Text, Paragraph } = Typography;
 
 // 组件类型定义
 interface DashboardComponent {
-  id: UniqueIdentifier;
+  id: string;
   type: string;
   name: string;
   icon: React.ReactNode;
@@ -591,10 +589,10 @@ const CanvasComponent: React.FC<{
 // 设计画布
 const DesignCanvas: React.FC<{
   components: DashboardComponent[];
-  selectedComponentId?: UniqueIdentifier;
-  onComponentSelect: (id: UniqueIdentifier) => void;
+  selectedComponentId?: string;
+  onComponentSelect: (id: string) => void;
   onComponentUpdate: (component: DashboardComponent) => void;
-  onComponentDelete: (id: UniqueIdentifier) => void;
+  onComponentDelete: (id: string) => void;
   onComponentAdd: (template: any, position: { x: number; y: number }) => void;
   dashboardConfig: DashboardConfig;
 }> = ({
@@ -695,7 +693,7 @@ const DashboardDesigner: React.FC<DashboardDesignerProps> = ({
   initialData,
 }) => {
   const { showSuccess, showError } = useNotification();
-  const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
+  const [activeId, setActiveId] = useState<string | null>(null);
   const [propertiesVisible, setPropertiesVisible] = useState(false);
   const [previewVisible, setPreviewVisible] = useState(false);
   const [historyIndex, setHistoryIndex] = useState(0);
@@ -722,7 +720,7 @@ const DashboardDesigner: React.FC<DashboardDesignerProps> = ({
     ...initialData,
   });
 
-  const [selectedComponentId, setSelectedComponentId] = useState<UniqueIdentifier>('');
+  const [selectedComponentId, setSelectedComponentId] = useState<string>('');
 
   // 传感器配置
   const sensors = useSensors(
@@ -759,60 +757,58 @@ const DashboardDesigner: React.FC<DashboardDesignerProps> = ({
     }
   };
 
-  // 监听拖拽事件
-  useDndMonitor({
-    onDragStart(event: DragStartEvent) {
-      setActiveId(event.active.id);
-    },
-    onDragEnd(event: DragEndEvent) {
-      const { active, over } = event;
-      setActiveId(null);
+  // 拖拽事件处理
+  const handleDragStart = (event: any) => {
+    setActiveId(event.active.id);
+  };
 
-      if (over?.id === 'design-canvas') {
-        const template = active.data.current?.template;
-        if (template) {
-          // 从组件库添加新组件
-          const canvasRect = over.rect;
-          const position = {
-            x: Math.max(0, event.activatorEvent.clientX - canvasRect.left - template.defaultSize.width / 2),
-            y: Math.max(0, event.activatorEvent.clientY - canvasRect.top - template.defaultSize.height / 2),
-          };
+  const handleDragEnd = (event: any) => {
+    const { active, over } = event;
+    setActiveId(null);
 
-          if (dashboardConfig.settings.snapToGrid) {
-            const gridSize = dashboardConfig.layout.grid.size;
-            position.x = Math.round(position.x / gridSize) * gridSize;
-            position.y = Math.round(position.y / gridSize) * gridSize;
-          }
+    if (over?.id === 'design-canvas') {
+      const template = active.data.current?.template;
+      if (template) {
+        // 从组件库添加新组件
+        const position = {
+          x: Math.max(0, 200), // 默认位置
+          y: Math.max(0, 150),
+        };
 
-          handleComponentAdd(template, position);
+        if (dashboardConfig.settings.snapToGrid) {
+          const gridSize = dashboardConfig.layout.grid.size;
+          position.x = Math.round(position.x / gridSize) * gridSize;
+          position.y = Math.round(position.y / gridSize) * gridSize;
         }
-      } else {
-        // 移动现有组件
-        const component = active.data.current?.component;
-        if (component && event.delta) {
-          let newPosition = {
-            x: component.position.x + event.delta.x,
-            y: component.position.y + event.delta.y,
-          };
 
-          if (dashboardConfig.settings.snapToGrid) {
-            const gridSize = dashboardConfig.layout.grid.size;
-            newPosition.x = Math.round(newPosition.x / gridSize) * gridSize;
-            newPosition.y = Math.round(newPosition.y / gridSize) * gridSize;
-          }
-
-          // 确保组件不会移出画布
-          newPosition.x = Math.max(0, newPosition.x);
-          newPosition.y = Math.max(0, newPosition.y);
-
-          handleComponentUpdate({
-            ...component,
-            position: newPosition,
-          });
-        }
+        handleComponentAdd(template, position);
       }
-    },
-  });
+    } else {
+      // 移动现有组件
+      const component = active.data.current?.component;
+      if (component && event.delta) {
+        let newPosition = {
+          x: component.position.x + event.delta.x,
+          y: component.position.y + event.delta.y,
+        };
+
+        if (dashboardConfig.settings.snapToGrid) {
+          const gridSize = dashboardConfig.layout.grid.size;
+          newPosition.x = Math.round(newPosition.x / gridSize) * gridSize;
+          newPosition.y = Math.round(newPosition.y / gridSize) * gridSize;
+        }
+
+        // 确保组件不会移出画布
+        newPosition.x = Math.max(0, newPosition.x);
+        newPosition.y = Math.max(0, newPosition.y);
+
+        handleComponentUpdate({
+          ...component,
+          position: newPosition,
+        });
+      }
+    }
+  };
 
   // 添加组件
   const handleComponentAdd = (template: any, position: { x: number; y: number }) => {
@@ -854,7 +850,7 @@ const DashboardDesigner: React.FC<DashboardDesignerProps> = ({
   };
 
   // 删除组件
-  const handleComponentDelete = (componentId: UniqueIdentifier) => {
+  const handleComponentDelete = (componentId: string) => {
     const newConfig = {
       ...dashboardConfig,
       components: dashboardConfig.components.filter((comp) => comp.id !== componentId),
@@ -888,6 +884,8 @@ const DashboardDesigner: React.FC<DashboardDesignerProps> = ({
       sensors={sensors}
       collisionDetection={closestCenter}
       modifiers={[restrictToWindowEdges]}
+      onDragStart={handleDragStart}
+      onDragEnd={handleDragEnd}
     >
       <div style={{ height: '100vh', display: 'flex', flexDirection: 'column' }}>
         {/* 顶部工具栏 */}
@@ -984,34 +982,19 @@ const DashboardDesigner: React.FC<DashboardDesignerProps> = ({
 
           {/* 右侧属性面板 */}
           <Col span={6}>
-            <Card title="属性配置" size="small" style={{ height: '100%' }}>
-              {selectedComponent ? (
-                <div>
-                  <Space direction="vertical" style={{ width: '100%' }}>
-                    <div>
-                      <Text strong>组件信息</Text>
-                      <div style={{ marginTop: 8 }}>
-                        <Text>类型: {selectedComponent.type}</Text>
-                        <br />
-                        <Text>位置: ({selectedComponent.position.x}, {selectedComponent.position.y})</Text>
-                        <br />
-                        <Text>尺寸: {selectedComponent.size.width} × {selectedComponent.size.height}</Text>
-                      </div>
-                    </div>
-                    <Divider />
-                    {/* 这里会根据组件类型渲染不同的配置表单 */}
-                    <Button type="primary" block onClick={() => setPropertiesVisible(true)}>
-                      详细配置
-                    </Button>
-                  </Space>
-                </div>
-              ) : (
+            {selectedComponent ? (
+              <ComponentConfigPanel
+                component={selectedComponent}
+                onUpdate={handleComponentUpdate}
+              />
+            ) : (
+              <Card title="属性配置" size="small" style={{ height: '100%' }}>
                 <div style={{ textAlign: 'center', padding: 40 }}>
                   <SettingOutlined style={{ fontSize: 48, color: '#d9d9d9' }} />
                   <Paragraph type="secondary">选择组件查看属性</Paragraph>
                 </div>
-              )}
-            </Card>
+              </Card>
+            )}
           </Col>
         </Row>
 

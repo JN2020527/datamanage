@@ -1,0 +1,315 @@
+/* 看板设计器样式 */
+.dashboard-designer {
+  height: 100vh;
+  overflow: hidden;
+}
+
+.dashboard-toolbar {
+  background: #ffffff;
+  border-bottom: 1px solid #e8e8e8;
+  padding: 12px 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.dashboard-content {
+  height: calc(100vh - 80px);
+  overflow: hidden;
+}
+
+/* 组件库样式 */
+.component-library {
+  height: 100%;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #d9d9d9 transparent;
+}
+
+.component-library::-webkit-scrollbar {
+  width: 6px;
+}
+
+.component-library::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.component-library::-webkit-scrollbar-thumb {
+  background-color: #d9d9d9;
+  border-radius: 3px;
+}
+
+.component-library::-webkit-scrollbar-thumb:hover {
+  background-color: #bfbfbf;
+}
+
+.component-template-item {
+  transition: all 0.2s ease;
+}
+
+.component-template-item:hover {
+  transform: translateY(-2px);
+}
+
+/* 设计画布样式 */
+.design-canvas {
+  position: relative;
+  background-color: #f0f2f5;
+  min-height: 600px;
+  overflow: auto;
+  border: 2px dashed #d9d9d9;
+  border-radius: 8px;
+  transition: border-color 0.3s ease;
+}
+
+.design-canvas:hover {
+  border-color: #40a9ff;
+}
+
+.design-canvas.drag-over {
+  border-color: #1890ff;
+  background-color: #e6f7ff;
+}
+
+/* 画布网格背景 */
+.canvas-grid {
+  background-image: 
+    linear-gradient(to right, rgba(0, 0, 0, 0.1) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.1) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+/* 组件样式 */
+.canvas-component {
+  position: absolute;
+  border: 1px solid #d9d9d9;
+  border-radius: 4px;
+  background: #ffffff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  cursor: move;
+  user-select: none;
+  transition: all 0.2s ease;
+}
+
+.canvas-component:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.canvas-component.selected {
+  border: 2px solid #1890ff;
+  box-shadow: 0 0 10px rgba(24, 144, 255, 0.3);
+}
+
+.canvas-component.locked {
+  cursor: default;
+  opacity: 0.8;
+}
+
+.canvas-component.locked::after {
+  content: '🔒';
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  font-size: 12px;
+  opacity: 0.6;
+}
+
+/* 组件操作按钮 */
+.component-actions {
+  position: absolute;
+  top: -32px;
+  right: 0;
+  display: flex;
+  gap: 4px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.canvas-component.selected .component-actions {
+  opacity: 1;
+}
+
+/* 组件标签 */
+.component-label {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  font-size: 10px;
+  color: #999;
+  pointer-events: none;
+  background: rgba(255, 255, 255, 0.8);
+  padding: 2px 4px;
+  border-radius: 2px;
+  line-height: 1;
+}
+
+/* 属性面板样式 */
+.properties-panel {
+  height: 100%;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #d9d9d9 transparent;
+}
+
+.properties-panel::-webkit-scrollbar {
+  width: 6px;
+}
+
+.properties-panel::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.properties-panel::-webkit-scrollbar-thumb {
+  background-color: #d9d9d9;
+  border-radius: 3px;
+}
+
+.properties-panel::-webkit-scrollbar-thumb:hover {
+  background-color: #bfbfbf;
+}
+
+/* 拖拽覆盖层样式 */
+.drag-overlay {
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* 模板卡片样式 */
+.template-card {
+  transition: all 0.3s ease;
+  height: 100%;
+}
+
+.template-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.template-cover {
+  height: 160px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #ffffff;
+  font-size: 48px;
+  position: relative;
+  overflow: hidden;
+}
+
+.template-cover::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, rgba(255,255,255,0.1) 25%, transparent 25%),
+              linear-gradient(-45deg, rgba(255,255,255,0.1) 25%, transparent 25%),
+              linear-gradient(45deg, transparent 75%, rgba(255,255,255,0.1) 75%),
+              linear-gradient(-45deg, transparent 75%, rgba(255,255,255,0.1) 75%);
+  background-size: 20px 20px;
+  background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+  opacity: 0.3;
+}
+
+/* 空白模板样式 */
+.blank-template {
+  background: linear-gradient(45deg, #f0f0f0, #e0e0e0);
+  border: 2px dashed #d9d9d9;
+  transition: all 0.3s ease;
+}
+
+.blank-template:hover {
+  border-color: #1890ff;
+  background: linear-gradient(45deg, #e6f7ff, #f0f8ff);
+}
+
+/* 响应式样式 */
+@media (max-width: 1200px) {
+  .dashboard-content {
+    height: auto;
+    overflow: visible;
+  }
+  
+  .component-library,
+  .properties-panel {
+    max-height: 400px;
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard-toolbar {
+    padding: 8px 12px;
+  }
+  
+  .dashboard-content .ant-col {
+    margin-bottom: 16px;
+  }
+  
+  .design-canvas {
+    min-height: 400px;
+  }
+}
+
+/* 主题变量 */
+:root {
+  --primary-color: #1890ff;
+  --success-color: #52c41a;
+  --warning-color: #faad14;
+  --error-color: #f5222d;
+  --border-color: #d9d9d9;
+  --background-color: #f0f2f5;
+  --text-color: #000000d9;
+  --text-color-secondary: #00000073;
+}
+
+/* 暗色主题 */
+.dark-theme {
+  --primary-color: #177ddc;
+  --border-color: #434343;
+  --background-color: #141414;
+  --text-color: #ffffff;
+  --text-color-secondary: #ffffffa6;
+}
+
+.dark-theme .design-canvas {
+  background-color: var(--background-color);
+  border-color: var(--border-color);
+}
+
+.dark-theme .canvas-component {
+  background-color: #1f1f1f;
+  border-color: var(--border-color);
+  color: var(--text-color);
+}
+
+/* 动画效果 */
+@keyframes componentAdd {
+  0% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.component-add-animation {
+  animation: componentAdd 0.3s ease;
+}
+
+@keyframes componentSelect {
+  0% {
+    box-shadow: 0 0 0 0 rgba(24, 144, 255, 0.6);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(24, 144, 255, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(24, 144, 255, 0);
+  }
+}
+
+.component-select-animation {
+  animation: componentSelect 0.6s ease;
+}
