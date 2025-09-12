@@ -7,7 +7,7 @@
 }
 
 .searchSection {
-  padding: 18px 24px 12px 24px;
+  padding: 16px 24px 8px 24px;
 }
 
 .searchContainer {
@@ -90,7 +90,7 @@
 
 .contentSection {
   flex: 1;
-  padding: 0 24px 8px 24px;
+  padding: 0 24px 0 24px;
   background: transparent;
 }
 
@@ -115,7 +115,7 @@
 }
 
 .filterColumn {
-  height: calc(100vh - 180px);
+  height: calc(100vh - 140px);
   display: flex;
   flex-direction: column;
   align-items: stretch;
@@ -123,7 +123,8 @@
 
 /* 筛选面板样式 */
 .filterPanel {
-  height: calc(100vh - 180px);
+  height: calc(100vh - 140px);
+  max-height: calc(100vh - 140px);
   overflow-y: auto;
   overflow-x: hidden;
   padding: 0;
@@ -131,6 +132,8 @@
   background: #fff;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  display: flex;
+  flex-direction: column;
   /* 自定义滚动条样式 */
   scrollbar-width: thin;
   scrollbar-color: #d9d9d9 transparent;
@@ -152,6 +155,47 @@
 
 .filterPanel::-webkit-scrollbar-thumb:hover {
   background: #bfbfbf;
+}
+
+/* 筛选面板内部Tree组件样式优化 */
+.filterPanel :global(.ant-tree) {
+  background: transparent !important;
+  padding: 0 !important;
+}
+
+.filterPanel :global(.ant-tree .ant-tree-node-content-wrapper) {
+  padding: 3px 4px !important;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.filterPanel :global(.ant-tree .ant-tree-node-content-wrapper:hover) {
+  background-color: #f5f5f5 !important;
+}
+
+.filterPanel :global(.ant-tree .ant-tree-title) {
+  font-size: 13px !important;
+  color: #666 !important;
+}
+
+.filterPanel :global(.ant-tree .ant-tree-checkbox) {
+  margin-right: 8px !important;
+}
+
+/* 筛选面板标题区域按钮样式 */
+.filterPanel :global(.ant-btn-text) {
+  height: 20px !important;
+  line-height: 16px !important;
+  border-radius: 4px !important;
+  transition: all 0.2s ease !important;
+}
+
+.filterPanel :global(.ant-btn-text:hover) {
+  background-color: #f0f0f0 !important;
+}
+
+.filterPanel :global(.ant-btn-text .anticon) {
+  font-size: 12px !important;
 }
 
 .catalogGroup {
@@ -229,19 +273,20 @@
 }
 
 .listColumn {
-  height: calc(100vh - 180px);
+  height: calc(100vh - 140px);
   display: flex;
   flex-direction: column;
   /* 移除背景和阴影，由表格包装器处理 */
 }
 
-
-
-/* 表格容器样式 - 重新设计 */
+/* 表格容器样式 - 重新设计，确保分页器正确显示 */
 .listColumn :global(.ant-table-wrapper) {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
   background: #fff;
   border-radius: 8px;
-  overflow: hidden;
+  overflow: visible;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
 }
 
@@ -271,24 +316,42 @@
 
 /* 表格容器 */
 .listColumn :global(.ant-table-container) {
+  flex: 1;
   border-radius: 8px 8px 0 0;
 }
 
-/* 分页器样式 - 完全融入表格容器 */
+/* 确保表格内容区域不会覆盖分页器 */
+.listColumn :global(.ant-table) {
+  height: 100%;
+}
+
+.listColumn :global(.ant-table-content) {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 分页器样式 - 取消背景色 */
 .listColumn :global(.ant-table-pagination) {
+  flex-shrink: 0 !important;
   margin: 0 !important;
   padding: 16px !important;
-  background: #fafafa !important;
+  background: transparent !important;
   border-top: 1px solid #f0f0f0 !important;
   border-radius: 0 0 8px 8px !important;
+  position: relative !important;
+  z-index: 1 !important;
 }
 
 .listColumn :global(.ant-pagination) {
+  flex-shrink: 0 !important;
   margin: 0 !important;
   padding: 16px !important;
-  background: #fafafa !important;
+  background: transparent !important;
   border-top: 1px solid #f0f0f0 !important;
   border-radius: 0 0 8px 8px !important;
+  position: relative !important;
+  z-index: 1 !important;
 }
 
 /* 表格滚动条样式 */
@@ -455,11 +518,11 @@
 
 @media (max-width: 1200px) {
   .contentSection {
-    padding: 0 16px 6px 16px;
+    padding: 0 16px 0 16px;
   }
   
   .searchSection {
-    padding: 14px 16px 10px 16px;
+    padding: 12px 16px 6px 16px;
   }
   
   .searchContainer {
@@ -472,11 +535,11 @@
   }
   
   .filterColumn {
-    height: calc(100vh - 160px);
+    height: calc(100vh - 120px);
   }
   
   .listColumn {
-    height: calc(100vh - 160px);
+    height: calc(100vh - 120px);
   }
   
   .listColumn :global(.ant-table-thead > tr > th) {
@@ -490,10 +553,12 @@
   
   .listColumn :global(.ant-pagination) {
     padding: 12px !important;
+    background: transparent !important;
   }
   
   .filterPanel {
-    height: calc(100vh - 160px);
+    height: calc(100vh - 120px);
+    max-height: calc(100vh - 120px);
   }
   
 }
@@ -504,11 +569,11 @@
   }
   
   .contentSection {
-    padding: 0 12px 4px 12px;
+    padding: 0 12px 0 12px;
   }
   
   .searchSection {
-    padding: 10px 12px 6px 12px;
+    padding: 8px 12px 4px 12px;
   }
   
   .searchContainer {
@@ -522,11 +587,11 @@
   }
   
   .filterColumn {
-    height: calc(100vh - 140px);
+    height: calc(100vh - 100px);
   }
   
   .listColumn {
-    height: calc(100vh - 140px);
+    height: calc(100vh - 100px);
   }
   
   .listColumn :global(.ant-table-thead > tr > th) {
@@ -540,10 +605,12 @@
   
   .listColumn :global(.ant-pagination) {
     padding: 8px !important;
+    background: transparent !important;
   }
   
   .filterPanel {
-    height: calc(100vh - 140px);
+    height: calc(100vh - 100px);
+    max-height: calc(100vh - 100px);
   }
   
   

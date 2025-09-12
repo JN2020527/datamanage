@@ -124,7 +124,7 @@ export const SEARCH_CONFIG = {
  * 表格配置
  */
 export const TABLE_CONFIG = {
-  scroll: { x: 1200, y: 'calc(100vh - 240px)' }, // 进一步增加表格滚动高度
+  scroll: { x: 1200, y: 'calc(100vh - 260px)' }, // 调整滚动高度为分页器留出空间
   size: 'middle' as const,
   sticky: { offsetHeader: 0 },
 } as const;
