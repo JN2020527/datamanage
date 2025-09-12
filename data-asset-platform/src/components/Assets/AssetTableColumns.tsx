@@ -184,9 +184,8 @@ export const createAssetTableColumns = (options?: {
     render: (type: string) => <AssetTypeCell type={type} />,
     filters: [
       { text: '数据表', value: 'table' },
-      { text: '数据模型', value: 'model' },
-      { text: '报表', value: 'report' },
-      { text: '看板', value: 'dashboard' },
+      { text: '指标', value: 'metric' },
+      { text: '标签', value: 'tag' },
     ],
     onFilter: (value: any, record) => record.type === value,
   },

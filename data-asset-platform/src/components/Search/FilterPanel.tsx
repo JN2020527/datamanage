@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Typography, Tree, Button, Space } from 'antd';
-import { FilterOutlined, ClearOutlined, FolderOutlined, DatabaseOutlined, ArrowsAltOutlined, ShrinkOutlined } from '@ant-design/icons';
+import { Typography, Tree, Button, Space, Checkbox, Divider } from 'antd';
+import { FilterOutlined, ClearOutlined, FolderOutlined, DatabaseOutlined, ArrowsAltOutlined, ShrinkOutlined, TableOutlined, DashboardOutlined, TagOutlined } from '@ant-design/icons';
 import type { SearchFilter } from '@types/index';
 
 const { Title } = Typography;
@@ -41,6 +41,13 @@ const catalogTreeData = [
   },
 ];
 
+// 资产分类数据
+const ASSET_TYPES = [
+  { key: 'table', label: '数据表', icon: <TableOutlined /> },
+  { key: 'metric', label: '指标', icon: <DashboardOutlined /> },
+  { key: 'tag', label: '标签', icon: <TagOutlined /> },
+];
+
 interface FilterPanelProps {
   filter: SearchFilter;
   onChange: (filter: SearchFilter) => void;
@@ -58,11 +65,19 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ filter, onChange }) => {
     });
   };
 
+  const handleAssetTypeChange = (checkedValues: string[]) => {
+    onChange({
+      ...filter,
+      assetTypes: checkedValues
+    });
+  };
+
   const handleClear = () => {
     onChange({});
   };
 
-  const hasActiveFilters = (filter.catalogKeys && filter.catalogKeys.length > 0);
+  const hasActiveFilters = (filter.catalogKeys && filter.catalogKeys.length > 0) || 
+                           (filter.assetTypes && filter.assetTypes.length > 0);
 
   // 获取所有可展开的节点key
   const getAllExpandableKeys = () => {
@@ -155,10 +170,10 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ filter, onChange }) => {
       </div>
       {/* 可滚动内容区域 */}
       <div style={{ flex: 1, overflow: 'auto' }}>
-        {/* 目录分类 */}
+        {/* 资产目录 */}
         <div>
           <Title level={5} style={{ margin: '0 0 8px 0', fontSize: '14px' }}>
-            目录分类
+            资产目录
           </Title>
           <Tree
             checkable
@@ -176,6 +191,31 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ filter, onChange }) => {
               padding: '4px 0'
             }}
           />
+        </div>
+
+        <Divider style={{ margin: '16px 0' }} />
+
+        {/* 资产分类 */}
+        <div>
+          <Title level={5} style={{ margin: '0 0 12px 0', fontSize: '14px' }}>
+            资产分类
+          </Title>
+          <Checkbox.Group
+            value={filter.assetTypes || []}
+            onChange={handleAssetTypeChange}
+            style={{ width: '100%' }}
+          >
+            <Space direction="vertical" style={{ width: '100%' }}>
+              {ASSET_TYPES.map(type => (
+                <Checkbox key={type.key} value={type.key} style={{ fontSize: '13px' }}>
+                  <Space size={6}>
+                    {type.icon}
+                    {type.label}
+                  </Space>
+                </Checkbox>
+              ))}
+            </Space>
+          </Checkbox.Group>
         </div>
       </div>
     </div>

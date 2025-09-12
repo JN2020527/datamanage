@@ -1,5 +1,5 @@
 // 数据资产类型
-export type AssetType = 'table' | 'model' | 'report' | 'dashboard' | 'dataset' | 'api';
+export type AssetType = 'table' | 'metric' | 'tag';
 
 // 资产状态
 export type AssetStatus = 'developing' | 'pending' | 'published' | 'offline';
@@ -63,9 +63,8 @@ export interface MenuItem {
 export interface Statistics {
   totalAssets: number;
   tables: number;
-  models: number;
-  reports: number;
-  dashboards: number;
+  metrics: number;
+  tags: number;
   qualityScore: number;
   todayAccess: number;
 }

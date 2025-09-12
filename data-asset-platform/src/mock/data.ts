@@ -153,7 +153,7 @@ export const mockAssets: Asset[] = [
   {
     id: 'asset-002',
     name: '订单数据模型',
-    type: 'model',
+    type: 'metric',
     description: '电商平台订单核心数据模型，包含订单基本信息、商品详情、支付信息等',
     owner: '李四',
     department: '业务团队',
@@ -167,7 +167,7 @@ export const mockAssets: Asset[] = [
   {
     id: 'asset-003',
     name: '销售业绩报表',
-    type: 'report',
+    type: 'tag',
     description: '月度销售业绩统计报表，包含各部门、各产品线的销售数据分析',
     owner: '王五',
     department: '销售团队',
@@ -195,7 +195,7 @@ export const mockAssets: Asset[] = [
   {
     id: 'asset-005',
     name: '财务数据模型',
-    type: 'model',
+    type: 'metric',
     description: '财务核心数据模型，用于财务报表生成和财务分析',
     owner: '孙七',
     department: '财务团队',
@@ -209,7 +209,7 @@ export const mockAssets: Asset[] = [
   {
     id: 'asset-006',
     name: '产品销量看板',
-    type: 'dashboard',
+    type: 'tag',
     description: '实时产品销量数据看板，展示各产品的销售趋势和热门商品',
     owner: '张三',
     department: '产品团队',
@@ -223,7 +223,7 @@ export const mockAssets: Asset[] = [
   {
     id: 'asset-007',
     name: '用户留存分析',
-    type: 'report',
+    type: 'metric',
     description: '用户留存率分析报表，跟踪新用户的留存情况和流失原因',
     owner: '李四',
     department: '数据团队',
@@ -254,9 +254,8 @@ export const mockAssets: Asset[] = [
 export const mockStatistics: Statistics = {
   totalAssets: 1234,
   tables: 856,
-  models: 378,
-  reports: 142,
-  dashboards: 89,
+  metrics: 234,
+  tags: 144,
   qualityScore: 95,
   todayAccess: 3567,
 };
@@ -310,7 +309,7 @@ export const mockPopularAssets = [
   {
     id: 'asset-002',
     name: '订单数据模型',
-    type: 'model',
+    type: 'metric',
     rating: 4.9,
     viewCount: 1156,
     description: '电商平台订单核心数据模型',
@@ -318,7 +317,7 @@ export const mockPopularAssets = [
   {
     id: 'asset-003',
     name: '销售业绩报表',
-    type: 'report',
+    type: 'tag',
     rating: 4.7,
     viewCount: 567,
     description: '月度销售业绩统计报表',
@@ -334,7 +333,7 @@ export const mockPopularAssets = [
   {
     id: 'asset-005',
     name: '财务数据模型',
-    type: 'model',
+    type: 'metric',
     rating: 4.5,
     viewCount: 398,
     description: '财务核心数据模型',
@@ -346,9 +345,8 @@ export const mockChartData = {
   // 资产分布饼图数据
   assetDistribution: [
     { name: '数据表', value: 856, percentage: 69.4 },
-    { name: '数据模型', value: 378, percentage: 30.6 },
-    { name: '报表', value: 142, percentage: 11.5 },
-    { name: '看板', value: 89, percentage: 7.2 },
+    { name: '指标', value: 234, percentage: 19.0 },
+    { name: '标签', value: 144, percentage: 11.6 },
   ],
   
   // 访问趋势折线图数据
@@ -416,7 +414,7 @@ export const mockTags = [
 
 // 生成更多模拟数据的工具函数
 export const generateMoreAssets = (count: number): Asset[] => {
-  const types: Asset['type'][] = ['table', 'model', 'report', 'dashboard'];
+  const types: Asset['type'][] = ['table', 'metric', 'tag'];
   const statuses: Asset['status'][] = ['developing', 'pending', 'published', 'offline'];
   const owners = ['张三', '李四', '王五', '赵六', '孙七'];
   

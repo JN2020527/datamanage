@@ -75,7 +75,6 @@
   font-size: 14px !important;
   font-weight: 500 !important;
   min-width: 60px !important;
-  margin-right: 6px !important;
   box-shadow: none !important;
   white-space: nowrap !important;
 }
@@ -84,12 +83,12 @@
 .searchBarCentered :global(.ant-input-affix-wrapper .search-button) {
   border-radius: 16px !important;
   height: 36px !important;
-  margin: 0 6px 0 4px !important;
+  margin: 0 !important;
 }
 
-/* 调整搜索框内部padding为按钮留出空间 */
+/* 调整搜索框内部padding */
 .searchBarCentered :global(.ant-input-affix-wrapper) {
-  padding-right: 6px !important;
+  padding-right: 2px !important;
 }
 
 .searchBarCentered :global(.ant-input) {
@@ -118,7 +117,7 @@
 
 /* 搜索框suffix区域样式优化 */
 .searchBarCentered :global(.ant-input-affix-wrapper .ant-input-suffix) {
-  margin-right: 0 !important;
+  margin-right: 2px !important;
 }
 
 /* 确保搜索按钮不会影响输入框的圆角 */
