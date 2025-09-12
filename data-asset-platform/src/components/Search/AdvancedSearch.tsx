@@ -1,28 +1,15 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { 
   Input, 
-  AutoComplete, 
   Dropdown, 
   Space, 
-  Tag, 
   Button, 
-  Typography, 
-  Divider,
-  Empty,
-  Tooltip,
-  Spin,
-  Badge
+  Spin
 } from 'antd';
 import {
   SearchOutlined,
-  ClockCircleOutlined,
-  FireOutlined,
-  RiseOutlined,
   FilterOutlined,
   ClearOutlined,
-  HistoryOutlined,
-  StarOutlined,
-  DeleteOutlined,
   DownOutlined
 } from '@ant-design/icons';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -224,8 +211,6 @@ const AdvancedSearch: React.FC<AdvancedSearchProps> = ({
   // 处理输入变化
   const handleInputChange = (value: string) => {
     setQuery(value);
-    setHighlightedIndex(-1);
-    debouncedGenerateSuggestions(value);
   };
 
   // 处理搜索
@@ -253,44 +238,18 @@ const AdvancedSearch: React.FC<AdvancedSearchProps> = ({
     handleSearch(value);
   };
 
-  // 键盘导航
+  // 键盘导航（简化版）
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (!isDropdownOpen || suggestions.length === 0) return;
-
-    switch (e.key) {
-      case 'ArrowDown':
-        e.preventDefault();
-        setHighlightedIndex(prev => 
-          prev < suggestions.length - 1 ? prev + 1 : 0
-        );
-        break;
-      case 'ArrowUp':
-        e.preventDefault();
-        setHighlightedIndex(prev => 
-          prev > 0 ? prev - 1 : suggestions.length - 1
-        );
-        break;
-      case 'Enter':
-        e.preventDefault();
-        if (highlightedIndex >= 0) {
-          const selectedSuggestion = suggestions[highlightedIndex];
-          handleSuggestionSelect(selectedSuggestion.value, selectedSuggestion);
-        } else {
-          handleSearch();
-        }
-        break;
-      case 'Escape':
-        setIsDropdownOpen(false);
-        setHighlightedIndex(-1);
-        break;
+    // 只处理Enter键进行搜索
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleSearch();
     }
   };
 
   // 清除搜索
   const handleClear = () => {
     setQuery('');
-    setSuggestions([]);
-    setHighlightedIndex(-1);
     inputRef.current?.focus();
   };
 
@@ -418,12 +377,10 @@ const AdvancedSearch: React.FC<AdvancedSearchProps> = ({
             onKeyDown={handleKeyDown}
             onPressEnter={() => handleSearch()}
             onFocus={() => {
-              setIsDropdownOpen(true);
-              debouncedGenerateSuggestions(query);
+              // 不再显示建议下拉菜单
             }}
             onBlur={() => {
-              // 延迟关闭，以便点击建议项
-              setTimeout(() => setIsDropdownOpen(false), 200);
+              // 不需要处理下拉菜单
             }}
             placeholder={placeholder}
             prefix={<SearchOutlined className="text-gray-400" />}
@@ -441,115 +398,18 @@ const AdvancedSearch: React.FC<AdvancedSearchProps> = ({
                 <Button
                   type="primary"
                   size="small"
-                  icon={<SearchOutlined />}
                   onClick={() => handleSearch()}
                   className="search-button"
-                />
+                >
+                  搜索
+                </Button>
               </Space>
             }
             className="search-input"
             style={{ width: '100%' }}
           />
 
-          {/* 建议下拉菜单 */}
-          <AnimatePresence>
-            {isDropdownOpen && (
-              <motion.div
-                ref={dropdownRef}
-                initial={{ opacity: 0, y: -10, scale: 0.95 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: -10, scale: 0.95 }}
-                transition={{ duration: 0.2 }}
-                className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-50 max-h-96 overflow-y-auto"
-              >
-                {suggestions.length > 0 ? (
-                  <div className="py-2">
-                    {/* 分组显示建议 */}
-                    {!query && showHistory && suggestions.some(s => s.type === 'history') && (
-                      <>
-                        <div className="px-3 py-1 text-xs font-medium text-gray-500 bg-gray-50">
-                          <ClockCircleOutlined className="mr-1" />
-                          最近搜索
-                        </div>
-                        {suggestions.filter(s => s.type === 'history').map((suggestion, index) =>
-                          renderSuggestionItem(suggestion, index)
-                        )}
-                        <Divider className="my-1" />
-                      </>
-                    )}
-
-                    {!query && showTrending && suggestions.some(s => s.type === 'trending') && (
-                      <>
-                        <div className="px-3 py-1 text-xs font-medium text-gray-500 bg-gray-50">
-                          <RiseOutlined className="mr-1" />
-                          热门趋势
-                        </div>
-                        {suggestions.filter(s => s.type === 'trending').map((suggestion, index) =>
-                          renderSuggestionItem(suggestion, suggestions.filter(s => s.type === 'history').length + index)
-                        )}
-                        <Divider className="my-1" />
-                      </>
-                    )}
-
-                    {!query && showPopular && suggestions.some(s => s.type === 'popular') && (
-                      <>
-                        <div className="px-3 py-1 text-xs font-medium text-gray-500 bg-gray-50">
-                          <FireOutlined className="mr-1" />
-                          热门搜索
-                        </div>
-                        {suggestions.filter(s => s.type === 'popular').map((suggestion, index) => {
-                          const prevCount = suggestions.filter(s => s.type === 'history').length + 
-                                          suggestions.filter(s => s.type === 'trending').length;
-                          return renderSuggestionItem(suggestion, prevCount + index);
-                        })}
-                      </>
-                    )}
-
-                    {query && (
-                      <>
-                        {suggestions.filter(s => s.type === 'suggestion').length > 0 && (
-                          <div className="px-3 py-1 text-xs font-medium text-gray-500 bg-gray-50">
-                            <SearchOutlined className="mr-1" />
-                            搜索建议
-                          </div>
-                        )}
-                        {suggestions.map((suggestion, index) => renderSuggestionItem(suggestion, index))}
-                      </>
-                    )}
-                  </div>
-                ) : (
-                  <div className="p-4">
-                    <Empty 
-                      image={Empty.PRESENTED_IMAGE_SIMPLE}
-                      description="暂无搜索建议"
-                    />
-                  </div>
-                )}
-
-                {/* 搜索统计和管理 */}
-                {searchStats && (
-                  <>
-                    <Divider className="my-1" />
-                    <div className="px-3 py-2 bg-gray-50">
-                      <Space split={<Divider type="vertical" />} size="small">
-                        <Text type="secondary" className="text-xs">
-                          总搜索 {searchStats.totalSearches}
-                        </Text>
-                        <Text type="secondary" className="text-xs">
-                          独立查询 {searchStats.uniqueQueries}
-                        </Text>
-                        <Dropdown menu={historyMenu} trigger={['click']}>
-                          <Button type="link" size="small" className="p-0 h-auto">
-                            <HistoryOutlined />
-                          </Button>
-                        </Dropdown>
-                      </Space>
-                    </div>
-                  </>
-                )}
-              </motion.div>
-            )}
-          </AnimatePresence>
+          {/* 建议下拉菜单已移除 */}
         </div>
 
       </div>

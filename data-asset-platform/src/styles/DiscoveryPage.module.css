@@ -7,7 +7,7 @@
 }
 
 .searchSection {
-  padding: 16px 24px 8px 24px;
+  padding: 24px 24px 24px 24px;
 }
 
 .searchContainer {
@@ -64,6 +64,38 @@
   height: 48px !important;
 }
 
+/* 搜索按钮样式 - 紧贴右侧内部，纯文字版本 */
+.searchContainer :global(.search-button) {
+  border-radius: 16px !important;
+  height: 36px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 0 16px !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  min-width: 60px !important;
+  margin-right: 6px !important;
+  box-shadow: none !important;
+  white-space: nowrap !important;
+}
+
+/* 确保搜索按钮在输入框内部时的样式 */
+.searchBarCentered :global(.ant-input-affix-wrapper .search-button) {
+  border-radius: 16px !important;
+  height: 36px !important;
+  margin: 0 6px 0 4px !important;
+}
+
+/* 调整搜索框内部padding为按钮留出空间 */
+.searchBarCentered :global(.ant-input-affix-wrapper) {
+  padding-right: 6px !important;
+}
+
+.searchBarCentered :global(.ant-input) {
+  padding-right: 0 !important;
+}
+
 /* 确保所有搜索框相关元素都有20px圆角 */
 .searchBarCentered :global(.ant-input-affix-wrapper) {
   border-radius: 20px !important;
@@ -73,16 +105,43 @@
   border-radius: 20px !important;
 }
 
+/* 搜索框内部元素圆角 */
+.searchBarCentered :global(.search-input) {
+  border-radius: 20px !important;
+}
+
+/* 搜索按钮在不同状态下的圆角 - 与搜索框内部协调 */
+.searchBarCentered :global(.search-button),
+.searchContainer :global(.ant-btn-primary) {
+  border-radius: 16px !important;
+}
+
+/* 搜索框suffix区域样式优化 */
+.searchBarCentered :global(.ant-input-affix-wrapper .ant-input-suffix) {
+  margin-right: 0 !important;
+}
+
+/* 确保搜索按钮不会影响输入框的圆角 */
+.searchBarCentered :global(.ant-input-affix-wrapper:focus-within) {
+  border-color: #1890ff !important;
+  box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2) !important;
+}
+
+/* 优化搜索按钮的hover和active状态 */
+.searchContainer :global(.search-button:hover) {
+  transform: translateY(-1px) !important;
+  box-shadow: 0 2px 4px rgba(24, 144, 255, 0.3) !important;
+}
+
+.searchContainer :global(.search-button:active) {
+  transform: translateY(0) !important;
+}
+
 .searchContainer :global(.search-input:focus) {
   border-color: #1890ff !important;
   box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2) !important;
 }
 
-.searchContainer :global(.search-button) {
-  border-radius: 6px !important;
-  height: 32px !important;
-  margin-right: -8px !important;
-}
 
 .quickTags {
   margin-top: 8px;
@@ -115,7 +174,7 @@
 }
 
 .filterColumn {
-  height: calc(100vh - 140px);
+  height: calc(100vh - 164px);
   display: flex;
   flex-direction: column;
   align-items: stretch;
@@ -123,8 +182,8 @@
 
 /* 筛选面板样式 */
 .filterPanel {
-  height: calc(100vh - 140px);
-  max-height: calc(100vh - 140px);
+  height: calc(100vh - 164px);
+  max-height: calc(100vh - 164px);
   overflow-y: auto;
   overflow-x: hidden;
   padding: 0;
@@ -273,20 +332,18 @@
 }
 
 .listColumn {
-  height: calc(100vh - 140px);
-  display: flex;
-  flex-direction: column;
-  /* 移除背景和阴影，由表格包装器处理 */
+  height: calc(100vh - 164px);
 }
 
 /* 表格容器样式 - 重新设计，确保分页器正确显示 */
 .listColumn :global(.ant-table-wrapper) {
-  flex: 1;
+  height: 100%;
+  max-height: 100%;
   display: flex;
   flex-direction: column;
   background: #fff;
   border-radius: 8px;
-  overflow: visible;
+  overflow: hidden;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
 }
 
@@ -320,18 +377,7 @@
   border-radius: 8px 8px 0 0;
 }
 
-/* 确保表格内容区域不会覆盖分页器 */
-.listColumn :global(.ant-table) {
-  height: 100%;
-}
-
-.listColumn :global(.ant-table-content) {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-}
-
-/* 分页器样式 - 取消背景色 */
+/* 分页器样式 - 确保可见性 */
 .listColumn :global(.ant-table-pagination) {
   flex-shrink: 0 !important;
   margin: 0 !important;
@@ -340,18 +386,14 @@
   border-top: 1px solid #f0f0f0 !important;
   border-radius: 0 0 8px 8px !important;
   position: relative !important;
-  z-index: 1 !important;
+  z-index: 10 !important;
+  min-height: 56px !important;
 }
 
-.listColumn :global(.ant-pagination) {
-  flex-shrink: 0 !important;
-  margin: 0 !important;
-  padding: 16px !important;
-  background: transparent !important;
-  border-top: 1px solid #f0f0f0 !important;
-  border-radius: 0 0 8px 8px !important;
-  position: relative !important;
-  z-index: 1 !important;
+
+/* Spin容器样式 */
+.listColumn :global(.ant-spin-container) {
+  padding: 16px;
 }
 
 /* 表格滚动条样式 */
@@ -522,7 +564,7 @@
   }
   
   .searchSection {
-    padding: 12px 16px 6px 16px;
+    padding: 24px 16px 24px 16px;
   }
   
   .searchContainer {
@@ -534,12 +576,18 @@
     max-width: 800px;
   }
   
+  .searchContainer :global(.search-button) {
+    min-width: 50px !important;
+    padding: 0 12px !important;
+    font-size: 13px !important;
+  }
+  
   .filterColumn {
-    height: calc(100vh - 120px);
+    height: calc(100vh - 144px);
   }
   
   .listColumn {
-    height: calc(100vh - 120px);
+    height: calc(100vh - 144px);
   }
   
   .listColumn :global(.ant-table-thead > tr > th) {
@@ -551,14 +599,10 @@
     padding: 12px;
   }
   
-  .listColumn :global(.ant-pagination) {
-    padding: 12px !important;
-    background: transparent !important;
-  }
   
   .filterPanel {
-    height: calc(100vh - 120px);
-    max-height: calc(100vh - 120px);
+    height: calc(100vh - 144px);
+    max-height: calc(100vh - 144px);
   }
   
 }
@@ -573,7 +617,7 @@
   }
   
   .searchSection {
-    padding: 8px 12px 4px 12px;
+    padding: 24px 12px 24px 12px;
   }
   
   .searchContainer {
@@ -586,12 +630,18 @@
     max-width: 100%;
   }
   
+  .searchContainer :global(.search-button) {
+    min-width: 44px !important;
+    padding: 0 10px !important;
+    font-size: 12px !important;
+  }
+  
   .filterColumn {
-    height: calc(100vh - 100px);
+    height: calc(100vh - 124px);
   }
   
   .listColumn {
-    height: calc(100vh - 100px);
+    height: calc(100vh - 124px);
   }
   
   .listColumn :global(.ant-table-thead > tr > th) {
@@ -603,14 +653,10 @@
     padding: 8px;
   }
   
-  .listColumn :global(.ant-pagination) {
-    padding: 8px !important;
-    background: transparent !important;
-  }
   
   .filterPanel {
-    height: calc(100vh - 100px);
-    max-height: calc(100vh - 100px);
+    height: calc(100vh - 124px);
+    max-height: calc(100vh - 124px);
   }
   
   
