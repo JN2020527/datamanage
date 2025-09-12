@@ -19,11 +19,34 @@ export interface Asset {
   owner: string;
   department: string;
   tags: string[];
+  catalogPath?: string[]; // 资产目录路径，例如：['1008', '1013', '1014']
   qualityScore: number;
   accessCount: number;
   createdAt: string;
   updatedAt: string;
   status: AssetStatus;
+  
+  // 指标特有字段
+  metricType?: string;
+  calculationFormula?: string;
+  calculationPeriod?: string;
+  dataSources?: string[];
+  unit?: string;
+  precision?: number;
+  isRealtime?: boolean;
+  
+  // 标签特有字段
+  tagType?: string;
+  valueType?: string;
+  enumValues?: string[];
+  applyObjects?: string[];
+  classificationRules?: string;
+  tagLevel?: number;
+  minValue?: number;
+  maxValue?: number;
+  isSystemTag?: boolean;
+  updateFrequency?: string;
+  expireTime?: number;
 }
 
 // 字段信息

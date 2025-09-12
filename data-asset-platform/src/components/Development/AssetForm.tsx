@@ -16,6 +16,10 @@ import {
   Divider,
   message,
   Tabs,
+  Table,
+  Modal,
+  Alert,
+  Cascader,
 } from 'antd';
 import {
   PlusOutlined,
@@ -26,12 +30,47 @@ import {
   FileTextOutlined,
   UnorderedListOutlined,
   SettingOutlined,
+  FolderOutlined,
+  DatabaseOutlined,
 } from '@ant-design/icons';
 import { useNotification } from '@hooks/useNotification';
 import type { Asset, Field } from '@types/index';
 
 const { Option } = Select;
 const { TextArea } = Input;
+
+// 资产目录数据（与目录管理中的结构保持一致）
+const catalogTreeData = [
+  {
+    label: '客户类',
+    value: '1003',
+    children: [
+      { label: '集团客户', value: '1004' },
+      { label: '战客', value: '1005' },
+      { label: '商客', value: '1006' },
+      { label: '成员类', value: '1007' },
+    ],
+  },
+  {
+    label: '收入类',
+    value: '1008',
+    children: [
+      { label: '财务收入', value: '1009' },
+      { label: '省内白名单市场收入', value: '1010' },
+      { label: '管会收入', value: '1011' },
+      { label: '集团信息化收入', value: '1012' },
+      {
+        label: '欠费',
+        value: '1013',
+        children: [
+          { label: '正常欠费', value: '1014' },
+          { label: '核销欠费', value: '1015' },
+          { label: '销账', value: '1017' },
+        ],
+      },
+    ],
+  },
+];
 
 interface AssetFormProps {
   initialData?: Partial<Asset>;
@@ -46,6 +85,10 @@ const AssetForm: React.FC<AssetFormProps> = ({ initialData, onSave, onCancel, mo
   const [fields, setFields] = useState<Partial<Field>[]>([]);
   const [tags, setTags] = useState<string[]>([]);
   const [newTag, setNewTag] = useState('');
+  const [assetType, setAssetType] = useState<string>('table');
+  const [previewVisible, setPreviewVisible] = useState(false);
+  const [sampleData, setSampleData] = useState<any[]>([]);
+  const [catalogPath, setCatalogPath] = useState<string[]>([]);
   const { showSuccess, showError } = useNotification();
 
   useEffect(() => {
@@ -53,8 +96,38 @@ const AssetForm: React.FC<AssetFormProps> = ({ initialData, onSave, onCancel, mo
       form.setFieldsValue(initialData);
       setFields(initialData.fields || []);
       setTags(initialData.tags || []);
+      setAssetType(initialData.type || 'table');
+      // 处理目录路径
+      if (initialData.catalogPath) {
+        setCatalogPath(initialData.catalogPath);
+      }
     }
   }, [initialData, form]);
+
+  // 监听资产类型变化
+  const handleTypeChange = (type: string) => {
+    setAssetType(type);
+    // 根据类型自动添加一些默认字段
+    if (type === 'table' && fields.length === 0) {
+      setFields([
+        { name: 'id', type: 'string', description: '主键ID', nullable: false, primaryKey: true },
+        { name: 'created_at', type: 'timestamp', description: '创建时间', nullable: false, primaryKey: false },
+        { name: 'updated_at', type: 'timestamp', description: '更新时间', nullable: false, primaryKey: false },
+      ]);
+    } else if (type === 'metric' && fields.length === 0) {
+      setFields([
+        { name: 'metric_name', type: 'string', description: '指标名称', nullable: false, primaryKey: true },
+        { name: 'metric_value', type: 'number', description: '指标值', nullable: false, primaryKey: false },
+        { name: 'calculate_time', type: 'timestamp', description: '计算时间', nullable: false, primaryKey: false },
+      ]);
+    } else if (type === 'tag' && fields.length === 0) {
+      setFields([
+        { name: 'tag_name', type: 'string', description: '标签名称', nullable: false, primaryKey: true },
+        { name: 'tag_value', type: 'string', description: '标签值', nullable: true, primaryKey: false },
+        { name: 'tag_type', type: 'string', description: '标签类型', nullable: false, primaryKey: false },
+      ]);
+    }
+  };
 
   const handleSubmit = async (values: any) => {
     setLoading(true);
@@ -63,6 +136,7 @@ const AssetForm: React.FC<AssetFormProps> = ({ initialData, onSave, onCancel, mo
         ...values,
         tags,
         fields,
+        catalogPath,
         createdAt: mode === 'create' ? new Date().toISOString() : initialData?.createdAt,
         updatedAt: new Date().toISOString(),
       };
@@ -108,8 +182,56 @@ const AssetForm: React.FC<AssetFormProps> = ({ initialData, onSave, onCancel, mo
     setTags(tags.filter(tag => tag !== tagToRemove));
   };
 
+  // 生成示例数据预览
+  const generateSampleData = () => {
+    const data = [];
+    for (let i = 0; i < 5; i++) {
+      const row: any = {};
+      fields.forEach(field => {
+        switch (field.type) {
+          case 'string':
+            row[field.name || ''] = `示例${field.name}${i + 1}`;
+            break;
+          case 'number':
+            row[field.name || ''] = Math.floor(Math.random() * 1000);
+            break;
+          case 'boolean':
+            row[field.name || ''] = Math.random() > 0.5;
+            break;
+          case 'date':
+          case 'timestamp':
+            row[field.name || ''] = new Date().toISOString().split('T')[0];
+            break;
+          default:
+            row[field.name || ''] = `示例数据${i + 1}`;
+        }
+      });
+      data.push(row);
+    }
+    setSampleData(data);
+  };
+
+  const handlePreview = () => {
+    generateSampleData();
+    setPreviewVisible(true);
+  };
+
   const basicInfoTab = (
     <Card title="基本信息" style={{ marginBottom: '24px' }}>
+      {/* 类型说明提示 */}
+      {assetType && (
+        <Alert
+          message={
+            assetType === 'table' ? '数据表：结构化数据存储，包含字段定义和数据约束' :
+            assetType === 'metric' ? '指标：业务度量指标，用于统计分析和监控' :
+            assetType === 'tag' ? '标签：数据分类标记，用于数据治理和分类管理' : ''
+          }
+          type="info"
+          showIcon
+          style={{ marginBottom: '16px' }}
+        />
+      )}
+
       <Row gutter={[16, 16]}>
         <Col span={12}>
           <Form.Item
@@ -126,13 +248,14 @@ const AssetForm: React.FC<AssetFormProps> = ({ initialData, onSave, onCancel, mo
             label="资产类型"
             rules={[{ required: true, message: '请选择资产类型' }]}
           >
-            <Select placeholder="请选择资产类型">
+            <Select 
+              placeholder="请选择资产类型"
+              onChange={handleTypeChange}
+              value={assetType}
+            >
               <Option value="table">数据表</Option>
-              <Option value="view">视图</Option>
-              <Option value="api">API接口</Option>
-              <Option value="file">文件</Option>
-              <Option value="dashboard">仪表板</Option>
-              <Option value="report">报表</Option>
+              <Option value="metric">指标</Option>
+              <Option value="tag">标签</Option>
             </Select>
           </Form.Item>
         </Col>
@@ -158,6 +281,40 @@ const AssetForm: React.FC<AssetFormProps> = ({ initialData, onSave, onCancel, mo
             rules={[{ required: true, message: '请输入负责人' }]}
           >
             <Input placeholder="请输入负责人" />
+          </Form.Item>
+        </Col>
+        <Col span={24}>
+          <Form.Item
+            name="catalogPath"
+            label="资产目录"
+            rules={[{ required: true, message: '请选择资产目录' }]}
+            extra="选择资产在目录树中的位置，支持一级、二级、三级目录"
+          >
+            <Cascader
+              options={catalogTreeData}
+              value={catalogPath}
+              onChange={(value) => {
+                setCatalogPath(value as string[]);
+                form.setFieldsValue({ catalogPath: value });
+              }}
+              placeholder="请选择资产所属目录，例如：客户类 > 集团客户"
+              expandTrigger="hover"
+              showSearch={{
+                filter: (inputValue, path) =>
+                  path.some(option => option.label?.toLowerCase().indexOf(inputValue.toLowerCase()) > -1)
+              }}
+              style={{ width: '100%' }}
+              displayRender={(labels, selectedOptions) => {
+                if (labels.length === 0) return '请选择目录';
+                return (
+                  <span>
+                    <FolderOutlined style={{ marginRight: '4px', color: '#1890ff' }} />
+                    {labels.join(' > ')}
+                  </span>
+                );
+              }}
+              size="large"
+            />
           </Form.Item>
         </Col>
         <Col span={24}>
@@ -208,12 +365,29 @@ const AssetForm: React.FC<AssetFormProps> = ({ initialData, onSave, onCancel, mo
   );
 
   const fieldsTab = (
-    <Card title="字段定义">
-      <div style={{ marginBottom: '16px' }}>
-        <Button type="dashed" icon={<PlusOutlined />} onClick={handleAddField} block>
+    <Card title={`字段定义 (${fields.length}个字段)`}>
+      <div style={{ marginBottom: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <Button type="dashed" icon={<PlusOutlined />} onClick={handleAddField}>
           添加字段
         </Button>
+        {assetType === 'table' && fields.length > 0 && (
+          <Button type="link" onClick={handlePreview}>
+            预览表结构
+          </Button>
+        )}
       </div>
+      
+      {fields.length === 0 && (
+        <Alert
+          message={`暂无字段定义，点击"添加字段"开始设计${
+            assetType === 'table' ? '数据表' : 
+            assetType === 'metric' ? '指标' : '标签'
+          }结构`}
+          type="warning"
+          showIcon
+          style={{ marginBottom: '16px' }}
+        />
+      )}
       
       {fields.map((field, index) => (
         <Card 
@@ -246,11 +420,32 @@ const AssetForm: React.FC<AssetFormProps> = ({ initialData, onSave, onCancel, mo
                 onChange={(value) => handleFieldChange(index, 'type', value)}
                 style={{ width: '100%' }}
               >
-                <Option value="string">字符串</Option>
-                <Option value="number">数字</Option>
-                <Option value="boolean">布尔</Option>
-                <Option value="date">日期</Option>
-                <Option value="timestamp">时间戳</Option>
+                {assetType === 'table' ? (
+                  <>
+                    <Option value="string">VARCHAR</Option>
+                    <Option value="number">INT/DECIMAL</Option>
+                    <Option value="boolean">BOOLEAN</Option>
+                    <Option value="date">DATE</Option>
+                    <Option value="timestamp">TIMESTAMP</Option>
+                    <Option value="text">TEXT</Option>
+                    <Option value="json">JSON</Option>
+                  </>
+                ) : assetType === 'metric' ? (
+                  <>
+                    <Option value="string">文本</Option>
+                    <Option value="number">数值</Option>
+                    <Option value="percentage">百分比</Option>
+                    <Option value="currency">货币</Option>
+                    <Option value="count">计数</Option>
+                  </>
+                ) : (
+                  <>
+                    <Option value="string">字符串</Option>
+                    <Option value="category">分类</Option>
+                    <Option value="level">等级</Option>
+                    <Option value="status">状态</Option>
+                  </>
+                )}
               </Select>
             </Col>
             <Col span={8}>
@@ -346,6 +541,7 @@ const AssetForm: React.FC<AssetFormProps> = ({ initialData, onSave, onCancel, mo
           qualityScore: 85,
           accessLevel: 'internal',
           updateFrequency: 'daily',
+          catalogPath: [],
         }}
       >
         <div style={{ marginBottom: '24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -356,8 +552,12 @@ const AssetForm: React.FC<AssetFormProps> = ({ initialData, onSave, onCancel, mo
             <Button onClick={onCancel}>
               取消
             </Button>
-            <Button icon={<EyeOutlined />}>
-              预览
+            <Button 
+              icon={<EyeOutlined />}
+              onClick={handlePreview}
+              disabled={assetType !== 'table' || fields.length === 0}
+            >
+              预览数据
             </Button>
             <Button 
               type="primary" 
@@ -406,6 +606,57 @@ const AssetForm: React.FC<AssetFormProps> = ({ initialData, onSave, onCancel, mo
           ]}
         />
       </Form>
+
+      {/* 数据预览模态框 */}
+      <Modal
+        title="数据预览"
+        open={previewVisible}
+        onCancel={() => setPreviewVisible(false)}
+        footer={[
+          <Button key="close" onClick={() => setPreviewVisible(false)}>
+            关闭
+          </Button>
+        ]}
+        width="80%"
+      >
+        <div style={{ marginBottom: '16px' }}>
+          <Alert
+            message="以下是根据字段定义生成的示例数据，仅供预览结构参考"
+            type="info"
+            showIcon
+          />
+        </div>
+        {fields.length > 0 ? (
+          <Table
+            columns={fields.map(field => ({
+              title: (
+                <div>
+                  <div style={{ fontWeight: 'bold' }}>{field.name}</div>
+                  <div style={{ fontSize: '12px', color: '#666', fontWeight: 'normal' }}>
+                    {field.type} {field.primaryKey && '(主键)'} {!field.nullable && '(必填)'}
+                  </div>
+                </div>
+              ),
+              dataIndex: field.name,
+              key: field.name,
+              render: (text) => (
+                <div>
+                  {field.type === 'boolean' ? (text ? '是' : '否') : text}
+                </div>
+              )
+            }))}
+            dataSource={sampleData}
+            rowKey={(record, index) => index?.toString() || '0'}
+            pagination={false}
+            size="small"
+            scroll={{ x: 'max-content' }}
+          />
+        ) : (
+          <div style={{ textAlign: 'center', padding: '40px', color: '#999' }}>
+            请先添加字段定义
+          </div>
+        )}
+      </Modal>
     </div>
   );
 };

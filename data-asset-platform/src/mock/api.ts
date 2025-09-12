@@ -322,6 +322,32 @@ class MockApiService {
   }
 
   /**
+   * 获取我的资产列表
+   */
+  async getMyAssets(): Promise<ApiResponse<Asset[]>> {
+    await delay(500);
+    
+    // 模拟当前用户的资产，可以根据实际需求筛选
+    // 这里假设用户拥有部分资产，并添加一些状态变化
+    const myAssets = allAssets.slice(0, 15).map((asset, index) => {
+      // 模拟不同的状态
+      const statuses = ['draft', 'developing', 'pending', 'published', 'offline'];
+      const randomStatus = statuses[index % statuses.length];
+      
+      return {
+        ...asset,
+        status: randomStatus as any,
+        owner: '当前用户', // 假设当前用户拥有这些资产
+      };
+    });
+
+    return {
+      success: true,
+      data: myAssets,
+    };
+  }
+
+  /**
    * 获取部门列表
    */
   async getDepartments(): Promise<ApiResponse<string[]>> {

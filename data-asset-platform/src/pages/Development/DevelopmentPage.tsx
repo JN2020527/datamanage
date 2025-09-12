@@ -16,6 +16,7 @@ import {
   Select,
   Tooltip,
   Popconfirm,
+  Dropdown,
 } from 'antd';
 import {
   PlusOutlined,
@@ -28,9 +29,15 @@ import {
   HistoryOutlined,
   FolderOpenOutlined,
   FileTextOutlined,
+  DownOutlined,
+  TableOutlined,
+  DashboardOutlined,
+  TagOutlined,
 } from '@ant-design/icons';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import AssetForm from '@components/Development/AssetForm';
+import MetricForm from '@components/Development/MetricForm';
+import TagForm from '@components/Development/TagForm';
 import TemplateManager from '@components/Development/TemplateManager';
 import VersionCompare from '@components/Development/VersionCompare';
 import { useNotification } from '@hooks/useNotification';
@@ -62,10 +69,27 @@ const DevelopmentPage: React.FC = () => {
   useEffect(() => {
     // 检查URL参数，如果有edit参数则打开编辑页面
     const editId = searchParams.get('edit');
-    if (editId && assets.length > 0) {
+    const createType = searchParams.get('create');
+    
+    if (editId) {
+      // 确保切换到资产列表Tab
+      setActiveTab('list');
+      // 立即尝试打开编辑页面，不等待assets加载
       handleEditAsset(editId);
+      // 清除URL参数，避免重复触发
+      const newSearchParams = new URLSearchParams(searchParams);
+      newSearchParams.delete('edit');
+      window.history.replaceState({}, '', `${window.location.pathname}?${newSearchParams.toString()}`);
+    } else if (createType) {
+      // 如果有create参数，则打开创建页面
+      setActiveTab('list');
+      handleCreateAsset(createType);
+      // 清除URL参数，避免重复触发
+      const newSearchParams = new URLSearchParams(searchParams);
+      newSearchParams.delete('create');
+      window.history.replaceState({}, '', `${window.location.pathname}?${newSearchParams.toString()}`);
     }
-  }, [searchParams, assets]);
+  }, [searchParams]);
 
   const loadAssets = async () => {
     setLoading(true);
@@ -87,16 +111,35 @@ const DevelopmentPage: React.FC = () => {
     }
   };
 
-  const handleCreateAsset = () => {
-    setEditingAsset(null);
+  const handleCreateAsset = (assetType: string = 'table') => {
+    setEditingAsset({ type: assetType as 'table' | 'metric' | 'tag' } as Asset);
     setModalVisible(true);
   };
 
   const handleEditAsset = async (assetId: string) => {
     try {
-      const { data } = await api.getAssetDetail(assetId);
-      setEditingAsset(data);
-      setModalVisible(true);
+      // 先从本地assets中查找，如果找不到再调用API
+      let assetData = assets?.find(asset => asset.id === assetId);
+      
+      if (assetData) {
+        // 如果本地有数据，直接使用
+        setEditingAsset(assetData);
+        setModalVisible(true);
+        console.log('使用本地数据打开编辑器:', assetData);
+        console.log('模态框状态设置为:', true);
+      } else {
+        // 如果本地没有，调用API获取详情
+        console.log('从API获取资产详情:', assetId);
+        const response = await api.getAssetDetail(assetId);
+        if (response.success && response.data) {
+          setEditingAsset(response.data);
+          setModalVisible(true);
+          console.log('使用API数据打开编辑器:', response.data);
+          console.log('模态框状态设置为:', true);
+        } else {
+          throw new Error(response.message || '获取资产详情失败');
+        }
+      }
     } catch (error) {
       console.error('加载资产详情失败:', error);
       showError('加载资产详情失败');
@@ -125,6 +168,27 @@ const DevelopmentPage: React.FC = () => {
       showSuccess('资产复制成功');
     } catch (error) {
       showError('复制失败，请重试');
+    }
+  };
+
+  // 根据资产类型渲染不同的表单组件
+  const renderAssetForm = () => {
+    const assetType = editingAsset?.type || 'table';
+    const commonProps = {
+      initialData: editingAsset,
+      onSave: handleSaveAsset,
+      onCancel: () => setModalVisible(false),
+      mode: editingAsset ? 'edit' : 'create' as 'create' | 'edit',
+    };
+
+    switch (assetType) {
+      case 'metric':
+        return <MetricForm {...commonProps} />;
+      case 'tag':
+        return <TagForm {...commonProps} />;
+      case 'table':
+      default:
+        return <AssetForm {...commonProps} />;
     }
   };
 
@@ -306,19 +370,38 @@ const DevelopmentPage: React.FC = () => {
           >
             <Select.Option value="all">全部类型</Select.Option>
             <Select.Option value="table">数据表</Select.Option>
-            <Select.Option value="view">视图</Select.Option>
-            <Select.Option value="api">API接口</Select.Option>
-            <Select.Option value="file">文件</Select.Option>
-            <Select.Option value="dashboard">仪表板</Select.Option>
-            <Select.Option value="report">报表</Select.Option>
+            <Select.Option value="metric">指标</Select.Option>
+            <Select.Option value="tag">标签</Select.Option>
           </Select>
-          <Button
-            type="primary"
-            icon={<PlusOutlined />}
-            onClick={handleCreateAsset}
+          <Dropdown
+            menu={{
+              items: [
+                {
+                  key: 'table',
+                  icon: <TableOutlined />,
+                  label: '创建数据表',
+                  onClick: () => handleCreateAsset('table'),
+                },
+                {
+                  key: 'metric',
+                  icon: <DashboardOutlined />,
+                  label: '创建指标',
+                  onClick: () => handleCreateAsset('metric'),
+                },
+                {
+                  key: 'tag',
+                  icon: <TagOutlined />,
+                  label: '创建标签',
+                  onClick: () => handleCreateAsset('tag'),
+                },
+              ],
+            }}
+            trigger={['click']}
           >
-            创建资产
-          </Button>
+            <Button type="primary" icon={<PlusOutlined />}>
+              创建资产 <DownOutlined />
+            </Button>
+          </Dropdown>
         </Space>
       }
     >
@@ -337,6 +420,9 @@ const DevelopmentPage: React.FC = () => {
       />
     </Card>
   );
+
+  // 调试信息
+  console.log('模态框当前状态:', modalVisible, '编辑资产:', editingAsset?.name);
 
   return (
     <div className="page-container">
@@ -453,18 +539,16 @@ const DevelopmentPage: React.FC = () => {
       <Modal
         title={null}
         open={modalVisible}
-        onCancel={() => setModalVisible(false)}
+        onCancel={() => {
+          console.log('模态框关闭');
+          setModalVisible(false);
+        }}
         footer={null}
         width="90%"
         style={{ top: 20 }}
         destroyOnClose
       >
-        <AssetForm
-          initialData={editingAsset}
-          onSave={handleSaveAsset}
-          onCancel={() => setModalVisible(false)}
-          mode={editingAsset ? 'edit' : 'create'}
-        />
+        {renderAssetForm()}
       </Modal>
     </div>
   );

@@ -144,6 +144,7 @@ export const mockAssets: Asset[] = [
     owner: '张三',
     department: '数据团队',
     tags: ['用户分析', '行为数据', '产品优化'],
+    catalogPath: ['1003', '1004'], // 客户类 > 集团客户
     qualityScore: 95,
     accessCount: 1234,
     createdAt: '2024-01-15T10:00:00Z',
@@ -158,6 +159,7 @@ export const mockAssets: Asset[] = [
     owner: '李四',
     department: '业务团队',
     tags: ['订单管理', '电商数据', '业务核心'],
+    catalogPath: ['1008', '1009'], // 收入类 > 财务收入
     qualityScore: 92,
     accessCount: 1156,
     createdAt: '2024-01-10T09:00:00Z',
@@ -172,6 +174,7 @@ export const mockAssets: Asset[] = [
     owner: '王五',
     department: '销售团队',
     tags: ['销售分析', '业绩统计', '月度报表'],
+    catalogPath: ['1008', '1013', '1014'], // 收入类 > 欠费 > 正常欠费
     qualityScore: 88,
     accessCount: 567,
     createdAt: '2024-01-05T14:00:00Z',

@@ -5,8 +5,11 @@ import HomePage from '@pages/Home/HomePage';
 import DiscoveryPage from '@pages/Discovery/DiscoveryPage';
 import AssetDetailPage from '@pages/Discovery/AssetDetailPage';
 import DevelopmentPage from '@pages/Development/DevelopmentPage';
+import MyAssetsPage from '@pages/Development/MyAssetsPage';
 import GovernancePage from '@pages/Governance/GovernancePage';
 import AnalysisPage from '@pages/Analysis/AnalysisPage';
+import SelfServicePage from '@pages/Analysis/SelfServicePage';
+import DashboardPage from '@pages/Analysis/DashboardPage';
 import SystemPage from '@pages/System/SystemPage';
 import CatalogManagement from '@components/System/CatalogManagement';
 import WordRootManagement from '@components/Governance/WordRootManagement';
@@ -48,7 +51,7 @@ export const router = createBrowserRouter([
           },
           {
             path: 'my',
-            element: <div>我的资产 - 开发中</div>,
+            element: <MyAssetsPage />,
           },
           {
             path: 'developing',
@@ -135,6 +138,14 @@ export const router = createBrowserRouter([
           {
             index: true,
             element: <AnalysisPage />,
+          },
+          {
+            path: 'self-service',
+            element: <SelfServicePage />,
+          },
+          {
+            path: 'dashboard',
+            element: <DashboardPage />,
           },
           {
             path: 'preview',

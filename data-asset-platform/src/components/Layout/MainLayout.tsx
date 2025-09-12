@@ -135,6 +135,16 @@ const sideMenuConfig: Record<string, MenuItem[]> = {
   ],
   analysis: [
     {
+      key: 'analysis-self-service',
+      label: '自助取数',
+      path: '/analysis/self-service',
+    },
+    {
+      key: 'analysis-dashboard',
+      label: '看板设计器',
+      path: '/analysis/dashboard',
+    },
+    {
       key: 'analysis-preview',
       label: '数据预览',
       path: '/analysis/preview',
