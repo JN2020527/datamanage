@@ -242,7 +242,7 @@ const TemplateManager: React.FC<TemplateManagerProps> = ({ onSelectTemplate }) =
         const typeInfo = getAssetTypeInfo(type);
         return (
           <Tag color={typeInfo.color}>
-            {typeInfo.icon} {typeInfo.text}
+            {React.createElement(typeInfo.icon)} {typeInfo.text}
           </Tag>
         );
       },

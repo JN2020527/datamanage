@@ -197,7 +197,7 @@ const DevelopmentPage: React.FC = () => {
         const typeInfo = getAssetTypeInfo(type);
         return (
           <Tag color={typeInfo.color}>
-            {typeInfo.icon} {typeInfo.text}
+            {React.createElement(typeInfo.icon)} {typeInfo.text}
           </Tag>
         );
       },

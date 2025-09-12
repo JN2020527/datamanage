@@ -9,7 +9,6 @@ import {
   Button,
   Space,
   Avatar,
-  Rate,
   Statistic,
   Descriptions,
   Timeline,
@@ -134,7 +133,7 @@ const AssetDetailPage: React.FC = () => {
                 className={styles.assetIcon}
                 style={{ color: typeInfo.color }}
               >
-                <typeInfo.icon />
+                {React.createElement(typeInfo.icon)}
               </div>
               <div>
                 <Title level={2} className={styles.assetTitle}>
@@ -211,24 +210,6 @@ const AssetDetailPage: React.FC = () => {
                             {new Date(asset.updatedAt).toLocaleString()}
                           </Descriptions.Item>
                         </Descriptions>
-                      </Card>
-                      
-                      <Card title="质量评估" size="small" className={styles.qualityCard}>
-                        <div className={styles.qualityScore} style={{ color: qualityInfo.color }}>
-                          {asset.qualityScore}
-                        </div>
-                        <div className={styles.qualityLabel}>质量评分</div>
-                        <Rate
-                          disabled
-                          allowHalf
-                          value={asset.qualityScore / 20}
-                          className={styles.qualityRate}
-                        />
-                        <div>
-                          <Tag color={qualityInfo.color} className={styles.qualityTag}>
-                            {qualityInfo.text}
-                          </Tag>
-                        </div>
                       </Card>
                     </div>
                   ),

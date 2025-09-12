@@ -116,7 +116,7 @@ const PopularAssets: React.FC = () => {
                         justifyContent: 'center',
                       }}
                     >
-                      {typeInfo.icon}
+                      {React.createElement(typeInfo.icon)}
                     </Avatar>
                   }
                   title={

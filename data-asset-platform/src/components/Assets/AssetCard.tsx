@@ -67,7 +67,7 @@ const AssetCard: React.FC<AssetCardProps> = ({ asset, onEdit, onView }) => {
           className="asset-card-icon"
           style={{ backgroundColor: typeInfo.color }}
         >
-          {typeInfo.icon}
+          {React.createElement(typeInfo.icon)}
         </div>
         <div style={{ flex: 1, minWidth: 0 }}>
           <h4
