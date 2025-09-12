@@ -49,7 +49,7 @@ export const router = createBrowserRouter([
         children: [
           {
             index: true,
-            element: <DevelopmentPage />,
+            element: <Navigate to="/development/my" replace />,
           },
           {
             path: 'my',
@@ -139,7 +139,7 @@ export const router = createBrowserRouter([
         children: [
           {
             index: true,
-            element: <AnalysisPage />,
+            element: <Navigate to="/analysis/self-service" replace />,
           },
           {
             path: 'self-service',
@@ -180,7 +180,7 @@ export const router = createBrowserRouter([
         children: [
           {
             index: true,
-            element: <SystemPage />,
+            element: <Navigate to="/system/catalog" replace />,
           },
           {
             path: 'catalog',

@@ -231,10 +231,7 @@ const SimpleDashboardPage: React.FC = () => {
                       type="text"
                       icon={<EditOutlined />}
                       onClick={() => {
-                        Modal.info({
-                          title: '编辑功能',
-                          content: '看板编辑器正在开发中，敬请期待！',
-                        });
+                        navigate(`/analysis/dashboard/${item.id}/edit`);
                       }}
                     >
                       编辑
