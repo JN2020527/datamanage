@@ -20,6 +20,11 @@ import {
   Col,
   message,
   Flex,
+  TreeSelect,
+  Checkbox,
+  Radio,
+  DatePicker,
+  Alert,
 } from 'antd';
 import {
   SaveOutlined,
@@ -44,6 +49,11 @@ import {
   DatabaseOutlined,
   DashboardOutlined,
   ControlOutlined,
+  FileTextOutlined,
+  LinkOutlined,
+  FilterOutlined,
+  SyncOutlined,
+  PlusOutlined,
 } from '@ant-design/icons';
 import { useNavigate, useParams } from 'react-router-dom';
 
@@ -195,6 +205,37 @@ const componentLibrary = [
   },
 ];
 
+// 数据源配置接口
+interface DataSourceConfig {
+  id: string;
+  name: string;
+  type: 'api' | 'database' | 'file' | 'realtime';
+  connectionInfo: {
+    url?: string;
+    database?: string;
+    table?: string;
+    apiEndpoint?: string;
+    filePath?: string;
+  };
+  fields: DataField[];
+  refreshInterval?: number;
+  filters?: DataFilter[];
+}
+
+interface DataField {
+  name: string;
+  type: 'string' | 'number' | 'date' | 'boolean';
+  label: string;
+  description?: string;
+}
+
+interface DataFilter {
+  field: string;
+  operator: 'equals' | 'contains' | 'gt' | 'lt' | 'between' | 'in';
+  value: any;
+  label: string;
+}
+
 const DashboardEditor: React.FC = () => {
   const navigate = useNavigate();
   const { dashboardId } = useParams<{ dashboardId: string }>();
@@ -205,6 +246,66 @@ const DashboardEditor: React.FC = () => {
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const canvasRef = useRef<HTMLDivElement>(null);
+
+  // 数据配置相关状态
+  const [dataSources, setDataSources] = useState<DataSourceConfig[]>([
+    {
+      id: 'sales-data',
+      name: '销售数据表',
+      type: 'database',
+      connectionInfo: {
+        database: 'business_db',
+        table: 'sales_records',
+      },
+      fields: [
+        { name: 'date', type: 'date', label: '日期' },
+        { name: 'product_name', type: 'string', label: '产品名称' },
+        { name: 'sales_amount', type: 'number', label: '销售金额' },
+        { name: 'quantity', type: 'number', label: '销量' },
+        { name: 'region', type: 'string', label: '地区' },
+      ],
+      refreshInterval: 5,
+      filters: [],
+    },
+    {
+      id: 'user-behavior',
+      name: '用户行为数据',
+      type: 'api',
+      connectionInfo: {
+        apiEndpoint: '/api/analytics/user-behavior',
+      },
+      fields: [
+        { name: 'user_id', type: 'string', label: '用户ID' },
+        { name: 'page_view', type: 'number', label: '页面浏览量' },
+        { name: 'click_count', type: 'number', label: '点击次数' },
+        { name: 'session_duration', type: 'number', label: '会话时长' },
+        { name: 'device_type', type: 'string', label: '设备类型' },
+      ],
+      refreshInterval: 10,
+      filters: [],
+    },
+    {
+      id: 'financial-report',
+      name: '财务报表',
+      type: 'file',
+      connectionInfo: {
+        filePath: '/data/financial/monthly_report.xlsx',
+      },
+      fields: [
+        { name: 'month', type: 'date', label: '月份' },
+        { name: 'revenue', type: 'number', label: '收入' },
+        { name: 'cost', type: 'number', label: '成本' },
+        { name: 'profit', type: 'number', label: '利润' },
+        { name: 'department', type: 'string', label: '部门' },
+      ],
+      refreshInterval: 60,
+      filters: [],
+    },
+  ]);
+  
+  const [selectedDataSource, setSelectedDataSource] = useState<string>('');
+  const [dataFilters, setDataFilters] = useState<DataFilter[]>([]);
+  const [refreshInterval, setRefreshInterval] = useState<number>(5);
 
   // 拖拽处理
   const handleDragStart = useCallback((e: React.DragEvent, componentType: string) => {
@@ -303,6 +404,336 @@ const DashboardEditor: React.FC = () => {
     });
   };
 
+  // 数据配置处理函数
+  const handleDataSourceChange = (value: string) => {
+    setSelectedDataSource(value);
+    if (selectedComponent) {
+      const updatedComponent = {
+        ...selectedComponent,
+        config: {
+          ...selectedComponent.config,
+          dataSource: value,
+        },
+      };
+      setSelectedComponent(updatedComponent);
+      setComponents(prev => 
+        prev.map(comp => 
+          comp.id === selectedComponent.id ? updatedComponent : comp
+        )
+      );
+    }
+  };
+
+  const handleAddFilter = () => {
+    const newFilter: DataFilter = {
+      field: '',
+      operator: 'equals',
+      value: '',
+      label: '新筛选条件',
+    };
+    setDataFilters([...dataFilters, newFilter]);
+  };
+
+  const handleFilterChange = (index: number, key: keyof DataFilter, value: any) => {
+    const updatedFilters = [...dataFilters];
+    updatedFilters[index] = { ...updatedFilters[index], [key]: value };
+    setDataFilters(updatedFilters);
+  };
+
+  const handleRemoveFilter = (index: number) => {
+    setDataFilters(dataFilters.filter((_, i) => i !== index));
+  };
+
+  const handleRefreshData = () => {
+    message.success('数据刷新成功');
+  };
+
+  // 渲染数据配置面板
+  const renderDataConfigPanel = () => {
+    if (!selectedComponent) {
+      return (
+        <Flex 
+          vertical 
+          align="center" 
+          justify="center" 
+          style={{ 
+            height: 'calc(100vh - 200px)', 
+            color: 'rgba(0, 0, 0, 0.45)',
+            padding: DESIGN_TOKENS.spacing.lg,
+          }}
+        >
+          <DatabaseOutlined style={{ fontSize: 48, marginBottom: DESIGN_TOKENS.spacing.md }} />
+          <Text type="secondary">请选择一个组件进行数据配置</Text>
+        </Flex>
+      );
+    }
+
+    const currentDataSource = dataSources.find(ds => ds.id === selectedDataSource);
+
+    return (
+      <div 
+        style={{ 
+          padding: DESIGN_TOKENS.spacing.md,
+          height: 'calc(100vh - 200px)',
+          overflowY: 'auto',
+        }}
+      >
+        <Space direction="vertical" size={DESIGN_TOKENS.spacing.md} style={{ width: '100%' }}>
+          {/* 数据源选择 */}
+          <div>
+            <Title level={5} style={{ margin: 0, marginBottom: DESIGN_TOKENS.spacing.sm }}>
+              <LinkOutlined style={{ marginRight: DESIGN_TOKENS.spacing.xs }} />
+              数据源配置
+            </Title>
+            <Text type="secondary" style={{ fontSize: 12, display: 'block', marginBottom: DESIGN_TOKENS.spacing.md }}>
+              为 {selectedComponent.name} 选择数据源
+            </Text>
+
+            <Form layout="vertical" size="small">
+              <Form.Item label="数据源" style={{ marginBottom: DESIGN_TOKENS.spacing.md }}>
+                <Select
+                  value={selectedDataSource}
+                  onChange={handleDataSourceChange}
+                  placeholder="请选择数据源"
+                  style={{ width: '100%' }}
+                >
+                  {dataSources.map(ds => (
+                    <Select.Option key={ds.id} value={ds.id}>
+                      <Space>
+                        {ds.type === 'database' && <DatabaseOutlined />}
+                        {ds.type === 'api' && <LinkOutlined />}
+                        {ds.type === 'file' && <FileTextOutlined />}
+                        {ds.type === 'realtime' && <SyncOutlined />}
+                        {ds.name}
+                      </Space>
+                    </Select.Option>
+                  ))}
+                </Select>
+              </Form.Item>
+
+              {currentDataSource && (
+                <Form.Item label="数据源信息" style={{ marginBottom: DESIGN_TOKENS.spacing.md }}>
+                  <Alert
+                    message={
+                      <div>
+                        <div><strong>类型:</strong> {currentDataSource.type}</div>
+                        {currentDataSource.connectionInfo.database && (
+                          <div><strong>数据库:</strong> {currentDataSource.connectionInfo.database}</div>
+                        )}
+                        {currentDataSource.connectionInfo.table && (
+                          <div><strong>表:</strong> {currentDataSource.connectionInfo.table}</div>
+                        )}
+                        {currentDataSource.connectionInfo.apiEndpoint && (
+                          <div><strong>API:</strong> {currentDataSource.connectionInfo.apiEndpoint}</div>
+                        )}
+                        {currentDataSource.connectionInfo.filePath && (
+                          <div><strong>文件:</strong> {currentDataSource.connectionInfo.filePath}</div>
+                        )}
+                      </div>
+                    }
+                    type="info"
+                    showIcon
+                  />
+                </Form.Item>
+              )}
+            </Form>
+          </div>
+
+          {/* 字段映射 */}
+          {currentDataSource && (
+            <div>
+              <Title level={5} style={{ margin: 0, marginBottom: DESIGN_TOKENS.spacing.sm }}>
+                <ControlOutlined style={{ marginRight: DESIGN_TOKENS.spacing.xs }} />
+                字段映射
+              </Title>
+              <Text type="secondary" style={{ fontSize: 12, display: 'block', marginBottom: DESIGN_TOKENS.spacing.md }}>
+                配置图表的数据字段映射
+              </Text>
+
+              <Form layout="vertical" size="small">
+                {selectedComponent.type.includes('chart') && (
+                  <>
+                    <Form.Item label="X轴字段" style={{ marginBottom: DESIGN_TOKENS.spacing.md }}>
+                      <Select placeholder="选择X轴字段" style={{ width: '100%' }}>
+                        {currentDataSource.fields.map(field => (
+                          <Select.Option key={field.name} value={field.name}>
+                            {field.label} ({field.type})
+                          </Select.Option>
+                        ))}
+                      </Select>
+                    </Form.Item>
+                    <Form.Item label="Y轴字段" style={{ marginBottom: DESIGN_TOKENS.spacing.md }}>
+                      <Select placeholder="选择Y轴字段" style={{ width: '100%' }}>
+                        {currentDataSource.fields.filter(f => f.type === 'number').map(field => (
+                          <Select.Option key={field.name} value={field.name}>
+                            {field.label} ({field.type})
+                          </Select.Option>
+                        ))}
+                      </Select>
+                    </Form.Item>
+                  </>
+                )}
+
+                {selectedComponent.type === 'table' && (
+                  <Form.Item label="显示字段" style={{ marginBottom: DESIGN_TOKENS.spacing.md }}>
+                    <Checkbox.Group style={{ width: '100%' }}>
+                      <Row>
+                        {currentDataSource.fields.map(field => (
+                          <Col span={24} key={field.name} style={{ marginBottom: DESIGN_TOKENS.spacing.xs }}>
+                            <Checkbox value={field.name}>
+                              {field.label} ({field.type})
+                            </Checkbox>
+                          </Col>
+                        ))}
+                      </Row>
+                    </Checkbox.Group>
+                  </Form.Item>
+                )}
+
+                {selectedComponent.type === 'kpi' && (
+                  <Form.Item label="指标字段" style={{ marginBottom: DESIGN_TOKENS.spacing.md }}>
+                    <Select placeholder="选择指标字段" style={{ width: '100%' }}>
+                      {currentDataSource.fields.filter(f => f.type === 'number').map(field => (
+                        <Select.Option key={field.name} value={field.name}>
+                          {field.label} ({field.type})
+                        </Select.Option>
+                      ))}
+                    </Select>
+                  </Form.Item>
+                )}
+              </Form>
+            </div>
+          )}
+
+          {/* 数据筛选 */}
+          {currentDataSource && (
+            <div>
+              <Title level={5} style={{ margin: 0, marginBottom: DESIGN_TOKENS.spacing.sm }}>
+                <FilterOutlined style={{ marginRight: DESIGN_TOKENS.spacing.xs }} />
+                数据筛选
+              </Title>
+              <Text type="secondary" style={{ fontSize: 12, display: 'block', marginBottom: DESIGN_TOKENS.spacing.md }}>
+                添加数据筛选条件
+              </Text>
+
+              {dataFilters.map((filter, index) => (
+                <Card 
+                  key={index} 
+                  size="small" 
+                  style={{ marginBottom: DESIGN_TOKENS.spacing.sm }}
+                  extra={
+                    <Button 
+                      type="text" 
+                      danger 
+                      size="small"
+                      icon={<DeleteOutlined />}
+                      onClick={() => handleRemoveFilter(index)}
+                    />
+                  }
+                >
+                  <Form layout="vertical" size="small">
+                    <Row gutter={DESIGN_TOKENS.spacing.sm}>
+                      <Col span={8}>
+                        <Form.Item label="字段">
+                          <Select 
+                            value={filter.field}
+                            onChange={(value) => handleFilterChange(index, 'field', value)}
+                            placeholder="选择字段"
+                            size="small"
+                          >
+                            {currentDataSource.fields.map(field => (
+                              <Select.Option key={field.name} value={field.name}>
+                                {field.label}
+                              </Select.Option>
+                            ))}
+                          </Select>
+                        </Form.Item>
+                      </Col>
+                      <Col span={8}>
+                        <Form.Item label="条件">
+                          <Select 
+                            value={filter.operator}
+                            onChange={(value) => handleFilterChange(index, 'operator', value)}
+                            size="small"
+                          >
+                            <Select.Option value="equals">等于</Select.Option>
+                            <Select.Option value="contains">包含</Select.Option>
+                            <Select.Option value="gt">大于</Select.Option>
+                            <Select.Option value="lt">小于</Select.Option>
+                            <Select.Option value="between">介于</Select.Option>
+                            <Select.Option value="in">在...中</Select.Option>
+                          </Select>
+                        </Form.Item>
+                      </Col>
+                      <Col span={8}>
+                        <Form.Item label="值">
+                          <Input 
+                            value={filter.value}
+                            onChange={(e) => handleFilterChange(index, 'value', e.target.value)}
+                            placeholder="输入值"
+                            size="small"
+                          />
+                        </Form.Item>
+                      </Col>
+                    </Row>
+                  </Form>
+                </Card>
+              ))}
+
+              <Button 
+                type="dashed" 
+                onClick={handleAddFilter}
+                style={{ width: '100%', marginBottom: DESIGN_TOKENS.spacing.md }}
+                icon={<PlusOutlined />}
+              >
+                添加筛选条件
+              </Button>
+            </div>
+          )}
+
+          {/* 刷新设置 */}
+          {currentDataSource && (
+            <div>
+              <Title level={5} style={{ margin: 0, marginBottom: DESIGN_TOKENS.spacing.sm }}>
+                <SyncOutlined style={{ marginRight: DESIGN_TOKENS.spacing.xs }} />
+                刷新设置
+              </Title>
+              
+              <Form layout="vertical" size="small">
+                <Form.Item label="自动刷新间隔（分钟）" style={{ marginBottom: DESIGN_TOKENS.spacing.md }}>
+                  <Slider
+                    min={1}
+                    max={60}
+                    value={refreshInterval}
+                    onChange={setRefreshInterval}
+                    marks={{
+                      1: '1',
+                      5: '5',
+                      15: '15',
+                      30: '30',
+                      60: '60',
+                    }}
+                  />
+                </Form.Item>
+
+                <Form.Item>
+                  <Button 
+                    type="primary" 
+                    icon={<SyncOutlined />}
+                    onClick={handleRefreshData}
+                    style={{ width: '100%' }}
+                  >
+                    立即刷新数据
+                  </Button>
+                </Form.Item>
+              </Form>
+            </div>
+          )}
+        </Space>
+      </div>
+    );
+  };
+
   // 渲染组件配置面板
   const renderConfigPanel = () => {
     if (!selectedComponent) {
@@ -312,7 +743,7 @@ const DashboardEditor: React.FC = () => {
           align="center" 
           justify="center" 
           style={{ 
-            height: '60vh', 
+            height: 'calc(100vh - 200px)', 
             color: 'rgba(0, 0, 0, 0.45)',
             padding: DESIGN_TOKENS.spacing.lg,
           }}
@@ -326,7 +757,13 @@ const DashboardEditor: React.FC = () => {
     const { config } = selectedComponent;
 
     return (
-      <div style={{ padding: DESIGN_TOKENS.spacing.md }}>
+      <div 
+        style={{ 
+          padding: DESIGN_TOKENS.spacing.md,
+          height: 'calc(100vh - 200px)',
+          overflowY: 'auto',
+        }}
+      >
         <Space direction="vertical" size={DESIGN_TOKENS.spacing.md} style={{ width: '100%' }}>
           <div>
             <Title level={5} style={{ margin: 0, marginBottom: DESIGN_TOKENS.spacing.sm }}>
@@ -676,8 +1113,14 @@ const DashboardEditor: React.FC = () => {
                 key: 'components',
                 label: '组件库',
                 children: (
-                  <div style={{ padding: DESIGN_TOKENS.spacing.md }}>
-                    <Space direction="vertical" size={DESIGN_TOKENS.spacing.lg} style={{ width: '100%' }}>
+                  <div 
+                    style={{ 
+                      padding: DESIGN_TOKENS.spacing.md,
+                      height: 'calc(100vh - 200px)',
+                      overflowY: 'auto',
+                    }}
+                  >
+                    <Space direction="vertical" size={DESIGN_TOKENS.spacing.md} style={{ width: '100%' }}>
                       {['chart', 'data', 'indicator', 'control'].map(category => (
                         <div key={category}>
                                                      <div style={{
@@ -822,24 +1265,7 @@ const DashboardEditor: React.FC = () => {
               {
                 key: 'data',
                 label: '数据配置',
-                children: (
-                  <Flex 
-                    vertical 
-                    align="center" 
-                    justify="center" 
-                    style={{ 
-                      height: '60vh',
-                      padding: DESIGN_TOKENS.spacing.lg,
-                    }}
-                  >
-                    <SettingOutlined style={{ 
-                      fontSize: 48, 
-                      marginBottom: DESIGN_TOKENS.spacing.md,
-                      color: 'rgba(0, 0, 0, 0.25)',
-                    }} />
-                    <Text type="secondary">数据配置功能开发中...</Text>
-                  </Flex>
-                ),
+                children: renderDataConfigPanel(),
               },
             ]}
           />

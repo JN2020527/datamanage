@@ -11,7 +11,7 @@ const TestDashboard: React.FC = () => {
         <Space direction="vertical" style={{ width: '100%' }}>
           <div style={{ textAlign: 'center' }}>
             <DashboardOutlined style={{ fontSize: 64, color: '#1890ff' }} />
-            <Title level={2}>看板设计器测试页面</Title>
+            <Title level={2}>看板设计测试页面</Title>
             <Paragraph>
               如果您能看到此页面，说明基础组件正常工作
             </Paragraph>

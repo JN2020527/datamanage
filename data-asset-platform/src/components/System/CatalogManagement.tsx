@@ -365,7 +365,7 @@ const CatalogManagement: React.FC = () => {
   };
 
   return (
-    <div>
+    <div className="page-container">
       {/* 页面标题 */}
       <div style={{ marginBottom: 12 }}>
         <Title level={3} style={{ margin: 0, fontWeight: 600 }}>

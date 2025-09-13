@@ -4,7 +4,6 @@ import {
   Card,
   Button,
   Space,
-  Breadcrumb,
   Row,
   Col,
   Modal,
@@ -117,22 +116,6 @@ const SimpleDashboardPage: React.FC = () => {
 
   return (
     <div className="page-container">
-      {/* 面包屑导航 */}
-      <Breadcrumb 
-        style={{ marginBottom: '16px' }}
-        items={[
-          {
-            title: <a onClick={() => navigate('/')}>首页</a>,
-          },
-          {
-            title: '敏捷分析',
-          },
-          {
-            title: '看板设计器',
-          },
-        ]}
-      />
-
       {/* 页面标题和操作 */}
       <div style={{ marginBottom: '24px' }}>
         <Row justify="space-between" align="middle">
@@ -140,7 +123,7 @@ const SimpleDashboardPage: React.FC = () => {
             <Space>
               <DashboardOutlined style={{ fontSize: 24, color: '#1890ff' }} />
               <Title level={2} style={{ margin: 0 }}>
-                看板设计器
+                看板设计
               </Title>
             </Space>
             <Paragraph type="secondary" style={{ marginTop: 8, marginBottom: 0 }}>
@@ -269,19 +252,12 @@ const SimpleDashboardPage: React.FC = () => {
                       </div>
                     }
                     description={
-                      <div>
-                        <Paragraph
-                          ellipsis={{ rows: 2 }}
-                          style={{ marginBottom: 8, minHeight: 40 }}
-                        >
-                          {dashboard.description}
-                        </Paragraph>
-                        <div style={{ fontSize: 12, color: '#999' }}>
-                          <div>组件: {dashboard.componentCount} 个</div>
-                          <div>浏览: {dashboard.views} 次</div>
-                          <div>更新: {dashboard.createdAt}</div>
-                        </div>
-                      </div>
+                      <Paragraph
+                        ellipsis={{ rows: 2 }}
+                        style={{ marginBottom: 8, minHeight: 40 }}
+                      >
+                        {dashboard.description}
+                      </Paragraph>
                     }
                   />
                 </Card>

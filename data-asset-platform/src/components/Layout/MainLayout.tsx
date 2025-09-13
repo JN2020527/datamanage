@@ -141,7 +141,7 @@ const sideMenuConfig: Record<string, MenuItem[]> = {
     },
     {
       key: 'analysis-dashboard',
-      label: '看板设计器',
+      label: '看板设计',
       path: '/analysis/dashboard',
     },
     {

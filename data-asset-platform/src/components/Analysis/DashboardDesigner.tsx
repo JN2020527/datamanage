@@ -894,7 +894,7 @@ const DashboardDesigner: React.FC<DashboardDesignerProps> = ({
             <Col>
               <Space>
                 <Title level={4} style={{ margin: 0 }}>
-                  看板设计器
+                  看板设计
                 </Title>
                 <Input
                   value={dashboardConfig.name}

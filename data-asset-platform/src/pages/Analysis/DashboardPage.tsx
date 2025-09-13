@@ -339,7 +339,7 @@ const DashboardPage: React.FC = () => {
               title: '敏捷分析',
             },
             {
-              title: '看板设计器',
+              title: '看板设计',
             },
             {
               title: '模板库',
@@ -378,7 +378,7 @@ const DashboardPage: React.FC = () => {
             title: '敏捷分析',
           },
           {
-            title: '看板设计器',
+            title: '看板设计',
           },
         ]}
       />
@@ -390,7 +390,7 @@ const DashboardPage: React.FC = () => {
             <Space>
               <DashboardOutlined style={{ fontSize: 24, color: '#1890ff' }} />
               <Title level={2} style={{ margin: 0 }}>
-                看板设计器
+                看板设计
               </Title>
             </Space>
             <Paragraph type="secondary" style={{ marginTop: 8, marginBottom: 0 }}>

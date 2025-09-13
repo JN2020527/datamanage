@@ -150,10 +150,7 @@ export const router = createBrowserRouter([
             path: 'dashboard',
             element: <SimpleDashboardPage />,
           },
-          {
-            path: 'dashboard/editor/:dashboardId',
-            element: <DashboardEditor />,
-          },
+
           {
             path: 'preview',
             element: <div>数据预览 - 开发中</div>,
@@ -230,6 +227,11 @@ export const router = createBrowserRouter([
         ],
       },
     ],
+  },
+  // 看板编辑器独立路由 - 全屏显示，无左侧菜单
+  {
+    path: '/analysis/dashboard/editor/:dashboardId',
+    element: <DashboardEditor />,
   },
   {
     path: '*',
