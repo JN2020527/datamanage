@@ -16,6 +16,7 @@ import SystemPage from '@pages/System/SystemPage';
 import CatalogManagement from '@components/System/CatalogManagement';
 import WordRootManagement from '@components/Governance/WordRootManagement';
 import FieldManagement from '@components/Governance/FieldManagement';
+import DashboardEditor from '@pages/Analysis/DashboardEditor';
 
 // 创建路由配置
 export const router = createBrowserRouter([
@@ -148,6 +149,10 @@ export const router = createBrowserRouter([
           {
             path: 'dashboard',
             element: <SimpleDashboardPage />,
+          },
+          {
+            path: 'dashboard/editor/:dashboardId',
+            element: <DashboardEditor />,
           },
           {
             path: 'preview',

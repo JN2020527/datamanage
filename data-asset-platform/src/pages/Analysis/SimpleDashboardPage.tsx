@@ -94,6 +94,11 @@ const SimpleDashboardPage: React.FC = () => {
     });
   };
 
+  const handleEditDashboard = (dashboardId: string) => {
+    // 跳转到看板编辑器页面
+    navigate(`/analysis/dashboard/editor/${dashboardId}`);
+  };
+
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'published': return 'green';
@@ -230,9 +235,7 @@ const SimpleDashboardPage: React.FC = () => {
                     <Button
                       type="text"
                       icon={<EditOutlined />}
-                      onClick={() => {
-                        navigate(`/analysis/dashboard/${item.id}/edit`);
-                      }}
+                      onClick={() => handleEditDashboard(dashboard.id)}
                     >
                       编辑
                     </Button>,
