@@ -17,6 +17,9 @@ import CatalogManagement from '@components/System/CatalogManagement';
 import WordRootManagement from '@components/Governance/WordRootManagement';
 import FieldManagement from '@components/Governance/FieldManagement';
 import DashboardEditor from '@pages/Analysis/DashboardEditor';
+import ReportDesigner from '@pages/Analysis/ReportDesigner';
+import ReportListPage from '@pages/Analysis/ReportListPage';
+import EnhancedReportDesigner from '@pages/Analysis/EnhancedReportDesigner';
 
 // 创建路由配置
 export const router = createBrowserRouter([
@@ -150,30 +153,9 @@ export const router = createBrowserRouter([
             path: 'dashboard',
             element: <SimpleDashboardPage />,
           },
-
-          {
-            path: 'preview',
-            element: <div>数据预览 - 开发中</div>,
-          },
-          {
-            path: 'chart',
-            element: <div>图表分析 - 开发中</div>,
-          },
           {
             path: 'report',
-            element: <div>报表设计 - 开发中</div>,
-          },
-          {
-            path: 'my-reports',
-            element: <div>我的报表 - 开发中</div>,
-          },
-          {
-            path: 'shared',
-            element: <div>共享报表 - 开发中</div>,
-          },
-          {
-            path: 'export',
-            element: <div>数据导出 - 开发中</div>,
+            element: <ReportListPage />,
           },
         ],
       },
@@ -232,6 +214,11 @@ export const router = createBrowserRouter([
   {
     path: '/analysis/dashboard/editor/:dashboardId',
     element: <DashboardEditor />,
+  },
+  // 报表设计器独立路由 - 全屏显示，无左侧菜单 (使用增强版)
+  {
+    path: '/analysis/report/designer/:reportId?',
+    element: <EnhancedReportDesigner />,
   },
   {
     path: '*',

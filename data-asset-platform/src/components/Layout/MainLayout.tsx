@@ -145,34 +145,9 @@ const sideMenuConfig: Record<string, MenuItem[]> = {
       path: '/analysis/dashboard',
     },
     {
-      key: 'analysis-preview',
-      label: '数据预览',
-      path: '/analysis/preview',
-    },
-    {
-      key: 'analysis-chart',
-      label: '图表分析',
-      path: '/analysis/chart',
-    },
-    {
       key: 'analysis-report',
       label: '报表设计',
       path: '/analysis/report',
-    },
-    {
-      key: 'analysis-my-reports',
-      label: '我的报表',
-      path: '/analysis/my-reports',
-    },
-    {
-      key: 'analysis-shared',
-      label: '共享报表',
-      path: '/analysis/shared',
-    },
-    {
-      key: 'analysis-export',
-      label: '数据导出',
-      path: '/analysis/export',
     },
   ],
   system: [
