@@ -121,7 +121,7 @@ const SimpleDashboardPage: React.FC = () => {
         <Row justify="space-between" align="middle">
           <Col>
             <Space>
-              <DashboardOutlined style={{ fontSize: 24, color: '#1890ff' }} />
+              <DashboardOutlined style={{ fontSize: 24, color: '#000000' }} />
               <Title level={2} style={{ margin: 0 }}>
                 看板设计
               </Title>

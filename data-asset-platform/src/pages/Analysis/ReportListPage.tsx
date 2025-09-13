@@ -173,7 +173,7 @@ const ReportListPage: React.FC = () => {
         <Row justify="space-between" align="middle">
           <Col>
             <Space>
-              <TableOutlined style={{ fontSize: 24, color: '#1890ff' }} />
+              <TableOutlined style={{ fontSize: 24, color: '#000000' }} />
               <Title level={2} style={{ margin: 0 }}>
                 报表设计
               </Title>

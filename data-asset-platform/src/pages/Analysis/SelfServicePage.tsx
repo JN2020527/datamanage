@@ -1403,7 +1403,7 @@ const SelfServicePage: React.FC = () => {
       {/* 页面标题 */}
       <div style={{ marginBottom: '24px' }}>
         <Title level={2} style={{ margin: 0, display: 'flex', alignItems: 'center' }}>
-          <DatabaseOutlined style={{ marginRight: '12px', color: '#1890ff' }} />
+          <DatabaseOutlined style={{ marginRight: '12px', color: '#000000' }} />
           自助取数
         </Title>
         <Text type="secondary">无需编写SQL，通过可视化界面快速获取所需数据</Text>
