@@ -360,32 +360,41 @@ export const mockPopularAssets = [
 export const mockChartData = {
   // 资产分布饼图数据
   assetDistribution: [
-    { name: '数据表', value: 856, percentage: 69.4 },
-    { name: '指标', value: 234, percentage: 19.0 },
-    { name: '标签', value: 144, percentage: 11.6 },
+    { name: '数据表', value: 856, type: 'table' },
+    { name: '指标', value: 234, type: 'metric' },
+    { name: '标签', value: 144, type: 'tag' },
   ],
   
   // 访问趋势折线图数据
   accessTrend: [
-    { date: '2024-01-09', count: 2890 },
-    { date: '2024-01-10', count: 3120 },
-    { date: '2024-01-11', count: 2756 },
-    { date: '2024-01-12', count: 3445 },
-    { date: '2024-01-13', count: 3234 },
-    { date: '2024-01-14', count: 3567 },
-    { date: '2024-01-15', count: 3890 },
+    { date: '01-09', visits: 2890, users: 1240 },
+    { date: '01-10', visits: 3120, users: 1350 },
+    { date: '01-11', visits: 2756, users: 1180 },
+    { date: '01-12', visits: 3445, users: 1480 },
+    { date: '01-13', visits: 3234, users: 1390 },
+    { date: '01-14', visits: 3567, users: 1520 },
+    { date: '01-15', visits: 3890, users: 1680 },
+    { date: '01-16', visits: 4120, users: 1750 },
+    { date: '01-17', visits: 3980, users: 1690 },
+    { date: '01-18', visits: 4250, users: 1820 },
+    { date: '01-19', visits: 4380, users: 1890 },
+    { date: '01-20', visits: 4560, users: 1950 },
+    { date: '01-21', visits: 4720, users: 2020 },
+    { date: '01-22', visits: 4890, users: 2100 },
   ],
   
   // 质量趋势图数据
   qualityTrend: [
-    { date: '2024-01-09', score: 87 },
-    { date: '2024-01-10', score: 89 },
-    { date: '2024-01-11', score: 91 },
-    { date: '2024-01-12', score: 93 },
-    { date: '2024-01-13', score: 94 },
-    { date: '2024-01-14', score: 95 },
-    { date: '2024-01-15', score: 95 },
+    { month: '10月', score: 87, issues: 23, fixed: 18 },
+    { month: '11月', score: 89, issues: 19, fixed: 16 },
+    { month: '12月', score: 91, issues: 15, fixed: 14 },
+    { month: '1月', score: 93, issues: 12, fixed: 11 },
+    { month: '2月', score: 94, issues: 10, fixed: 9 },
+    { month: '3月', score: 95, issues: 8, fixed: 8 },
   ],
+  
+  // 使用热力图数据（空数组，组件内部会生成模拟数据）
+  usageHeatmap: [],
 };
 
 // 部门列表

@@ -33,6 +33,8 @@ import {
 import { useParams, useNavigate } from 'react-router-dom';
 import FieldTable from '@components/Assets/FieldTable';
 import CommentItem from '@components/Common/CommentItem';
+import DataLineage, { FieldLineage } from '@components/Analysis/DataLineage';
+import DataPreview from '@components/Analysis/DataPreview';
 import { api } from '@mock/api';
 import { useNotification } from '@hooks/useNotification';
 import { getAssetTypeInfo, getQualityInfo, getRelativeTime, formatNumber } from '@utils/index';
@@ -218,7 +220,7 @@ const AssetDetailPage: React.FC = () => {
       </Card>
 
       {/* 内容区域：全宽布局 */}
-      <Row gutter={[24, 24]} className={styles.contentRow}>
+      <Row className={styles.contentRow}>
         {/* 全宽：表概述、字段信息、血缘信息、数据预览 Tab */}
         <Col span={24} className={styles.leftPanel}>
           <Card className={styles.leftCard}>
@@ -305,9 +307,83 @@ const AssetDetailPage: React.FC = () => {
                     </span>
                   ),
                   children: (
-                    <div style={{ textAlign: 'center', padding: '60px' }}>
-                      <Title level={4}>血缘关系图谱</Title>
-                      <Text type="secondary">血缘关系可视化功能开发中...</Text>
+                    <div style={{ height: '80vh', margin: '-24px', padding: 0 }}>
+                      <style>
+                        {`
+                          .lineage-tabs-no-padding .ant-tabs-content-holder {
+                            padding: 0 !important;
+                            background: transparent !important;
+                          }
+                          .lineage-tabs-no-padding .ant-tabs-content {
+                            padding: 0 !important;
+                            background: transparent !important;
+                          }
+                          .lineage-tabs-no-padding .ant-tabs-tabpane {
+                            padding: 0 !important;
+                            background: transparent !important;
+                          }
+                          .lineage-tabs-no-padding .ant-tabs-tab {
+                            background: transparent !important;
+                          }
+                          .lineage-tabs-no-padding .ant-tabs-tab-active {
+                            background: transparent !important;
+                          }
+                          .lineage-tabs-no-padding .ant-tabs-nav {
+                            margin-bottom: 10px !important;
+                          }
+                        `}
+                      </style>
+                      <Tabs
+                        defaultActiveKey="table"
+                        size="small"
+                        style={{ 
+                          height: '100%',
+                          background: 'transparent'
+                        }}
+                        tabBarStyle={{ 
+                          marginBottom: 0,
+                          paddingLeft: 0,
+                          paddingRight: 0,
+                          background: 'transparent'
+                        }}
+                        className="lineage-tabs-no-padding"
+                        items={[
+                          {
+                            key: 'table',
+                            label: (
+                              <span>
+                                <DatabaseOutlined style={{ marginRight: '6px' }} />
+                                表血缘
+                              </span>
+                            ),
+                            children: (
+                              <div style={{ 
+                                height: 'calc(80vh - 70px)',
+                                margin: 0
+                              }}>
+                                <DataLineage />
+                              </div>
+                            ),
+                          },
+                          {
+                            key: 'field',
+                            label: (
+                              <span>
+                                <PartitionOutlined style={{ marginRight: '6px' }} />
+                                字段级血缘
+                              </span>
+                            ),
+                            children: (
+                              <div style={{ 
+                                height: 'calc(80vh - 70px)',
+                                margin: 0
+                              }}>
+                                <FieldLineage />
+                              </div>
+                            ),
+                          },
+                        ]}
+                      />
                     </div>
                   ),
                 },
@@ -320,9 +396,8 @@ const AssetDetailPage: React.FC = () => {
                     </span>
                   ),
                   children: (
-                    <div style={{ textAlign: 'center', padding: '60px' }}>
-                      <Title level={4}>数据预览</Title>
-                      <Text type="secondary">数据预览功能开发中...</Text>
+                    <div style={{ height: '80vh', margin: '-24px', padding: 0 }}>
+                      <DataPreview />
                     </div>
                   ),
                 },

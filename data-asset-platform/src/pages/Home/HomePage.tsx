@@ -16,17 +16,18 @@ import StatCard from '@components/Dashboard/StatCard';
 import QuickActions from '@components/Dashboard/QuickActions';
 import RecentActivities from '@components/Dashboard/RecentActivities';
 import PopularAssets from '@components/Dashboard/PopularAssets';
-import AssetDistributionChart from '@components/Charts/AssetDistributionChart';
-import AccessTrendChart from '@components/Charts/AccessTrendChart';
-import QualityTrendChart from '@components/Charts/QualityTrendChart';
-import type { Statistics } from '@types/index';
+
+import EChartsAssetDistribution from '@components/Charts/EChartsAssetDistribution';
+import EChartsAccessTrend from '@components/Charts/EChartsAccessTrend';
+import EChartsQualityTrend from '@components/Charts/EChartsQualityTrend';
+import EChartsUsageHeatmap from '@components/Charts/EChartsUsageHeatmap';
+import type { Statistics } from '@/types/index';
 import TextEffect from '@components/Animations/TextEffect';
-import EnhancedStatCard from '@components/UI/EnhancedStatCard';
-import InteractiveCard from '@components/Animations/InteractiveCard';
+
 import PageTransition from '@components/Animations/PageTransition';
 import { motion } from 'framer-motion';
 
-const { Title, Text } = Typography;
+
 
 const HomePage: React.FC = () => {
   const navigate = useNavigate();
@@ -144,22 +145,22 @@ const HomePage: React.FC = () => {
         </Col>
         <Col xs={24} sm={12} md={8} lg={6} xl={4}>
           <StatCard
-            title="数据模型"
-            value={statistics?.models || 0}
+            title="指标"
+            value={statistics?.metrics || 0}
             icon={<ProjectOutlined />}
             color="#722ED1"
             trend={{ value: 15, type: 'up' }}
-            onClick={() => navigate('/discovery?type=model')}
+            onClick={() => navigate('/discovery?type=metric')}
           />
         </Col>
         <Col xs={24} sm={12} md={8} lg={6} xl={4}>
           <StatCard
-            title="报表"
-            value={statistics?.reports || 0}
+            title="标签"
+            value={statistics?.tags || 0}
             icon={<FileTextOutlined />}
             color="#FAAD14"
             trend={{ value: 5, type: 'up' }}
-            onClick={() => navigate('/discovery?type=report')}
+            onClick={() => navigate('/discovery?type=tag')}
           />
         </Col>
         <Col xs={24} sm={12} md={8} lg={6} xl={4}>
@@ -188,28 +189,33 @@ const HomePage: React.FC = () => {
       {/* 图表展示区域 */}
       <Row gutter={[24, 24]} style={{ marginBottom: '32px' }}>
         <Col xs={24} lg={8}>
-          <div className="card">
-            <AssetDistributionChart 
-              data={chartData?.assetDistribution || []} 
-              height={280}
-            />
-          </div>
+          <EChartsAssetDistribution 
+            data={chartData?.assetDistribution || []} 
+            height={320}
+          />
         </Col>
         <Col xs={24} lg={8}>
-          <div className="card">
-            <AccessTrendChart 
-              data={chartData?.accessTrend || []} 
-              height={280}
-            />
-          </div>
+          <EChartsAccessTrend 
+            data={chartData?.accessTrend || []} 
+            height={320}
+          />
         </Col>
         <Col xs={24} lg={8}>
-          <div className="card">
-            <QualityTrendChart 
-              data={chartData?.qualityTrend || []} 
-              height={280}
-            />
-          </div>
+          <EChartsQualityTrend 
+            data={chartData?.qualityTrend || []} 
+            height={320}
+          />
+        </Col>
+      </Row>
+
+      {/* 新增图表区域 */}
+      <Row gutter={[24, 24]} style={{ marginBottom: '32px' }}>
+        <Col xs={24} lg={24}>
+          <EChartsUsageHeatmap 
+            data={chartData?.usageHeatmap || []} 
+            height={280}
+            title="数据访问热力图"
+          />
         </Col>
       </Row>
 
