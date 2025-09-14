@@ -129,16 +129,54 @@ const AssetDetailPage: React.FC = () => {
         <Row gutter={[24, 24]} align="middle">
           <Col flex="auto">
             <div style={{ display: 'flex', alignItems: 'flex-start', marginBottom: '16px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', marginRight: '16px' }}>
+              <div style={{ marginRight: '20px' }}>
                 <div
-                  className={styles.assetIcon}
-                  style={{ color: typeInfo.color, marginRight: '8px' }}
+                  style={{
+                    width: '80px',
+                    height: '80px',
+                    background: typeInfo.gradient || `linear-gradient(135deg, ${typeInfo.color}20, ${typeInfo.color}60)`,
+                    borderRadius: '12px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    boxShadow: `0 4px 12px ${typeInfo.shadowColor || typeInfo.color + '30'}`,
+                    transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+                    cursor: 'default'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = 'translateY(-2px)';
+                    e.currentTarget.style.boxShadow = `0 8px 20px ${typeInfo.shadowColor?.replace('0.2', '0.3') || typeInfo.color + '40'}`;
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = 'translateY(0)';
+                    e.currentTarget.style.boxShadow = `0 4px 12px ${typeInfo.shadowColor || typeInfo.color + '20'}`;
+                  }}
                 >
-                  {React.createElement(typeInfo.icon)}
+                  <div
+                    style={{
+                      color: '#ffffff',
+                      fontSize: '28px',
+                      marginBottom: '4px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center'
+                    }}
+                  >
+                    {React.createElement(typeInfo.icon)}
+                  </div>
+                  <div
+                    style={{
+                      color: '#ffffff',
+                      fontSize: '12px',
+                      fontWeight: '500',
+                      textAlign: 'center',
+                      opacity: 0.9
+                    }}
+                  >
+                    {typeInfo.text}
+                  </div>
                 </div>
-                <Tag color={typeInfo.color} style={{ marginBottom: 0 }}>
-                  {typeInfo.text}
-                </Tag>
               </div>
               <div style={{ flex: 1 }}>
                 <Title level={2} className={styles.assetTitle} style={{ marginBottom: '8px' }}>
@@ -179,10 +217,10 @@ const AssetDetailPage: React.FC = () => {
         </Row>
       </Card>
 
-      {/* 内容区域：左右布局 */}
+      {/* 内容区域：全宽布局 */}
       <Row gutter={[24, 24]} className={styles.contentRow}>
-        {/* 左侧：表概述、字段信息、血缘信息、数据预览 Tab */}
-        <Col xs={24} lg={18} xl={19} className={styles.leftPanel}>
+        {/* 全宽：表概述、字段信息、血缘信息、数据预览 Tab */}
+        <Col span={24} className={styles.leftPanel}>
           <Card className={styles.leftCard}>
             <Tabs 
               defaultActiveKey="overview" 
@@ -199,7 +237,7 @@ const AssetDetailPage: React.FC = () => {
                   children: (
                     <div>
                       <Card title="基本信息" size="small" style={{ marginBottom: '16px' }}>
-                        <Descriptions column={2} size="small">
+                        <Descriptions column={3} size="small">
                           <Descriptions.Item label="资产名称">
                             <div>
                               <div style={{ fontWeight: 'bold' }}>
@@ -213,14 +251,36 @@ const AssetDetailPage: React.FC = () => {
                             </div>
                           </Descriptions.Item>
                           <Descriptions.Item label="资产类型">{typeInfo.text}</Descriptions.Item>
-                          <Descriptions.Item label="负责人">{asset.owner}</Descriptions.Item>
+                          <Descriptions.Item label="环境">开发环境</Descriptions.Item>
+                          <Descriptions.Item label="负责人">
+                            <Space>
+                              {asset.owner}
+                              <Button type="link" size="small" style={{ padding: 0, fontSize: '12px' }}>
+                                转交
+                              </Button>
+                            </Space>
+                          </Descriptions.Item>
                           <Descriptions.Item label="所属部门">{asset.department}</Descriptions.Item>
+                          <Descriptions.Item label="表类型">物理表</Descriptions.Item>
                           <Descriptions.Item label="创建时间">
                             {new Date(asset.createdAt).toLocaleString()}
                           </Descriptions.Item>
                           <Descriptions.Item label="更新时间">
                             {new Date(asset.updatedAt).toLocaleString()}
                           </Descriptions.Item>
+                          <Descriptions.Item label="DDL变更时间">
+                            {new Date(asset.createdAt).toLocaleString()}
+                          </Descriptions.Item>
+                          <Descriptions.Item label="创建人">{asset.owner}</Descriptions.Item>
+                          <Descriptions.Item label="最近访问">{getRelativeTime(asset.updatedAt)}</Descriptions.Item>
+                          <Descriptions.Item label="访问次数">{formatNumber(asset.accessCount)}</Descriptions.Item>
+                          <Descriptions.Item label="产出任务">
+                            <Button type="link" size="small" style={{ padding: 0, fontSize: '12px' }}>
+                              dim_sku_properties(LD_dummy_...)
+                            </Button>
+                          </Descriptions.Item>
+                          <Descriptions.Item label="收藏数">0</Descriptions.Item>
+                          <Descriptions.Item label="浏览量">{formatNumber(asset.accessCount)}</Descriptions.Item>
                         </Descriptions>
                       </Card>
                     </div>
@@ -268,116 +328,6 @@ const AssetDetailPage: React.FC = () => {
                 },
               ]}
             />
-          </Card>
-        </Col>
-
-        {/* 右侧：资产信息 */}
-        <Col xs={24} lg={6} xl={5} className={styles.rightPanel}>
-          <Card title="资产信息" className={styles.rightCard}>
-            {/* 基础信息 */}
-            <div className={styles.infoSection}>
-              <Title level={5} style={{ color: '#1890ff', marginBottom: '16px' }}>基础信息</Title>
-              <Descriptions column={1} size="small" colon={false}>
-                <Descriptions.Item label="环境">开发环境</Descriptions.Item>
-                <Descriptions.Item label="表类型">物理表</Descriptions.Item>
-                <Descriptions.Item label="创建时间">
-                  {new Date(asset.createdAt).toLocaleString()}
-                </Descriptions.Item>
-                <Descriptions.Item label="创建人">{asset.owner}</Descriptions.Item>
-                <Descriptions.Item label="负责人">
-                  <Space>
-                    {asset.owner}
-                    <Button type="link" size="small" style={{ padding: 0, fontSize: '12px' }}>
-                      转交
-                    </Button>
-                  </Space>
-                </Descriptions.Item>
-                <Descriptions.Item label="产出任务">
-                  <Button type="link" size="small" style={{ padding: 0, fontSize: '12px' }}>
-                    dim_sku_properties(LD_dummy_...)
-                  </Button>
-                </Descriptions.Item>
-              </Descriptions>
-            </div>
-
-            <Divider style={{ margin: '20px 0' }} />
-
-            {/* 变更信息 */}
-            <div className={styles.infoSection}>
-              <Title level={5} style={{ color: '#1890ff', marginBottom: '16px' }}>变更信息</Title>
-              <Descriptions column={1} size="small" colon={false}>
-                <Descriptions.Item 
-                  label={
-                    <Space>
-                      数据变更
-                      <Button type="text" size="small" style={{ padding: 0, fontSize: '12px', color: '#8c8c8c' }}>
-                        ⓘ
-                      </Button>
-                    </Space>
-                  }
-                >
-                  {new Date(asset.updatedAt).toLocaleString()}
-                </Descriptions.Item>
-                <Descriptions.Item 
-                  label={
-                    <Space>
-                      最近访问
-                      <Button type="text" size="small" style={{ padding: 0, fontSize: '12px', color: '#8c8c8c' }}>
-                        ⓘ
-                      </Button>
-                    </Space>
-                  }
-                >
-                  {getRelativeTime(asset.updatedAt)}
-                </Descriptions.Item>
-                <Descriptions.Item 
-                  label={
-                    <Space>
-                      DDL变更
-                      <Button type="text" size="small" style={{ padding: 0, fontSize: '12px', color: '#8c8c8c' }}>
-                        ⓘ
-                      </Button>
-                    </Space>
-                  }
-                >
-                  {new Date(asset.createdAt).toLocaleString()}
-                </Descriptions.Item>
-              </Descriptions>
-            </div>
-
-            <Divider style={{ margin: '20px 0' }} />
-
-            {/* 使用信息 */}
-            <div className={styles.infoSection}>
-              <Title level={5} style={{ color: '#1890ff', marginBottom: '16px' }}>使用信息</Title>
-              <Descriptions column={1} size="small" colon={false}>
-                <Descriptions.Item label="收藏数">0</Descriptions.Item>
-                <Descriptions.Item 
-                  label={
-                    <Space>
-                      浏览量
-                      <Button type="text" size="small" style={{ padding: 0, fontSize: '12px', color: '#8c8c8c' }}>
-                        ⓘ
-                      </Button>
-                    </Space>
-                  }
-                >
-                  {formatNumber(asset.accessCount)}
-                </Descriptions.Item>
-                <Descriptions.Item 
-                  label={
-                    <Space>
-                      访问次数
-                      <Button type="text" size="small" style={{ padding: 0, fontSize: '12px', color: '#8c8c8c' }}>
-                        ⓘ
-                      </Button>
-                    </Space>
-                  }
-                >
-                  0
-                </Descriptions.Item>
-              </Descriptions>
-            </div>
           </Card>
         </Col>
       </Row>

@@ -88,7 +88,9 @@ export const getAssetTypeInfo = (type: string) => {
   return {
     icon: config.icon,
     text: config.label,
-    color: config.color
+    color: config.color,
+    gradient: config.gradient,
+    shadowColor: config.shadowColor
   };
 };
 

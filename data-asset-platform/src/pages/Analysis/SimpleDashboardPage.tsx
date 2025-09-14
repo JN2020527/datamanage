@@ -252,12 +252,12 @@ const SimpleDashboardPage: React.FC = () => {
                       </div>
                     }
                     description={
-                      <Paragraph
-                        ellipsis={{ rows: 2 }}
-                        style={{ marginBottom: 8, minHeight: 40 }}
-                      >
-                        {dashboard.description}
-                      </Paragraph>
+                        <Paragraph
+                          ellipsis={{ rows: 2 }}
+                          style={{ marginBottom: 8, minHeight: 40 }}
+                        >
+                          {dashboard.description}
+                        </Paragraph>
                     }
                   />
                 </Card>

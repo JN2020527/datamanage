@@ -1,4 +1,4 @@
-import type { AssetType, QualityLevel } from '@types/index';
+import type { AssetType, QualityLevel } from '@/types/index';
 import { 
   TableOutlined, 
   DashboardOutlined,
@@ -13,6 +13,8 @@ export const ASSET_TYPES = [
     label: '数据表', 
     value: 'table' as AssetType, 
     color: '#1677FF', 
+    gradient: '#1677FF',
+    shadowColor: 'rgba(22, 119, 255, 0.2)',
     icon: TableOutlined,
     description: '结构化数据表'
   },
@@ -20,6 +22,8 @@ export const ASSET_TYPES = [
     label: '指标', 
     value: 'metric' as AssetType, 
     color: '#52C41A', 
+    gradient: '#52C41A',
+    shadowColor: 'rgba(82, 196, 26, 0.2)',
     icon: DashboardOutlined,
     description: '业务度量指标'
   },
@@ -27,6 +31,8 @@ export const ASSET_TYPES = [
     label: '标签', 
     value: 'tag' as AssetType, 
     color: '#FAAD14', 
+    gradient: '#FAAD14',
+    shadowColor: 'rgba(250, 173, 20, 0.2)',
     icon: TagOutlined,
     description: '数据分类标签'
   },
