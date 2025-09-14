@@ -14,6 +14,7 @@ export type UserRole = 'admin' | 'analyst' | 'developer' | 'viewer';
 export interface Asset {
   id: string;
   name: string;
+  englishName?: string; // 英文名称，优先显示
   type: AssetType;
   description: string;
   owner: string;

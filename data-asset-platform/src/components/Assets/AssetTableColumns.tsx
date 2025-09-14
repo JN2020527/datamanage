@@ -8,7 +8,7 @@ import {
 } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import type { ColumnsType } from 'antd/es/table';
-import type { Asset } from '@types/index';
+import type { Asset } from '@/types/index';
 import { getAssetTypeConfig, getQualityLevelConfig } from '@constants/assetConfig';
 import { getRelativeTime, formatNumber } from '@utils/index';
 import styles from '@styles/DiscoveryPage.module.css';
@@ -21,6 +21,10 @@ export const AssetNameCell: React.FC<{ name: string; record: Asset }> = ({
   const typeConfig = getAssetTypeConfig(record.type);
   const IconComponent = typeConfig.icon;
   
+  // 优先显示英文名称，如果没有则显示中文名称
+  const displayName = record.englishName || name;
+  const secondaryName = record.englishName ? name : record.id;
+  
   return (
     <div className={styles.assetNameCell}>
       <div 
@@ -30,11 +34,11 @@ export const AssetNameCell: React.FC<{ name: string; record: Asset }> = ({
         <IconComponent />
       </div>
       <div className={styles.assetInfo}>
-        <div className={styles.assetName} title={name}>
-          {name}
+        <div className={styles.assetName} title={displayName}>
+          {displayName}
         </div>
-        <div className={styles.assetId}>
-          {record.id}
+        <div className={styles.assetId} title={secondaryName}>
+          {secondaryName}
         </div>
       </div>
     </div>
@@ -109,12 +113,12 @@ export const UpdateTimeCell: React.FC<{ updatedAt: string }> = ({ updatedAt }) =
 export const TagsCell: React.FC<{ tags: string[] }> = ({ tags }) => (
   <div className={styles.tagsCell}>
     {tags.slice(0, 2).map((tag, index) => (
-      <Tag key={index} size="small" className={styles.tagItem}>
+      <Tag key={index} className={styles.tagItem}>
         {tag}
       </Tag>
     ))}
     {tags.length > 2 && (
-      <Tag size="small" className={styles.tagItem}>
+      <Tag className={styles.tagItem}>
         +{tags.length - 2}
       </Tag>
     )}

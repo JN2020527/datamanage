@@ -1,5 +1,5 @@
 import { generateId } from '@utils/index';
-import type { Asset, User, Statistics, Field } from '@types/index';
+import type { Asset, User, Statistics, Field } from '@/types/index';
 
 // 模拟用户数据
 export const mockUsers: User[] = [
@@ -139,6 +139,7 @@ export const mockAssets: Asset[] = [
   {
     id: 'asset-001',
     name: '用户行为分析表',
+    englishName: 'user_behavior_analysis',
     type: 'table',
     description: '记录用户在平台上的各种行为数据，用于分析用户偏好和优化产品体验',
     owner: '张三',
@@ -154,6 +155,7 @@ export const mockAssets: Asset[] = [
   {
     id: 'asset-002',
     name: '订单数据模型',
+    englishName: 'order_data_model',
     type: 'metric',
     description: '电商平台订单核心数据模型，包含订单基本信息、商品详情、支付信息等',
     owner: '李四',
@@ -169,6 +171,7 @@ export const mockAssets: Asset[] = [
   {
     id: 'asset-003',
     name: '销售业绩报表',
+    englishName: 'sales_performance_report',
     type: 'tag',
     description: '月度销售业绩统计报表，包含各部门、各产品线的销售数据分析',
     owner: '王五',
@@ -184,6 +187,7 @@ export const mockAssets: Asset[] = [
   {
     id: 'asset-004',
     name: '客户信息表',
+    englishName: 'customer_info_table',
     type: 'table',
     description: '客户基础信息表，包含客户基本资料、联系方式、地址信息等',
     owner: '赵六',
@@ -198,6 +202,7 @@ export const mockAssets: Asset[] = [
   {
     id: 'asset-005',
     name: '财务数据模型',
+    englishName: 'financial_data_model',
     type: 'metric',
     description: '财务核心数据模型，用于财务报表生成和财务分析',
     owner: '孙七',
@@ -212,6 +217,7 @@ export const mockAssets: Asset[] = [
   {
     id: 'asset-006',
     name: '产品销量看板',
+    englishName: 'product_sales_dashboard',
     type: 'tag',
     description: '实时产品销量数据看板，展示各产品的销售趋势和热门商品',
     owner: '张三',
@@ -226,6 +232,7 @@ export const mockAssets: Asset[] = [
   {
     id: 'asset-007',
     name: '用户留存分析',
+    englishName: 'user_retention_analysis',
     type: 'metric',
     description: '用户留存率分析报表，跟踪新用户的留存情况和流失原因',
     owner: '李四',
@@ -240,6 +247,7 @@ export const mockAssets: Asset[] = [
   {
     id: 'asset-008',
     name: '库存管理表',
+    englishName: 'inventory_management_table',
     type: 'table',
     description: '商品库存信息表，记录各商品的库存量、入库出库记录',
     owner: '王五',
@@ -304,6 +312,7 @@ export const mockPopularAssets = [
   {
     id: 'asset-001',
     name: '用户行为分析表',
+    englishName: 'user_behavior_analysis',
     type: 'table',
     rating: 4.8,
     viewCount: 1234,
@@ -312,6 +321,7 @@ export const mockPopularAssets = [
   {
     id: 'asset-002',
     name: '订单数据模型',
+    englishName: 'order_data_model',
     type: 'metric',
     rating: 4.9,
     viewCount: 1156,
@@ -320,6 +330,7 @@ export const mockPopularAssets = [
   {
     id: 'asset-003',
     name: '销售业绩报表',
+    englishName: 'sales_performance_report',
     type: 'tag',
     rating: 4.7,
     viewCount: 567,
@@ -328,6 +339,7 @@ export const mockPopularAssets = [
   {
     id: 'asset-004',
     name: '客户信息表',
+    englishName: 'customer_info_table',
     type: 'table',
     rating: 4.6,
     viewCount: 445,
@@ -336,6 +348,7 @@ export const mockPopularAssets = [
   {
     id: 'asset-005',
     name: '财务数据模型',
+    englishName: 'financial_data_model',
     type: 'metric',
     rating: 4.5,
     viewCount: 398,

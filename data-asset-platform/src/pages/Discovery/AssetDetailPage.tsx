@@ -36,7 +36,7 @@ import CommentItem from '@components/Common/CommentItem';
 import { api } from '@mock/api';
 import { useNotification } from '@hooks/useNotification';
 import { getAssetTypeInfo, getQualityInfo, getRelativeTime, formatNumber } from '@utils/index';
-import type { Asset, Field } from '@types/index';
+import type { Asset, Field } from '@/types/index';
 import styles from '@styles/AssetDetailPage.module.css';
 
 const { Title, Text, Paragraph } = Typography;
@@ -128,26 +128,27 @@ const AssetDetailPage: React.FC = () => {
       <Card className={styles.headerCard}>
         <Row gutter={[24, 24]} align="middle">
           <Col flex="auto">
-            <div style={{ display: 'flex', alignItems: 'center', marginBottom: '16px' }}>
-              <div
-                className={styles.assetIcon}
-                style={{ color: typeInfo.color }}
-              >
-                {React.createElement(typeInfo.icon)}
-              </div>
-              <div>
-                <Title level={2} className={styles.assetTitle}>
-                  {asset.name}
-                </Title>
-                <Space>
-                  <Tag color={typeInfo.color}>{typeInfo.text}</Tag>
-                  <Tag color={qualityInfo.color}>
-                    {qualityInfo.text} {asset.qualityScore}分
-                  </Tag>
-                </Space>
-                <div className={styles.assetId}>
-                  ID: {asset.id}
+            <div style={{ display: 'flex', alignItems: 'flex-start', marginBottom: '16px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', marginRight: '16px' }}>
+                <div
+                  className={styles.assetIcon}
+                  style={{ color: typeInfo.color, marginRight: '8px' }}
+                >
+                  {React.createElement(typeInfo.icon)}
                 </div>
+                <Tag color={typeInfo.color} style={{ marginBottom: 0 }}>
+                  {typeInfo.text}
+                </Tag>
+              </div>
+              <div style={{ flex: 1 }}>
+                <Title level={2} className={styles.assetTitle} style={{ marginBottom: '8px' }}>
+                  {asset.englishName || asset.name}
+                </Title>
+                {asset.englishName && (
+                  <div style={{ color: '#666', fontSize: '16px', marginBottom: '8px' }}>
+                    {asset.name}
+                  </div>
+                )}
               </div>
             </div>
 
@@ -199,7 +200,18 @@ const AssetDetailPage: React.FC = () => {
                     <div>
                       <Card title="基本信息" size="small" style={{ marginBottom: '16px' }}>
                         <Descriptions column={2} size="small">
-                          <Descriptions.Item label="资产名称">{asset.name}</Descriptions.Item>
+                          <Descriptions.Item label="资产名称">
+                            <div>
+                              <div style={{ fontWeight: 'bold' }}>
+                                {asset.englishName || asset.name}
+                              </div>
+                              {asset.englishName && (
+                                <div style={{ color: '#666', fontSize: '12px', marginTop: '2px' }}>
+                                  {asset.name}
+                                </div>
+                              )}
+                            </div>
+                          </Descriptions.Item>
                           <Descriptions.Item label="资产类型">{typeInfo.text}</Descriptions.Item>
                           <Descriptions.Item label="负责人">{asset.owner}</Descriptions.Item>
                           <Descriptions.Item label="所属部门">{asset.department}</Descriptions.Item>
