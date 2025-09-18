@@ -1404,7 +1404,7 @@ const SelfServicePage: React.FC = () => {
       <div style={{ marginBottom: '24px' }}>
         <Title level={2} style={{ margin: 0, display: 'flex', alignItems: 'center' }}>
           <DatabaseOutlined style={{ marginRight: '12px', color: '#000000' }} />
-          自助取数
+          政企提数
         </Title>
         <Text type="secondary">无需编写SQL，通过可视化界面快速获取所需数据</Text>
       </div>

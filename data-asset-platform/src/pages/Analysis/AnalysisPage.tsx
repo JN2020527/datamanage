@@ -343,7 +343,7 @@ const AnalysisPage: React.FC = () => {
             label: (
               <Space>
                 <DesktopOutlined />
-                报表设计
+                报表专区
               </Space>
             ),
             children: renderContent(),

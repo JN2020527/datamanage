@@ -136,7 +136,7 @@ interface SystemStatus {
 const SystemSettings: React.FC = () => {
   const [config, setConfig] = useState<SystemConfig>({
     basic: {
-      siteName: '数据资产平台',
+      siteName: '政企目录',
       siteDescription: '企业级数据资产管理平台',
       logo: '',
       favicon: '',
@@ -161,7 +161,7 @@ const SystemSettings: React.FC = () => {
       smtpPassword: '',
       smtpSecure: true,
       fromEmail: '',
-      fromName: '数据资产平台',
+      fromName: '政企目录',
     },
     notification: {
       enableEmail: true,
@@ -565,7 +565,7 @@ const SystemSettings: React.FC = () => {
             label="发件人名称"
             name={['email', 'fromName']}
           >
-            <Input placeholder="数据资产平台" />
+            <Input placeholder="政企目录" />
           </Form.Item>
         </Col>
       </Row>

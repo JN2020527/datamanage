@@ -123,7 +123,7 @@ const SimpleDashboardPage: React.FC = () => {
             <Space>
               <DashboardOutlined style={{ fontSize: 24, color: '#000000' }} />
               <Title level={2} style={{ margin: 0 }}>
-                看板设计
+                帆软报表
               </Title>
             </Space>
             <Paragraph type="secondary" style={{ marginTop: 8, marginBottom: 0 }}>

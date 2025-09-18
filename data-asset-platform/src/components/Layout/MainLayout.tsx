@@ -41,19 +41,19 @@ const mainMenuItems: MenuItem[] = [
   },
   {
     key: 'discovery',
-    label: '资产目录',
+    label: '政企目录',
     icon: <SearchOutlined />,
     path: '/discovery',
   },
   {
     key: 'development',
-    label: '资产开发',
+    label: '政企开发',
     icon: <BuildOutlined />,
     path: '/development',
   },
   {
     key: 'governance',
-    label: '资产治理',
+    label: '政企治理',
     icon: <SafetyCertificateOutlined />,
     path: '/governance',
   },
@@ -136,17 +136,17 @@ const sideMenuConfig: Record<string, MenuItem[]> = {
   analysis: [
     {
       key: 'analysis-self-service',
-      label: '自助取数',
+      label: '政企提数',
       path: '/analysis/self-service',
     },
     {
       key: 'analysis-dashboard',
-      label: '看板设计',
+    label: '帆软报表',
       path: '/analysis/dashboard',
     },
     {
       key: 'analysis-report',
-      label: '报表设计',
+    label: '报表专区',
       path: '/analysis/report',
     },
   ],
@@ -358,7 +358,7 @@ const MainLayout: React.FC = () => {
         <div className="header-left">
           <div className="logo">
             <img src="/Logos.svg" alt="平台Logo" className="logo-icon" />
-            <span className="logo-text">数据资产平台</span>
+            <span className="logo-text">政企目录</span>
           </div>
         </div>
 
