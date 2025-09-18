@@ -4,6 +4,8 @@ import path from 'path'
 
 // https://vite.dev/config/
 export default defineConfig({
+  // 部署到 GitHub Pages 子路径 datamanage
+  base: '/datamanage/',
   plugins: [react()],
   resolve: {
     alias: {
