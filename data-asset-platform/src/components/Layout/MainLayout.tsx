@@ -357,8 +357,8 @@ const MainLayout: React.FC = () => {
       <Header className="layout-header">
         <div className="header-left">
           <div className="logo">
-            <img src="/Logos.svg" alt="平台Logo" className="logo-icon" />
-            <span className="logo-text">政企目录</span>
+            <img src={`${import.meta.env.BASE_URL}Logos.svg`} alt="平台Logo" className="logo-icon" />
+            <span className="logo-text">政企专区</span>
           </div>
         </div>
 

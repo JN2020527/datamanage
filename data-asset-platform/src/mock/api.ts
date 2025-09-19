@@ -440,6 +440,7 @@ export const api = {
   getPopularAssets: () => mockApi.getPopularAssets(),
   getChartData: () => mockApi.getChartData(),
   getSearchSuggestions: (keyword: string) => mockApi.getSearchSuggestions(keyword),
+  getMyAssets: () => mockApi.getMyAssets(),
   createAsset: (data: Partial<Asset>) => mockApi.createAsset(data),
   updateAsset: (id: string, data: Partial<Asset>) => mockApi.updateAsset(id, data),
   deleteAsset: (id: string) => mockApi.deleteAsset(id),

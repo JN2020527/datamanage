@@ -257,9 +257,25 @@ const MyAssetsPage: React.FC = () => {
       width: 100,
       render: (type: string) => {
         const typeInfo = getAssetTypeInfo(type);
+        const hexToRgba = (hex: string, alpha: number) => {
+          const normalized = hex.replace('#', '');
+          const r = parseInt(normalized.substring(0, 2), 16);
+          const g = parseInt(normalized.substring(2, 4), 16);
+          const b = parseInt(normalized.substring(4, 6), 16);
+          return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+        };
         return (
-          <Tag color={typeInfo.color}>
-            {typeInfo.label}
+          <Tag
+            style={{
+              backgroundColor: hexToRgba(typeInfo.color, 0.12),
+              color: typeInfo.color,
+              borderColor: typeInfo.color,
+              borderWidth: 1,
+              borderStyle: 'solid',
+              borderRadius: 4,
+            }}
+          >
+            {typeInfo.text}
           </Tag>
         );
       },
@@ -271,8 +287,25 @@ const MyAssetsPage: React.FC = () => {
       width: 120,
       render: (status: string) => {
         const statusConfig = ASSET_STATUS_CONFIG[status as keyof typeof ASSET_STATUS_CONFIG];
+        const hexToRgba = (hex: string, alpha: number) => {
+          const normalized = hex.replace('#', '');
+          const r = parseInt(normalized.substring(0, 2), 16);
+          const g = parseInt(normalized.substring(2, 4), 16);
+          const b = parseInt(normalized.substring(4, 6), 16);
+          return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+        };
         return (
-          <Tag color={statusConfig.color} icon={statusConfig.icon}>
+          <Tag
+            icon={statusConfig.icon}
+            style={{
+              backgroundColor: hexToRgba(statusConfig.color, 0.12),
+              color: statusConfig.color,
+              borderColor: statusConfig.color,
+              borderWidth: 1,
+              borderStyle: 'solid',
+              borderRadius: 4,
+            }}
+          >
             {statusConfig.label}
           </Tag>
         );
